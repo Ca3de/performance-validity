@@ -21,6 +21,11 @@
   };
 
   // Process IDs for FCLM function rollup reports
+  // ⚠️ IMPORTANT: These IDs are facility-specific!
+  // To find your correct process IDs:
+  // 1. Go to FCLM > Reports > Function Rollup
+  // 2. Select your desired process/path
+  // 3. Copy the processId from the URL
   const PROCESS_IDS = {
     // Parent processes (for processPathRollup)
     PICK: '1003034',           // V-Returns Pick
@@ -29,20 +34,20 @@
     SUPPORT_C: '1003058',      // C-Returns Support
     SUPPORT_V: '1003059',      // V-Returns Support
 
-    // Pick sub-functions
+    // Pick sub-functions - UPDATE THESE WITH YOUR FACILITY'S IDs
     PICK_LTL: '4300016820',           // FRACS LTL Pick
     PICK_MULTIS: '4300016819',        // FRACS Multis Pick
     PICK_SINGLES: '4300016818',       // FRACS Singles Pick
     PICK_LIQUIDATIONS: '4300016833',  // Liquidations Pick
     PICK_WHD: '4300034941',           // WHD Pick to Sp00
 
-    // Pack sub-functions
+    // Pack sub-functions - UPDATE THESE WITH YOUR FACILITY'S IDs
     PACK_FRACS_LTL: '4300016814',     // Pack FracsLTL
     PACK_SINGLES: '4300006717',       // Pack Singles
     PACKING: '4300000130',            // Packing
     PACK_ILS: '1626474008030',        // V-Returns PacknHold (ILS)
 
-    // Stow sub-functions
+    // Stow sub-functions - UPDATE THESE WITH YOUR FACILITY'S IDs
     STOW_C_RETURNS: '4300006823'      // Stow C Returns
   };
 
@@ -692,13 +697,18 @@
       const performanceData = [];
       const allEmployees = new Map(); // Track unique employees
 
+      log(`=== FETCHING ${ENABLED_PATHS.length} ENABLED PATHS ===`);
+      log('Enabled paths:', ENABLED_PATHS.map(p => `${p.name} (${p.processId})`));
+
       for (const path of ENABLED_PATHS) {
-        log(`Fetching function rollup for ${path.name} (${path.processId})...`);
+        log(`\n--- Fetching: ${path.name} ---`);
+        log(`  Process ID: ${path.processId}`);
+        log(`  Category: ${path.category}`);
 
         try {
           const rollupData = await fetchFunctionRollup(path.processId, dateRange);
 
-          if (rollupData.success && rollupData.employees) {
+          if (rollupData.success && rollupData.employees && rollupData.employees.length > 0) {
             rollupData.employees.forEach(emp => {
               // Track unique employees
               if (!allEmployees.has(emp.badgeId)) {
@@ -721,10 +731,12 @@
               });
             });
 
-            log(`Found ${rollupData.employees.length} employees in ${path.name}`);
+            log(`  ✓ Found ${rollupData.employees.length} employees`);
+          } else {
+            log(`  ✗ No employees found (success: ${rollupData.success}, error: ${rollupData.error || 'none'})`);
           }
         } catch (err) {
-          log(`Error fetching ${path.name}:`, err);
+          log(`  ✗ Error: ${err.message}`);
         }
       }
 
