@@ -365,113 +365,142 @@
 
   /**
    * Parse function rollup HTML to extract employee performance data
-   * Based on scan-check implementation
+   * Based on scan-check implementation - properly handles badge ID vs employee ID
    */
   function parseFunctionRollupHTML(html, processId) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
     const employees = [];
+    const seenBadgeIds = new Set();
 
     // Find all tables with employee data
     const tables = doc.querySelectorAll('table');
 
     tables.forEach(table => {
-      // Check if this is an employee data table
-      const headerRow = table.querySelector('tr');
-      if (!headerRow) return;
-
-      const headerCells = headerRow.querySelectorAll('th, td');
-      const headers = Array.from(headerCells).map(h => getCleanCellText(h).toLowerCase());
-
-      // Look for tables with Type, ID, Name columns (like scan-check does)
-      const typeIndex = headers.findIndex(h => h === 'type');
-      const idIndex = headers.findIndex(h => h === 'id');
-      const nameIndex = headers.findIndex(h => h === 'name');
-      const managerIndex = headers.findIndex(h => h === 'manager');
-
-      // Find Total column index
-      const totalIndex = headers.findIndex(h => h === 'total');
-
-      // Find Jobs, JPH columns
-      const jobsIndex = headers.findIndex(h => h === 'jobs');
-      const jphIndex = headers.findIndex(h => h === 'jph');
-
-      // Find Unit, UPH columns (EACH-Total section)
-      const unitIndex = headers.lastIndexOf('unit');
-      const uphIndex = headers.lastIndexOf('uph');
-
-      if (idIndex === -1 && nameIndex === -1) return;
-
-      // Parse data rows
       const rows = table.querySelectorAll('tr');
-      rows.forEach((row, rowIndex) => {
-        if (rowIndex === 0) return; // Skip header
+      let totalColumnIndex = -1;
+      let idColumnIndex = 1;  // Default: ID is usually second column
+      let nameColumnIndex = 2; // Default: Name is usually third column
+      let jobsColumnIndex = -1;
+      let jphColumnIndex = -1;
+      let unitColumnIndex = -1;
+      let uphColumnIndex = -1;
 
-        const cells = row.querySelectorAll('td');
-        if (cells.length < 5) return;
-
-        // Get clean text from each cell, excluding dropdown content
-        const cellTexts = Array.from(cells).map(c => getCleanCellText(c));
-
-        // Skip total/summary rows
-        if (cellTexts[0]?.toLowerCase() === 'total' || cellTexts[1]?.toLowerCase() === 'total') return;
-
-        // Get type - look for AMZN rows (like scan-check does)
-        const type = typeIndex >= 0 ? cellTexts[typeIndex] : cellTexts[0] || '';
-
-        // Only process AMZN (Amazon employee) rows, skip contractors if needed
-        // But for now, process all rows to be inclusive
-
-        const id = idIndex >= 0 ? cellTexts[idIndex] : cellTexts[1] || '';
-        let name = nameIndex >= 0 ? cellTexts[nameIndex] : cellTexts[2] || '';
-
-        // Sanitize name - skip if it looks like dropdown content
-        if (name.length > 50 || name.includes('Default Menu') || name.includes('Home Area')) {
-          name = id; // Fall back to ID
+      // First pass: find header row and column indices
+      for (const row of rows) {
+        const headerCells = row.querySelectorAll('th');
+        if (headerCells.length > 0) {
+          // This is a header row - find column indices
+          for (let i = 0; i < headerCells.length; i++) {
+            const headerText = headerCells[i]?.textContent?.trim()?.toLowerCase() || '';
+            if (headerText === 'total') totalColumnIndex = i;
+            if (headerText === 'id' || headerText === 'badge' || headerText === 'employee id') idColumnIndex = i;
+            if (headerText === 'name' || headerText === 'employee name') nameColumnIndex = i;
+            if (headerText === 'jobs') jobsColumnIndex = i;
+            if (headerText === 'jph') jphColumnIndex = i;
+            if (headerText === 'unit') unitColumnIndex = i;
+            if (headerText === 'uph') uphColumnIndex = i;
+          }
+          break;
         }
 
-        const manager = managerIndex >= 0 ? cellTexts[managerIndex] : '';
+        // Also check for header-style td cells (some tables use td for headers)
+        const cells = row.querySelectorAll('td');
+        if (cells.length > 0) {
+          const firstCellText = cells[0]?.textContent?.trim() || '';
+          if (firstCellText === 'Type') {
+            for (let i = 0; i < cells.length; i++) {
+              const cellText = cells[i]?.textContent?.trim()?.toLowerCase() || '';
+              if (cellText === 'total') totalColumnIndex = i;
+              if (cellText === 'id' || cellText === 'badge') idColumnIndex = i;
+              if (cellText === 'name') nameColumnIndex = i;
+              if (cellText === 'jobs') jobsColumnIndex = i;
+              if (cellText === 'jph') jphColumnIndex = i;
+              if (cellText === 'unit') unitColumnIndex = i;
+              if (cellText === 'uph') uphColumnIndex = i;
+            }
+            break;
+          }
+        }
+      }
 
-        // Get total hours from Total column
+      // Second pass: parse data rows
+      for (const row of rows) {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 5) continue;
+
+        // Skip header rows and total rows
+        const firstCellText = cells[0]?.textContent?.trim() || '';
+        if (firstCellText === 'Type' || firstCellText === 'Total' || firstCellText === '') continue;
+
+        // IMPORTANT: Only process AMZN rows (like scan-check does)
+        if (firstCellText !== 'AMZN') continue;
+
+        // Get badge ID from ID column - may be inside a link!
+        const idCell = cells[idColumnIndex];
+        const idLink = idCell?.querySelector('a');
+        const badgeId = idLink ? idLink.textContent.trim() : idCell?.textContent?.trim();
+
+        // Validate badge ID - must be numeric
+        if (!badgeId || !/^\d+$/.test(badgeId)) continue;
+
+        // Skip if already seen (dedup by badge ID)
+        if (seenBadgeIds.has(badgeId)) continue;
+        seenBadgeIds.add(badgeId);
+
+        // Get name from Name column - may also be inside a link
+        const nameCell = cells[nameColumnIndex];
+        const nameLink = nameCell?.querySelector('a');
+        let name = nameLink ? nameLink.textContent.trim() : getCleanCellText(nameCell);
+
+        // Sanitize name
+        if (!name || name.length > 50 || name.includes('Default Menu') || name.includes('Home Area')) {
+          name = badgeId;
+        }
+
+        // Get total hours - use found index or find last numeric cell
         let totalHours = 0;
-        if (totalIndex >= 0 && cellTexts[totalIndex]) {
-          totalHours = parseFloat(cellTexts[totalIndex]) || 0;
+        if (totalColumnIndex !== -1 && totalColumnIndex < cells.length) {
+          const totalText = cells[totalColumnIndex]?.textContent?.trim() || '0';
+          totalHours = parseFloat(totalText) || 0;
         } else {
-          // Fallback: find first reasonable hours value
-          for (let i = 4; i < Math.min(10, cellTexts.length); i++) {
-            const val = parseFloat(cellTexts[i]);
-            if (!isNaN(val) && val > 0 && val < 24) {
-              totalHours = val;
-              break;
+          // Fallback: find the last cell that contains a valid number
+          for (let i = cells.length - 1; i >= 3; i--) {
+            const cellText = cells[i]?.textContent?.trim() || '';
+            if (/^[\d.]+$/.test(cellText) && cellText !== '') {
+              const parsed = parseFloat(cellText);
+              if (!isNaN(parsed) && parsed > 0 && parsed < 100) {
+                totalHours = parsed;
+                break;
+              }
             }
           }
         }
 
         // Get Jobs and JPH
-        const jobs = jobsIndex >= 0 ? (parseFloat(cellTexts[jobsIndex]) || 0) : 0;
-        const jph = jphIndex >= 0 ? (parseFloat(cellTexts[jphIndex]) || 0) : 0;
+        const jobs = jobsColumnIndex >= 0 ? (parseFloat(cells[jobsColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const jph = jphColumnIndex >= 0 ? (parseFloat(cells[jphColumnIndex]?.textContent?.trim()) || 0) : 0;
 
         // Get Units and UPH
-        const units = unitIndex >= 0 ? (parseFloat(cellTexts[unitIndex]) || 0) : 0;
-        const uph = uphIndex >= 0 ? (parseFloat(cellTexts[uphIndex]) || 0) : 0;
+        const units = unitColumnIndex >= 0 ? (parseFloat(cells[unitColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const uph = uphColumnIndex >= 0 ? (parseFloat(cells[uphColumnIndex]?.textContent?.trim()) || 0) : 0;
 
-        // Only add if we have valid employee ID (6+ digits)
-        if (id && id.match(/^\d{6,}$/)) {
-          employees.push({
-            type,
-            id,
-            name,
-            manager,
-            totalHours,
-            jobs,
-            jph,
-            units,
-            uph,
-            processId
-          });
-        }
-      });
+        employees.push({
+          type: 'AMZN',
+          id: badgeId,
+          badgeId: badgeId,
+          name,
+          totalHours,
+          jobs,
+          jph,
+          units,
+          uph,
+          processId
+        });
+
+        log(`Found AA: ${name} (${badgeId}) - ${totalHours}h`);
+      }
     });
 
     log(`Parsed ${employees.length} employees from function rollup`);
@@ -578,56 +607,45 @@
 
   /**
    * Extract employees from FCLM page
-   * Carefully avoids capturing dropdown/select content
+   * Based on scan-check implementation - properly gets badge ID from links
    */
   function getSelectedEmployees() {
     const employees = [];
     const seen = new Set();
 
-    // Look for employee IDs in tables
+    // Look for employee rows in tables (AMZN type rows)
     document.querySelectorAll('table tr').forEach(row => {
-      // Skip rows that are just dropdowns or selects
-      if (row.querySelector('select') && row.querySelectorAll('td').length < 3) {
-        return;
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 3) return;
+
+      // Check if this is an AMZN row (first cell contains "AMZN")
+      const firstCellText = cells[0]?.textContent?.trim() || '';
+      if (firstCellText !== 'AMZN') return;
+
+      // Get badge ID from ID column (usually column 1) - may be inside a link!
+      const idCell = cells[1];
+      const idLink = idCell?.querySelector('a');
+      const badgeId = idLink ? idLink.textContent.trim() : idCell?.textContent?.trim();
+
+      // Validate badge ID - must be numeric
+      if (!badgeId || !/^\d+$/.test(badgeId)) return;
+
+      // Skip if already seen
+      if (seen.has(badgeId)) return;
+      seen.add(badgeId);
+
+      // Get name from Name column (usually column 2) - may also be inside a link
+      const nameCell = cells[2];
+      const nameLink = nameCell?.querySelector('a');
+      let name = nameLink ? nameLink.textContent.trim() : nameCell?.textContent?.trim();
+
+      // Sanitize name - avoid dropdown content
+      if (!name || name.length > 50 || name.includes('Default Menu') || name.includes('Home Area')) {
+        name = badgeId;
       }
 
-      // Get direct text content, excluding select/option elements
-      const getCleanText = (element) => {
-        if (!element) return '';
-        // Clone the element and remove select/option elements
-        const clone = element.cloneNode(true);
-        clone.querySelectorAll('select, option, .dropdown, .dropdown-menu').forEach(el => el.remove());
-        return clone.textContent.trim();
-      };
-
-      const text = getCleanText(row);
-
-      // Match badge IDs (8-9 digit numbers)
-      const badgeMatches = text.match(/\b(\d{8,9})\b/g);
-      if (badgeMatches) {
-        badgeMatches.forEach(badge => {
-          if (!seen.has(badge)) {
-            seen.add(badge);
-            // Try to get name from adjacent cell (without dropdown content)
-            const cells = row.querySelectorAll('td');
-            let name = badge;
-            cells.forEach(cell => {
-              const cleanCellText = getCleanText(cell);
-              if (cleanCellText.includes(badge)) {
-                const nextCell = cell.nextElementSibling;
-                if (nextCell) {
-                  // Get clean text from next cell, limit length to avoid dropdown content
-                  const nextText = getCleanText(nextCell);
-                  if (nextText && nextText.length < 50) {
-                    name = nextText;
-                  }
-                }
-              }
-            });
-            employees.push({ id: badge, name });
-          }
-        });
-      }
+      employees.push({ id: badgeId, badgeId: badgeId, name });
+      log(`Found employee: ${name} (${badgeId})`);
     });
 
     log(`Found ${employees.length} employees on page`);
