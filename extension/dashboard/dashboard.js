@@ -27,19 +27,10 @@
 
   // Path configuration with colors and JPH goals (matching fclm.js PATHS)
   const PATH_CONFIG = {
-    // Pick paths
-    'pick_multis': { name: 'FRACS Multis Pick', color: '#4CAF50', goal: 30 },
-    'pick_singles': { name: 'FRACS Singles Pick', color: '#8BC34A', goal: 35 },
-    'pick_ltl': { name: 'FRACS LTL Pick', color: '#CDDC39', goal: 25 },
-    'pick_liquidations': { name: 'Liquidations Pick', color: '#FFC107', goal: 25 },
-    'pick_whd': { name: 'WHD Pick to Sp00', color: '#FF9800', goal: 20 },
-    // Pack paths
-    'pack_ils': { name: 'V-Returns PacknHold (ILS)', color: '#2196F3', goal: 35 },
-    'packing': { name: 'Packing', color: '#03A9F4', goal: 40 },
-    'pack_singles': { name: 'Pack Singles', color: '#00BCD4', goal: 40 },
-    'pack_fracs_ltl': { name: 'Pack FracsLTL', color: '#009688', goal: 30 },
-    // Stow paths
-    'stow_c_returns': { name: 'Stow C Returns', color: '#9C27B0', goal: 45 },
+    // Main paths (parent categories)
+    'pick': { name: 'Pick', color: '#4CAF50', goal: 30 },
+    'pack': { name: 'Pack', color: '#2196F3', goal: 35 },
+    'stow': { name: 'Stow', color: '#9C27B0', goal: 45 },
     // Support paths
     'support_c': { name: 'C-Returns Support', color: '#607D8B', goal: null },
     'support_v': { name: 'V-Returns Support', color: '#795548', goal: null }

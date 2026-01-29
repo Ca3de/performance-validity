@@ -21,56 +21,22 @@
   };
 
   // Process IDs for FCLM function rollup reports
-  // ⚠️ IMPORTANT: These IDs are facility-specific!
-  // To find your correct process IDs:
-  // 1. Go to FCLM > Reports > Function Rollup
-  // 2. Select your desired process/path
-  // 3. Copy the processId from the URL
+  // These are the PARENT process IDs that return all sub-functions
   const PROCESS_IDS = {
-    // Parent processes (for processPathRollup)
-    PICK: '1003034',           // V-Returns Pick
-    PACK: '1003056',           // V-Returns Pack
-    STOW: '1003055',           // C-Returns Stow
+    // Parent processes - these are the correct IDs to query
+    PICK: '1003034',           // V-Returns Pick (contains all pick sub-functions)
+    PACK: '1003056',           // V-Returns Pack (contains all pack sub-functions)
+    STOW: '1003055',           // C-Returns Stow (contains all stow sub-functions)
     SUPPORT_C: '1003058',      // C-Returns Support
-    SUPPORT_V: '1003059',      // V-Returns Support
-
-    // Pick sub-functions - UPDATE THESE WITH YOUR FACILITY'S IDs
-    PICK_LTL: '4300016820',           // FRACS LTL Pick
-    PICK_MULTIS: '4300016819',        // FRACS Multis Pick
-    PICK_SINGLES: '4300016818',       // FRACS Singles Pick
-    PICK_LIQUIDATIONS: '4300016833',  // Liquidations Pick
-    PICK_WHD: '4300034941',           // WHD Pick to Sp00
-
-    // Pack sub-functions - UPDATE THESE WITH YOUR FACILITY'S IDs
-    PACK_FRACS_LTL: '4300016814',     // Pack FracsLTL
-    PACK_SINGLES: '4300006717',       // Pack Singles
-    PACKING: '4300000130',            // Packing
-    PACK_ILS: '1626474008030',        // V-Returns PacknHold (ILS)
-
-    // Stow sub-functions - UPDATE THESE WITH YOUR FACILITY'S IDs
-    STOW_C_RETURNS: '4300006823'      // Stow C Returns
+    SUPPORT_V: '1003059'       // V-Returns Support
   };
 
-  // Path configuration with process IDs and display info
-  // Set enabled: true for paths you want to fetch, false to skip
+  // Path configuration - query by PARENT process, data includes sub-functions
   const PATHS = [
-    // Pick paths
-    { id: 'pick_multis', name: 'FRACS Multis Pick', processId: PROCESS_IDS.PICK_MULTIS, category: 'Pick', color: '#4CAF50', enabled: true },
-    { id: 'pick_singles', name: 'FRACS Singles Pick', processId: PROCESS_IDS.PICK_SINGLES, category: 'Pick', color: '#8BC34A', enabled: true },
-    { id: 'pick_ltl', name: 'FRACS LTL Pick', processId: PROCESS_IDS.PICK_LTL, category: 'Pick', color: '#CDDC39', enabled: true },
-    { id: 'pick_liquidations', name: 'Liquidations Pick', processId: PROCESS_IDS.PICK_LIQUIDATIONS, category: 'Pick', color: '#FFC107', enabled: true },
-    { id: 'pick_whd', name: 'WHD Pick to Sp00', processId: PROCESS_IDS.PICK_WHD, category: 'Pick', color: '#FF9800', enabled: true },
-
-    // Pack paths
-    { id: 'pack_ils', name: 'V-Returns PacknHold (ILS)', processId: PROCESS_IDS.PACK_ILS, category: 'Pack', color: '#2196F3', enabled: true },
-    { id: 'packing', name: 'Packing', processId: PROCESS_IDS.PACKING, category: 'Pack', color: '#03A9F4', enabled: true },
-    { id: 'pack_singles', name: 'Pack Singles', processId: PROCESS_IDS.PACK_SINGLES, category: 'Pack', color: '#00BCD4', enabled: true },
-    { id: 'pack_fracs_ltl', name: 'Pack FracsLTL', processId: PROCESS_IDS.PACK_FRACS_LTL, category: 'Pack', color: '#009688', enabled: true },
-
-    // Stow paths
-    { id: 'stow_c_returns', name: 'Stow C Returns', processId: PROCESS_IDS.STOW_C_RETURNS, category: 'Stow', color: '#9C27B0', enabled: true },
-
-    // Support paths - disabled by default (set to true if you want to include them)
+    { id: 'pick', name: 'Pick', processId: PROCESS_IDS.PICK, category: 'Pick', color: '#4CAF50', enabled: true },
+    { id: 'pack', name: 'Pack', processId: PROCESS_IDS.PACK, category: 'Pack', color: '#2196F3', enabled: true },
+    { id: 'stow', name: 'Stow', processId: PROCESS_IDS.STOW, category: 'Stow', color: '#9C27B0', enabled: true },
+    // Support paths - disabled by default
     { id: 'support_c', name: 'C-Returns Support', processId: PROCESS_IDS.SUPPORT_C, category: 'Support', color: '#607D8B', enabled: false },
     { id: 'support_v', name: 'V-Returns Support', processId: PROCESS_IDS.SUPPORT_V, category: 'Support', color: '#795548', enabled: false }
   ];
