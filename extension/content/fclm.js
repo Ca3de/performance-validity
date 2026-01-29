@@ -579,10 +579,10 @@
   }
 
   /**
-   * Handle floating button click - fetches REAL data then opens dashboard
+   * Handle floating button click - fetches function rollup data for all paths
    */
   async function handleFabClick() {
-    log('FAB clicked, fetching real data...');
+    log('FAB clicked, fetching function rollup data for all paths...');
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
     const shift = getShiftDateRange();
@@ -595,66 +595,53 @@
     }
 
     try {
-      // Get employees from the current page
-      const selectedEmployees = getSelectedEmployees();
-      log(`Found ${selectedEmployees.length} employees on page`);
-
-      // Fetch REAL time details for each employee
+      // Fetch function rollup for each path - this gives us hours and JPH directly
       const performanceData = [];
+      const allEmployees = new Map(); // Track unique employees
 
-      for (const employee of selectedEmployees) {
-        log(`Fetching time details for ${employee.name} (${employee.id})...`);
+      for (const path of PATHS) {
+        log(`Fetching function rollup for ${path.name} (${path.processId})...`);
 
         try {
-          const timeDetails = await fetchEmployeeTimeDetails(employee.id);
+          const rollupData = await fetchFunctionRollup(path.processId);
 
-          if (timeDetails.success && timeDetails.sessions) {
-            // Group sessions by path and calculate totals
-            const pathData = {};
-
-            timeDetails.sessions.forEach(session => {
-              const pathId = session.pathId || 'unknown';
-              if (!pathData[pathId]) {
-                pathData[pathId] = {
-                  pathId: pathId,
-                  title: session.title,
-                  totalMinutes: 0,
-                  sessions: 0
-                };
+          if (rollupData.success && rollupData.employees) {
+            rollupData.employees.forEach(emp => {
+              // Track unique employees
+              if (!allEmployees.has(emp.badgeId)) {
+                allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
               }
-              pathData[pathId].totalMinutes += session.durationMinutes || 0;
-              pathData[pathId].sessions += 1;
+
+              // Add performance record with hours and JPH from rollup
+              performanceData.push({
+                employeeId: emp.badgeId,
+                employeeName: emp.name,
+                pathId: path.id,
+                pathName: path.name,
+                pathColor: path.color,
+                category: path.category,
+                hours: emp.totalHours,
+                jobs: emp.jobs,
+                jph: emp.jph,
+                units: emp.units,
+                uph: emp.uph
+              });
             });
 
-            // Add to performance data
-            for (const [pathId, data] of Object.entries(pathData)) {
-              const pathConfig = PATHS.find(p => p.id === pathId) || { name: data.title, color: '#666', goal: 30 };
-              const hours = Math.round(data.totalMinutes / 60 * 10) / 10;
-
-              performanceData.push({
-                employeeId: employee.id,
-                employeeName: employee.name,
-                pathId: pathId,
-                pathName: pathConfig.name || data.title,
-                pathColor: pathConfig.color || '#666',
-                hours: hours,
-                totalMinutes: data.totalMinutes,
-                sessions: data.sessions
-              });
-            }
+            log(`Found ${rollupData.employees.length} employees in ${path.name}`);
           }
         } catch (err) {
-          log(`Error fetching time details for ${employee.id}:`, err);
+          log(`Error fetching ${path.name}:`, err);
         }
       }
 
-      log(`Collected ${performanceData.length} performance records`);
+      log(`Collected ${performanceData.length} performance records for ${allEmployees.size} unique employees`);
 
-      // Store real data for dashboard
+      // Store data for dashboard
       await browser.storage.local.set({
         dashboardData: {
           warehouseId,
-          employees: selectedEmployees,
+          employees: Array.from(allEmployees.values()),
           performanceData: performanceData,
           shift,
           paths: PATHS,

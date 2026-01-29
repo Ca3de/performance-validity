@@ -413,6 +413,11 @@ tbody tr:hover {
   color: #C62828;
 }
 
+.status-badge.neutral {
+  background: #F5F5F5;
+  color: #757575;
+}
+
 /* Progress Bar */
 .progress-bar {
   width: 100px;

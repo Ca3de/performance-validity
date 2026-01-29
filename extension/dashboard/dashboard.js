@@ -20,18 +20,24 @@
     sortBy: 'employee'
   };
 
-  // Path configuration with colors
+  // Path configuration with colors and JPH goals (matching fclm.js PATHS)
   const PATH_CONFIG = {
-    'pick_multis': { name: 'Pick Multis', color: '#4CAF50', goal: 30 },
-    'pick_liquidation': { name: 'Pick Liquidation', color: '#2196F3', goal: 25 },
-    'pick_singles': { name: 'Pick Singles', color: '#8BC34A', goal: 35 },
-    'stow': { name: 'Stow', color: '#FF9800', goal: 45 },
-    'pack_singles': { name: 'Pack Singles', color: '#9C27B0', goal: 40 },
-    'pack_multis': { name: 'Pack Multis', color: '#E91E63', goal: 35 },
-    'count': { name: 'Count', color: '#00BCD4', goal: 50 },
-    'receive': { name: 'Receive', color: '#FFC107', goal: 40 },
-    'problem_solve': { name: 'Problem Solve', color: '#795548', goal: 20 },
-    'water_spider': { name: 'Water Spider', color: '#607D8B', goal: null }
+    // Pick paths
+    'pick_multis': { name: 'FRACS Multis Pick', color: '#4CAF50', goal: 30 },
+    'pick_singles': { name: 'FRACS Singles Pick', color: '#8BC34A', goal: 35 },
+    'pick_ltl': { name: 'FRACS LTL Pick', color: '#CDDC39', goal: 25 },
+    'pick_liquidations': { name: 'Liquidations Pick', color: '#FFC107', goal: 25 },
+    'pick_whd': { name: 'WHD Pick to Sp00', color: '#FF9800', goal: 20 },
+    // Pack paths
+    'pack_ils': { name: 'V-Returns PacknHold (ILS)', color: '#2196F3', goal: 35 },
+    'packing': { name: 'Packing', color: '#03A9F4', goal: 40 },
+    'pack_singles': { name: 'Pack Singles', color: '#00BCD4', goal: 40 },
+    'pack_fracs_ltl': { name: 'Pack FracsLTL', color: '#009688', goal: 30 },
+    // Stow paths
+    'stow_c_returns': { name: 'Stow C Returns', color: '#9C27B0', goal: 45 },
+    // Support paths
+    'support_c': { name: 'C-Returns Support', color: '#607D8B', goal: null },
+    'support_v': { name: 'V-Returns Support', color: '#795548', goal: null }
   };
 
   // DOM Elements
@@ -184,8 +190,8 @@
   }
 
   /**
-   * Process REAL performance data from FCLM
-   * This replaces the old generateSampleData function
+   * Process REAL performance data from FCLM function rollup
+   * Data already contains hours and JPH from the rollup
    */
   function processRealPerformanceData(rawData) {
     state.performanceData = [];
@@ -195,16 +201,18 @@
       const pathConfig = PATH_CONFIG[record.pathId] || {
         name: record.pathName || record.pathId,
         color: record.pathColor || '#666',
-        goal: 30
+        goal: null
       };
 
       const hours = record.hours || 0;
-      const goal = pathConfig.goal || 30;
+      const jph = record.jph || 0;  // JPH comes directly from function rollup
+      const jobs = record.jobs || 0;
+      const units = record.units || 0;
+      const uph = record.uph || 0;
+      const goal = pathConfig.goal;
 
-      // Calculate rate if we have units, otherwise use hours as proxy
-      const units = record.units || Math.round(hours * goal);
-      const rate = hours > 0 ? Math.round(units / hours * 10) / 10 : 0;
-      const percentToGoal = goal > 0 ? Math.round((rate / goal) * 100) : 0;
+      // Calculate % to goal if we have a goal
+      const percentToGoal = goal && jph > 0 ? Math.round((jph / goal) * 100) : null;
 
       state.performanceData.push({
         employeeId: record.employeeId,
@@ -212,13 +220,15 @@
         pathId: record.pathId,
         pathName: pathConfig.name || record.pathName || record.pathId,
         pathColor: pathConfig.color || record.pathColor || '#666',
+        category: record.category || 'Other',
         hours: hours,
+        jobs: jobs,
+        jph: jph,
         units: units,
-        rate: rate,
+        uph: uph,
         goal: goal,
         percentToGoal: percentToGoal,
-        status: percentToGoal >= 100 ? 'good' : percentToGoal >= 85 ? 'warning' : 'poor',
-        sessions: record.sessions || 0
+        status: percentToGoal ? (percentToGoal >= 100 ? 'good' : percentToGoal >= 85 ? 'warning' : 'poor') : 'neutral'
       });
     });
 
@@ -429,7 +439,7 @@
         data.sort((a, b) => a.pathName.localeCompare(b.pathName));
         break;
       case 'rate':
-        data.sort((a, b) => b.rate - a.rate);
+        data.sort((a, b) => (b.jph || 0) - (a.jph || 0));
         break;
       case 'hours':
         data.sort((a, b) => b.hours - a.hours);
@@ -457,6 +467,7 @@
     elements.performanceBody.innerHTML = data.map(row => {
       // Sanitize employee name to avoid displaying dropdown content
       const cleanName = sanitizeEmployeeName(row.employeeName, row.employeeId);
+      const hasGoal = row.goal && row.percentToGoal !== null;
 
       return `
         <tr>
@@ -468,21 +479,25 @@
             <span style="color: ${row.pathColor}; font-weight: 500;">${row.pathName}</span>
           </td>
           <td>${row.hours}h</td>
-          <td>${row.units.toLocaleString()}</td>
-          <td><strong>${row.rate}</strong></td>
+          <td>${row.jobs ? row.jobs.toLocaleString() : '-'}</td>
+          <td><strong>${row.jph || '-'}</strong></td>
           <td>${row.goal || 'N/A'}</td>
           <td>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div class="progress-bar">
-                <div class="progress-fill ${row.status}" style="width: ${Math.min(row.percentToGoal, 100)}%"></div>
+            ${hasGoal ? `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="progress-bar">
+                  <div class="progress-fill ${row.status}" style="width: ${Math.min(row.percentToGoal, 100)}%"></div>
+                </div>
+                <span>${row.percentToGoal}%</span>
               </div>
-              <span>${row.percentToGoal}%</span>
-            </div>
+            ` : '<span style="color: var(--text-secondary)">-</span>'}
           </td>
           <td>
-            <span class="status-badge ${row.status}">
-              ${row.status === 'good' ? 'Meeting' : row.status === 'warning' ? 'Near' : 'Below'}
-            </span>
+            ${hasGoal ? `
+              <span class="status-badge ${row.status}">
+                ${row.status === 'good' ? 'Meeting' : row.status === 'warning' ? 'Near' : 'Below'}
+              </span>
+            ` : '<span class="status-badge neutral">N/A</span>'}
           </td>
           <td>
             <button class="action-btn" title="View details" onclick="viewDetails('${row.employeeId}', '${row.pathId}')">
@@ -510,16 +525,16 @@
           goal: row.goal,
           employees: new Set(),
           totalHours: 0,
-          totalUnits: 0,
-          rates: []
+          totalJobs: 0,
+          jphValues: []
         };
       }
 
       const summary = pathSummary[row.pathId];
       summary.employees.add(row.employeeId);
-      summary.totalHours += row.hours;
-      summary.totalUnits += row.units;
-      summary.rates.push(row.rate);
+      summary.totalHours += row.hours || 0;
+      summary.totalJobs += row.jobs || 0;
+      if (row.jph) summary.jphValues.push(row.jph);
     });
 
     if (Object.keys(pathSummary).length === 0) {
@@ -528,8 +543,8 @@
     }
 
     elements.pathCards.innerHTML = Object.entries(pathSummary).map(([pathId, summary]) => {
-      const avgRate = summary.rates.length > 0
-        ? Math.round(summary.rates.reduce((a, b) => a + b, 0) / summary.rates.length * 10) / 10
+      const avgJph = summary.jphValues.length > 0
+        ? Math.round(summary.jphValues.reduce((a, b) => a + b, 0) / summary.jphValues.length * 10) / 10
         : 0;
 
       return `
@@ -540,16 +555,16 @@
           </div>
           <div class="path-stats">
             <div class="path-stat">
-              <div class="path-stat-value">${summary.totalHours}h</div>
+              <div class="path-stat-value">${Math.round(summary.totalHours * 10) / 10}h</div>
               <div class="path-stat-label">Total Hours</div>
             </div>
             <div class="path-stat">
-              <div class="path-stat-value">${summary.totalUnits.toLocaleString()}</div>
-              <div class="path-stat-label">Total Units</div>
+              <div class="path-stat-value">${summary.totalJobs.toLocaleString()}</div>
+              <div class="path-stat-label">Total Jobs</div>
             </div>
             <div class="path-stat">
-              <div class="path-stat-value">${avgRate}</div>
-              <div class="path-stat-label">Avg Rate (UPH)</div>
+              <div class="path-stat-value">${avgJph}</div>
+              <div class="path-stat-label">Avg JPH</div>
             </div>
             <div class="path-stat">
               <div class="path-stat-value">${summary.goal || 'N/A'}</div>
