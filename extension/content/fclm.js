@@ -292,7 +292,11 @@
     `;
     fab.title = 'Open AA Performance Validity Dashboard';
 
-    fab.addEventListener('click', handleFabClick);
+    fab.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleFabClick();
+    });
 
     document.body.appendChild(fab);
     log('Floating action button created');
@@ -343,7 +347,6 @@
       log('Dashboard opened');
     }).catch(err => {
       log('Error opening dashboard:', err);
-      window.open(browser.runtime.getURL('dashboard/dashboard.html'), '_blank');
     });
   }
 
