@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AA Performance Validity</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <div class="popup-header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+        <span>Performance Validity</span>
+      </div>
+    </div>
+
+    <!-- Status Section -->
+    <div class="status-section">
+      <h3>Connection Status</h3>
+      <div class="status-grid">
+        <div class="status-item" id="fclmStatus">
+          <span class="status-dot"></span>
+          <span class="status-label">FCLM Portal</span>
+          <span class="status-value">Checking...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="actions-section">
+      <h3>Quick Actions</h3>
+      <button class="action-btn primary" id="openDashboardBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </svg>
+        Open Dashboard
+      </button>
+      <button class="action-btn secondary" id="checkCurrentPageBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        Check Current Page
+      </button>
+    </div>
+
+    <!-- Settings -->
+    <div class="settings-section">
+      <h3>Settings</h3>
+      <div class="setting-item">
+        <label>
+          <input type="checkbox" id="autoRefresh" checked>
+          <span>Auto-refresh data</span>
+        </label>
+      </div>
+      <div class="setting-item">
+        <label>
+          <span>Date range (days)</span>
+          <select id="dateRangeDays">
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="30" selected>30 days</option>
+            <option value="60">60 days</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <!-- Paths Overview -->
+    <div class="paths-section">
+      <h3>Tracked Paths</h3>
+      <div class="paths-list">
+        <span class="path-tag" style="--tag-color: #4CAF50">Pick Multis</span>
+        <span class="path-tag" style="--tag-color: #2196F3">Pick Liquidation</span>
+        <span class="path-tag" style="--tag-color: #8BC34A">Pick Singles</span>
+        <span class="path-tag" style="--tag-color: #FF9800">Stow</span>
+        <span class="path-tag" style="--tag-color: #9C27B0">Pack Singles</span>
+        <span class="path-tag" style="--tag-color: #E91E63">Pack Multis</span>
+        <span class="path-tag" style="--tag-color: #00BCD4">Count</span>
+        <span class="path-tag" style="--tag-color: #FFC107">Receive</span>
+      </div>
+    </div>
+
+    <!-- Cache Info -->
+    <div class="cache-section">
+      <div class="cache-info">
+        <span>Cached items: <strong id="cacheCount">0</strong></span>
+        <button class="btn-link" id="clearCacheBtn">Clear Cache</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer">
+      <span>v1.0.0</span>
+      <a href="https://github.com/Ca3de/performance-validity" target="_blank">GitHub</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
