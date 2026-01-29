@@ -291,18 +291,32 @@
 
   /**
    * Fetch function rollup report for a specific process
+   * URL format: /reports/functionRollup?reportFormat=HTML&warehouseId=IND8&processId=1003034
+   *   &startDateWeek=2026/01/25&maxIntradayDays=1&spanType=Intraday
+   *   &startDateIntraday=2026/01/28&startHourIntraday=18&startMinuteIntraday=0
+   *   &endDateIntraday=2026/01/29&endHourIntraday=6&endMinuteIntraday=0
    */
   async function fetchFunctionRollup(processId, spanType = 'Intraday', customRange = null) {
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
     const shift = customRange || getShiftDateRange();
 
+    // Calculate week start date (Sunday of the week)
+    const weekStart = new Date(shift.startDate);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+
     const url = new URL('https://fclm-portal.amazon.com/reports/functionRollup');
-    url.searchParams.set('warehouseId', warehouseId);
-    url.searchParams.set('spanType', spanType);
-    url.searchParams.set('startDate', formatDateISO(shift.startDate, shift.startHour, 0));
-    url.searchParams.set('endDate', formatDateISO(shift.endDate, shift.endHour, 0));
     url.searchParams.set('reportFormat', 'HTML');
+    url.searchParams.set('warehouseId', warehouseId);
     url.searchParams.set('processId', processId);
+    url.searchParams.set('startDateWeek', formatDateForURL(weekStart));
+    url.searchParams.set('maxIntradayDays', '1');
+    url.searchParams.set('spanType', spanType);
+    url.searchParams.set('startDateIntraday', formatDateForURL(shift.startDate));
+    url.searchParams.set('startHourIntraday', String(shift.startHour));
+    url.searchParams.set('startMinuteIntraday', '0');
+    url.searchParams.set('endDateIntraday', formatDateForURL(shift.endDate));
+    url.searchParams.set('endHourIntraday', String(shift.endHour));
+    url.searchParams.set('endMinuteIntraday', '0');
 
     log('Fetching function rollup:', url.toString());
 
