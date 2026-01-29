@@ -47,27 +47,31 @@
   };
 
   // Path configuration with process IDs and display info
+  // Set enabled: true for paths you want to fetch, false to skip
   const PATHS = [
     // Pick paths
-    { id: 'pick_multis', name: 'FRACS Multis Pick', processId: PROCESS_IDS.PICK_MULTIS, category: 'Pick', color: '#4CAF50' },
-    { id: 'pick_singles', name: 'FRACS Singles Pick', processId: PROCESS_IDS.PICK_SINGLES, category: 'Pick', color: '#8BC34A' },
-    { id: 'pick_ltl', name: 'FRACS LTL Pick', processId: PROCESS_IDS.PICK_LTL, category: 'Pick', color: '#CDDC39' },
-    { id: 'pick_liquidations', name: 'Liquidations Pick', processId: PROCESS_IDS.PICK_LIQUIDATIONS, category: 'Pick', color: '#FFC107' },
-    { id: 'pick_whd', name: 'WHD Pick to Sp00', processId: PROCESS_IDS.PICK_WHD, category: 'Pick', color: '#FF9800' },
+    { id: 'pick_multis', name: 'FRACS Multis Pick', processId: PROCESS_IDS.PICK_MULTIS, category: 'Pick', color: '#4CAF50', enabled: true },
+    { id: 'pick_singles', name: 'FRACS Singles Pick', processId: PROCESS_IDS.PICK_SINGLES, category: 'Pick', color: '#8BC34A', enabled: true },
+    { id: 'pick_ltl', name: 'FRACS LTL Pick', processId: PROCESS_IDS.PICK_LTL, category: 'Pick', color: '#CDDC39', enabled: true },
+    { id: 'pick_liquidations', name: 'Liquidations Pick', processId: PROCESS_IDS.PICK_LIQUIDATIONS, category: 'Pick', color: '#FFC107', enabled: true },
+    { id: 'pick_whd', name: 'WHD Pick to Sp00', processId: PROCESS_IDS.PICK_WHD, category: 'Pick', color: '#FF9800', enabled: true },
 
     // Pack paths
-    { id: 'pack_ils', name: 'V-Returns PacknHold (ILS)', processId: PROCESS_IDS.PACK_ILS, category: 'Pack', color: '#2196F3' },
-    { id: 'packing', name: 'Packing', processId: PROCESS_IDS.PACKING, category: 'Pack', color: '#03A9F4' },
-    { id: 'pack_singles', name: 'Pack Singles', processId: PROCESS_IDS.PACK_SINGLES, category: 'Pack', color: '#00BCD4' },
-    { id: 'pack_fracs_ltl', name: 'Pack FracsLTL', processId: PROCESS_IDS.PACK_FRACS_LTL, category: 'Pack', color: '#009688' },
+    { id: 'pack_ils', name: 'V-Returns PacknHold (ILS)', processId: PROCESS_IDS.PACK_ILS, category: 'Pack', color: '#2196F3', enabled: true },
+    { id: 'packing', name: 'Packing', processId: PROCESS_IDS.PACKING, category: 'Pack', color: '#03A9F4', enabled: true },
+    { id: 'pack_singles', name: 'Pack Singles', processId: PROCESS_IDS.PACK_SINGLES, category: 'Pack', color: '#00BCD4', enabled: true },
+    { id: 'pack_fracs_ltl', name: 'Pack FracsLTL', processId: PROCESS_IDS.PACK_FRACS_LTL, category: 'Pack', color: '#009688', enabled: true },
 
     // Stow paths
-    { id: 'stow_c_returns', name: 'Stow C Returns', processId: PROCESS_IDS.STOW_C_RETURNS, category: 'Stow', color: '#9C27B0' },
+    { id: 'stow_c_returns', name: 'Stow C Returns', processId: PROCESS_IDS.STOW_C_RETURNS, category: 'Stow', color: '#9C27B0', enabled: true },
 
-    // Support paths
-    { id: 'support_c', name: 'C-Returns Support', processId: PROCESS_IDS.SUPPORT_C, category: 'Support', color: '#607D8B' },
-    { id: 'support_v', name: 'V-Returns Support', processId: PROCESS_IDS.SUPPORT_V, category: 'Support', color: '#795548' }
+    // Support paths - disabled by default (set to true if you want to include them)
+    { id: 'support_c', name: 'C-Returns Support', processId: PROCESS_IDS.SUPPORT_C, category: 'Support', color: '#607D8B', enabled: false },
+    { id: 'support_v', name: 'V-Returns Support', processId: PROCESS_IDS.SUPPORT_V, category: 'Support', color: '#795548', enabled: false }
   ];
+
+  // Get only enabled paths for querying
+  const ENABLED_PATHS = PATHS.filter(p => p.enabled);
 
   // Map time detail titles to path IDs
   const TIME_DETAIL_MAP = {
@@ -590,7 +594,7 @@
   async function fetchAllPathData() {
     const results = {};
 
-    for (const path of PATHS) {
+    for (const path of ENABLED_PATHS) {
       try {
         const data = await fetchFunctionRollup(path.processId);
         results[path.id] = {
@@ -688,7 +692,7 @@
       const performanceData = [];
       const allEmployees = new Map(); // Track unique employees
 
-      for (const path of PATHS) {
+      for (const path of ENABLED_PATHS) {
         log(`Fetching function rollup for ${path.name} (${path.processId})...`);
 
         try {
@@ -784,7 +788,7 @@
     const performanceData = [];
     const allEmployees = new Map();
 
-    for (const path of PATHS) {
+    for (const path of ENABLED_PATHS) {
       try {
         const rollupData = await fetchFunctionRollup(path.processId, dateRange);
 

@@ -287,6 +287,10 @@
     });
 
     console.log('[Dashboard] Processed', state.performanceData.length, 'performance records');
+    if (state.performanceData.length > 0) {
+      console.log('[Dashboard] Sample records:', state.performanceData.slice(0, 3));
+      console.log('[Dashboard] Unique employee IDs:', [...new Set(state.performanceData.map(r => r.employeeId))].slice(0, 10));
+    }
     renderAll();
   }
 
@@ -493,16 +497,29 @@
       return;
     }
 
-    const searchTerm = input.toLowerCase();
+    // Check if data is loaded
+    if (state.performanceData.length === 0) {
+      showToast('No data loaded. Click "Load Data" first.', 'warning');
+      return;
+    }
 
-    // Search in loaded performance data
+    const searchTerm = input.toLowerCase();
+    console.log('[Dashboard] Searching for:', searchTerm, 'in', state.performanceData.length, 'records');
+
+    // Search in loaded performance data - convert IDs to strings for comparison
     const matches = state.performanceData.filter(record => {
-      return record.employeeId.toLowerCase().includes(searchTerm) ||
-             (record.employeeName && record.employeeName.toLowerCase().includes(searchTerm));
+      const empId = String(record.employeeId || '').toLowerCase();
+      const empName = String(record.employeeName || '').toLowerCase();
+      return empId.includes(searchTerm) || empName.includes(searchTerm);
     });
 
+    console.log('[Dashboard] Found matches:', matches.length);
+
     if (matches.length === 0) {
-      showToast(`No AA found matching "${input}"`, 'error');
+      // Show what IDs are available for debugging
+      const sampleIds = state.performanceData.slice(0, 5).map(r => r.employeeId);
+      console.log('[Dashboard] Sample employee IDs in data:', sampleIds);
+      showToast(`No AA found matching "${input}". ${state.performanceData.length} records loaded.`, 'error');
       return;
     }
 
@@ -514,7 +531,7 @@
     state.selectedAA = {
       id: employeeId,
       name: employeeName,
-      records: state.performanceData.filter(r => r.employeeId === employeeId)
+      records: state.performanceData.filter(r => String(r.employeeId) === String(employeeId))
     };
 
     // Display details
