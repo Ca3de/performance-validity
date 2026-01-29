@@ -428,8 +428,9 @@
 
     // Find all tables with employee data
     const tables = doc.querySelectorAll('table');
+    log(`Found ${tables.length} tables in function rollup response`);
 
-    tables.forEach(table => {
+    tables.forEach((table, tableIndex) => {
       const rows = table.querySelectorAll('tr');
       let totalColumnIndex = -1;
       let idColumnIndex = 1;  // Default: ID is usually second column
@@ -443,17 +444,22 @@
       for (const row of rows) {
         const headerCells = row.querySelectorAll('th');
         if (headerCells.length > 0) {
+          // Log header cells for debugging
+          const headers = Array.from(headerCells).map(h => h.textContent.trim());
+          log(`Table ${tableIndex} headers (th):`, headers);
+
           // This is a header row - find column indices
           for (let i = 0; i < headerCells.length; i++) {
             const headerText = headerCells[i]?.textContent?.trim()?.toLowerCase() || '';
             if (headerText === 'total') totalColumnIndex = i;
             if (headerText === 'id' || headerText === 'badge' || headerText === 'employee id') idColumnIndex = i;
             if (headerText === 'name' || headerText === 'employee name') nameColumnIndex = i;
-            if (headerText === 'jobs') jobsColumnIndex = i;
-            if (headerText === 'jph') jphColumnIndex = i;
-            if (headerText === 'unit') unitColumnIndex = i;
-            if (headerText === 'uph') uphColumnIndex = i;
+            if (headerText === 'jobs' || headerText === 'job') jobsColumnIndex = i;
+            if (headerText === 'jph' || headerText === 'jobs/hr') jphColumnIndex = i;
+            if (headerText === 'unit' || headerText === 'units') unitColumnIndex = i;
+            if (headerText === 'uph' || headerText === 'units/hr') uphColumnIndex = i;
           }
+          log(`Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
           break;
         }
 
@@ -462,22 +468,28 @@
         if (cells.length > 0) {
           const firstCellText = cells[0]?.textContent?.trim() || '';
           if (firstCellText === 'Type') {
+            // Log header cells for debugging
+            const headers = Array.from(cells).map(c => c.textContent.trim());
+            log(`Table ${tableIndex} headers (td):`, headers);
+
             for (let i = 0; i < cells.length; i++) {
               const cellText = cells[i]?.textContent?.trim()?.toLowerCase() || '';
               if (cellText === 'total') totalColumnIndex = i;
               if (cellText === 'id' || cellText === 'badge') idColumnIndex = i;
               if (cellText === 'name') nameColumnIndex = i;
-              if (cellText === 'jobs') jobsColumnIndex = i;
-              if (cellText === 'jph') jphColumnIndex = i;
-              if (cellText === 'unit') unitColumnIndex = i;
-              if (cellText === 'uph') uphColumnIndex = i;
+              if (cellText === 'jobs' || cellText === 'job') jobsColumnIndex = i;
+              if (cellText === 'jph' || cellText === 'jobs/hr') jphColumnIndex = i;
+              if (cellText === 'unit' || cellText === 'units') unitColumnIndex = i;
+              if (cellText === 'uph' || cellText === 'units/hr') uphColumnIndex = i;
             }
+            log(`Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
             break;
           }
         }
       }
 
       // Second pass: parse data rows
+      let rowCount = 0;
       for (const row of rows) {
         const cells = row.querySelectorAll('td');
         if (cells.length < 5) continue;
@@ -488,6 +500,13 @@
 
         // IMPORTANT: Only process AMZN rows (like scan-check does)
         if (firstCellText !== 'AMZN') continue;
+
+        // Log first data row for debugging
+        if (rowCount === 0) {
+          const rowData = Array.from(cells).map(c => c.textContent.trim().substring(0, 20));
+          log(`First AMZN row data:`, rowData);
+        }
+        rowCount++;
 
         // Get badge ID from ID column - may be inside a link!
         const idCell = cells[idColumnIndex];
@@ -531,12 +550,16 @@
         }
 
         // Get Jobs and JPH
-        const jobs = jobsColumnIndex >= 0 ? (parseFloat(cells[jobsColumnIndex]?.textContent?.trim()) || 0) : 0;
-        const jph = jphColumnIndex >= 0 ? (parseFloat(cells[jphColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const jobs = jobsColumnIndex >= 0 && jobsColumnIndex < cells.length
+          ? (parseFloat(cells[jobsColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const jph = jphColumnIndex >= 0 && jphColumnIndex < cells.length
+          ? (parseFloat(cells[jphColumnIndex]?.textContent?.trim()) || 0) : 0;
 
         // Get Units and UPH
-        const units = unitColumnIndex >= 0 ? (parseFloat(cells[unitColumnIndex]?.textContent?.trim()) || 0) : 0;
-        const uph = uphColumnIndex >= 0 ? (parseFloat(cells[uphColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const units = unitColumnIndex >= 0 && unitColumnIndex < cells.length
+          ? (parseFloat(cells[unitColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const uph = uphColumnIndex >= 0 && uphColumnIndex < cells.length
+          ? (parseFloat(cells[uphColumnIndex]?.textContent?.trim()) || 0) : 0;
 
         employees.push({
           type: 'AMZN',
@@ -551,7 +574,10 @@
           processId
         });
 
-        log(`Found AA: ${name} (${badgeId}) - ${totalHours}h`);
+        // Log first employee for debugging
+        if (employees.length === 1) {
+          log(`First employee parsed:`, employees[0]);
+        }
       }
     });
 
