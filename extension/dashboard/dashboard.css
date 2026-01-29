@@ -92,6 +92,22 @@ body {
   font-size: 14px;
 }
 
+.period-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--surface);
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.custom-date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .date-range-picker input[type="date"] {
   padding: 8px 12px;
   border: 1px solid var(--border);

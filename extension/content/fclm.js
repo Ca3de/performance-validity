@@ -167,7 +167,77 @@
       endHour = 6;
     }
 
-    return { startDate, endDate, startHour, endHour };
+    return { startDate, endDate, startHour, endHour, spanType: 'Intraday' };
+  }
+
+  /**
+   * Get date range for different periods
+   * @param {string} period - 'today', 'week', 'lastWeek', 'month', 'lastMonth', or 'custom'
+   * @param {Date} customStart - Custom start date (for 'custom' period)
+   * @param {Date} customEnd - Custom end date (for 'custom' period)
+   */
+  function getDateRangeForPeriod(period, customStart = null, customEnd = null) {
+    const now = new Date();
+    let startDate, endDate, spanType;
+
+    switch (period) {
+      case 'today':
+        // Current shift
+        return getShiftDateRange();
+
+      case 'week':
+        // This week (Sunday to today)
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(now);
+        spanType = 'Week';
+        break;
+
+      case 'lastWeek':
+        // Last week (Sunday to Saturday)
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - startDate.getDay() - 7); // Go to last Sunday
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 6); // Saturday
+        spanType = 'Week';
+        break;
+
+      case 'month':
+        // This month
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(now);
+        spanType = 'Week';
+        break;
+
+      case 'lastMonth':
+        // Last month
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        endDate = new Date(now.getFullYear(), now.getMonth(), 0); // Last day of previous month
+        spanType = 'Week';
+        break;
+
+      case 'custom':
+        startDate = customStart || new Date();
+        endDate = customEnd || new Date();
+        // Use Week span for ranges > 1 day
+        const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+        spanType = daysDiff > 1 ? 'Week' : 'Intraday';
+        break;
+
+      default:
+        return getShiftDateRange();
+    }
+
+    return {
+      startDate,
+      endDate,
+      startHour: 0,
+      endHour: 23,
+      spanType,
+      period
+    };
   }
 
   /**
@@ -309,29 +379,36 @@
 
   /**
    * Fetch function rollup report for a specific process
-   * URL format: /reports/functionRollup?reportFormat=HTML&warehouseId=IND8&processId=1003034
-   *   &maxIntradayDays=1&spanType=Intraday
-   *   &startDateIntraday=2026/01/28&startHourIntraday=18&startMinuteIntraday=0
-   *   &endDateIntraday=2026/01/29&endHourIntraday=6&endMinuteIntraday=0
+   * Supports both Intraday (single day/shift) and Week (multi-day) span types
    */
-  async function fetchFunctionRollup(processId, spanType = 'Intraday', customRange = null) {
+  async function fetchFunctionRollup(processId, customRange = null) {
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
-    const shift = customRange || getShiftDateRange();
+    const range = customRange || getShiftDateRange();
+    const spanType = range.spanType || 'Intraday';
 
     const url = new URL('https://fclm-portal.amazon.com/reports/functionRollup');
     url.searchParams.set('reportFormat', 'HTML');
     url.searchParams.set('warehouseId', warehouseId);
     url.searchParams.set('processId', processId);
-    url.searchParams.set('maxIntradayDays', '1');
-    url.searchParams.set('spanType', spanType);
-    url.searchParams.set('startDateIntraday', formatDateForURL(shift.startDate));
-    url.searchParams.set('startHourIntraday', String(shift.startHour));
-    url.searchParams.set('startMinuteIntraday', '0');
-    url.searchParams.set('endDateIntraday', formatDateForURL(shift.endDate));
-    url.searchParams.set('endHourIntraday', String(shift.endHour));
-    url.searchParams.set('endMinuteIntraday', '0');
 
-    log('Fetching function rollup:', url.toString());
+    if (spanType === 'Week') {
+      // Week span - for multi-day queries
+      url.searchParams.set('spanType', 'Week');
+      url.searchParams.set('startDateWeek', formatDateForURL(range.startDate));
+      url.searchParams.set('endDateWeek', formatDateForURL(range.endDate));
+    } else {
+      // Intraday span - for single day/shift queries
+      url.searchParams.set('spanType', 'Intraday');
+      url.searchParams.set('maxIntradayDays', '1');
+      url.searchParams.set('startDateIntraday', formatDateForURL(range.startDate));
+      url.searchParams.set('startHourIntraday', String(range.startHour || 0));
+      url.searchParams.set('startMinuteIntraday', '0');
+      url.searchParams.set('endDateIntraday', formatDateForURL(range.endDate));
+      url.searchParams.set('endHourIntraday', String(range.endHour || 23));
+      url.searchParams.set('endMinuteIntraday', '0');
+    }
+
+    log(`Fetching function rollup (${spanType}):`, url.toString());
 
     try {
       const response = await fetch(url.toString(), { credentials: 'include' });
@@ -580,12 +657,24 @@
 
   /**
    * Handle floating button click - fetches function rollup data for all paths
+   * @param {string} period - Date period: 'today', 'week', 'lastWeek', 'month', 'lastMonth', 'custom'
+   * @param {string} customStart - Custom start date (YYYY-MM-DD format)
+   * @param {string} customEnd - Custom end date (YYYY-MM-DD format)
    */
-  async function handleFabClick() {
-    log('FAB clicked, fetching function rollup data for all paths...');
+  async function handleFabClick(period = 'today', customStart = null, customEnd = null) {
+    log(`FAB clicked, fetching data for period: ${period}...`);
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
-    const shift = getShiftDateRange();
+
+    // Get date range for the selected period
+    let dateRange;
+    if (period === 'custom' && customStart && customEnd) {
+      dateRange = getDateRangeForPeriod('custom', new Date(customStart), new Date(customEnd));
+    } else {
+      dateRange = getDateRangeForPeriod(period);
+    }
+
+    log(`Date range: ${formatDateForURL(dateRange.startDate)} to ${formatDateForURL(dateRange.endDate)} (${dateRange.spanType})`);
 
     // Show loading state
     const fab = document.getElementById('perf-validity-fab');
@@ -603,7 +692,7 @@
         log(`Fetching function rollup for ${path.name} (${path.processId})...`);
 
         try {
-          const rollupData = await fetchFunctionRollup(path.processId);
+          const rollupData = await fetchFunctionRollup(path.processId, dateRange);
 
           if (rollupData.success && rollupData.employees) {
             rollupData.employees.forEach(emp => {
@@ -638,18 +727,23 @@
       log(`Collected ${performanceData.length} performance records for ${allEmployees.size} unique employees`);
 
       // Store data for dashboard
-      await browser.storage.local.set({
-        dashboardData: {
-          warehouseId,
-          employees: Array.from(allEmployees.values()),
-          performanceData: performanceData,
-          shift,
-          paths: PATHS,
-          processIds: PROCESS_IDS,
-          sourceUrl: window.location.href,
-          fetchedAt: new Date().toISOString()
-        }
-      });
+      const dashboardData = {
+        warehouseId,
+        employees: Array.from(allEmployees.values()),
+        performanceData: performanceData,
+        dateRange: {
+          period,
+          startDate: formatDateForURL(dateRange.startDate),
+          endDate: formatDateForURL(dateRange.endDate),
+          spanType: dateRange.spanType
+        },
+        paths: PATHS,
+        processIds: PROCESS_IDS,
+        sourceUrl: window.location.href,
+        fetchedAt: new Date().toISOString()
+      };
+
+      await browser.storage.local.set({ dashboardData });
 
       // Open dashboard
       browser.runtime.sendMessage({
@@ -657,8 +751,11 @@
         data: { warehouseId }
       });
 
+      return dashboardData;
+
     } catch (error) {
       log('Error fetching data:', error);
+      throw error;
     } finally {
       // Reset FAB state
       if (fab) {
@@ -666,6 +763,70 @@
         fab.querySelector('.perf-fab-text').textContent = 'AA Performance';
       }
     }
+  }
+
+  /**
+   * Fetch performance data for a specific date range (called from dashboard)
+   */
+  async function fetchPerformanceDataForRange(period, customStart = null, customEnd = null) {
+    log(`Fetching performance data for period: ${period}`);
+
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+
+    // Get date range for the selected period
+    let dateRange;
+    if (period === 'custom' && customStart && customEnd) {
+      dateRange = getDateRangeForPeriod('custom', new Date(customStart), new Date(customEnd));
+    } else {
+      dateRange = getDateRangeForPeriod(period);
+    }
+
+    const performanceData = [];
+    const allEmployees = new Map();
+
+    for (const path of PATHS) {
+      try {
+        const rollupData = await fetchFunctionRollup(path.processId, dateRange);
+
+        if (rollupData.success && rollupData.employees) {
+          rollupData.employees.forEach(emp => {
+            if (!allEmployees.has(emp.badgeId)) {
+              allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
+            }
+
+            performanceData.push({
+              employeeId: emp.badgeId,
+              employeeName: emp.name,
+              pathId: path.id,
+              pathName: path.name,
+              pathColor: path.color,
+              category: path.category,
+              hours: emp.totalHours,
+              jobs: emp.jobs,
+              jph: emp.jph,
+              units: emp.units,
+              uph: emp.uph
+            });
+          });
+        }
+      } catch (err) {
+        log(`Error fetching ${path.name}:`, err);
+      }
+    }
+
+    return {
+      success: true,
+      warehouseId,
+      employees: Array.from(allEmployees.values()),
+      performanceData,
+      dateRange: {
+        period,
+        startDate: formatDateForURL(dateRange.startDate),
+        endDate: formatDateForURL(dateRange.endDate),
+        spanType: dateRange.spanType
+      },
+      fetchedAt: new Date().toISOString()
+    };
   }
 
   /**
@@ -745,7 +906,7 @@
         return true;
 
       case 'fetchFunctionRollup':
-        fetchFunctionRollup(message.processId, message.spanType, message.customRange)
+        fetchFunctionRollup(message.processId, message.customRange)
           .then(sendResponse);
         return true;
 
@@ -753,17 +914,25 @@
         fetchAllPathData().then(sendResponse);
         return true;
 
+      case 'fetchPerformanceData':
+        // Fetch performance data for a specific date range
+        fetchPerformanceDataForRange(message.period, message.customStart, message.customEnd)
+          .then(sendResponse)
+          .catch(err => sendResponse({ success: false, error: err.message }));
+        return true;
+
       case 'getConfig':
         sendResponse({
           warehouseId: CONFIG.warehouseId || getWarehouseId(),
           paths: PATHS,
           processIds: PROCESS_IDS,
-          timeDetailMap: TIME_DETAIL_MAP
+          timeDetailMap: TIME_DETAIL_MAP,
+          availablePeriods: ['today', 'week', 'lastWeek', 'month', 'lastMonth', 'custom']
         });
         return true;
 
       case 'triggerCheck':
-        handleFabClick();
+        handleFabClick(message.period || 'today', message.customStart, message.customEnd);
         sendResponse({ success: true });
         return true;
 

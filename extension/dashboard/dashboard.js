@@ -10,6 +10,7 @@
     warehouseId: 'UNKNOWN',
     employees: [],
     performanceData: [],
+    period: 'today',
     dateRange: {
       startDate: null,
       endDate: null
@@ -17,7 +18,8 @@
     paths: [],
     activePath: 'all',
     searchQuery: '',
-    sortBy: 'employee'
+    sortBy: 'employee',
+    fclmTabId: null
   };
 
   // Path configuration with colors and JPH goals (matching fclm.js PATHS)
@@ -43,6 +45,8 @@
   // DOM Elements
   const elements = {
     warehouseBadge: document.getElementById('warehouseBadge'),
+    periodSelect: document.getElementById('periodSelect'),
+    customDateRange: document.getElementById('customDateRange'),
     startDate: document.getElementById('startDate'),
     endDate: document.getElementById('endDate'),
     applyDateRange: document.getElementById('applyDateRange'),
@@ -86,18 +90,24 @@
   }
 
   /**
-   * Set default date range to past 30 days
+   * Set default date range and period
    */
   function setDefaultDateRange() {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30);
+    const today = new Date();
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
 
-    state.dateRange.startDate = formatDate(startDate);
-    state.dateRange.endDate = formatDate(endDate);
+    // Default custom dates (in case user switches to custom)
+    state.dateRange.startDate = formatDate(weekAgo);
+    state.dateRange.endDate = formatDate(today);
 
     elements.startDate.value = state.dateRange.startDate;
     elements.endDate.value = state.dateRange.endDate;
+
+    // Default period is "today" (current shift)
+    state.period = 'today';
+    elements.periodSelect.value = 'today';
+    elements.customDateRange.style.display = 'none';
   }
 
   function formatDate(date) {
@@ -163,8 +173,18 @@
 
         if (data.dateRange) {
           state.dateRange = data.dateRange;
-          elements.startDate.value = data.dateRange.startDate;
-          elements.endDate.value = data.dateRange.endDate;
+
+          // Update period selector if period was saved
+          if (data.dateRange.period) {
+            state.period = data.dateRange.period;
+            elements.periodSelect.value = data.dateRange.period;
+
+            if (data.dateRange.period === 'custom') {
+              elements.customDateRange.style.display = 'flex';
+              elements.startDate.value = data.dateRange.startDate;
+              elements.endDate.value = data.dateRange.endDate;
+            }
+          }
         }
 
         // Update UI
@@ -240,6 +260,7 @@
    * Attach event listeners
    */
   function attachEventListeners() {
+    elements.periodSelect.addEventListener('change', handlePeriodChange);
     elements.applyDateRange.addEventListener('click', handleApplyDateRange);
     elements.refreshBtn.addEventListener('click', handleRefresh);
     elements.employeeSearch.addEventListener('input', handleSearch);
@@ -249,34 +270,112 @@
   }
 
   /**
+   * Handle period selector change
+   */
+  function handlePeriodChange(e) {
+    const period = e.target.value;
+    state.period = period;
+
+    // Show/hide custom date range inputs
+    if (period === 'custom') {
+      elements.customDateRange.style.display = 'flex';
+    } else {
+      elements.customDateRange.style.display = 'none';
+    }
+  }
+
+  /**
    * Handle date range apply
    */
-  function handleApplyDateRange() {
-    state.dateRange.startDate = elements.startDate.value;
-    state.dateRange.endDate = elements.endDate.value;
+  async function handleApplyDateRange() {
+    const period = state.period;
 
-    showToast('Date range updated', 'success');
-    handleRefresh();
+    // Update date range from inputs for custom period
+    if (period === 'custom') {
+      state.dateRange.startDate = elements.startDate.value;
+      state.dateRange.endDate = elements.endDate.value;
+
+      if (!state.dateRange.startDate || !state.dateRange.endDate) {
+        showToast('Please select both start and end dates', 'warning');
+        return;
+      }
+    }
+
+    await fetchDataFromFCLM();
   }
 
   /**
    * Handle refresh button
    */
   async function handleRefresh() {
+    await fetchDataFromFCLM();
+  }
+
+  /**
+   * Find FCLM tab and send message to fetch data
+   */
+  async function fetchDataFromFCLM() {
     showLoading(true);
 
     try {
-      // In a real implementation, this would fetch fresh data from FCLM
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Find the FCLM tab
+      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
 
-      // Regenerate sample data for demo
-      if (state.employees.length > 0) {
-        generateSampleData();
+      if (tabs.length === 0) {
+        showToast('FCLM portal not open. Please open FCLM in another tab.', 'error');
+        showLoading(false);
+        return;
       }
 
-      showToast('Data refreshed', 'success');
+      const fclmTab = tabs[0];
+      state.fclmTabId = fclmTab.id;
+
+      // Build the message
+      const message = {
+        action: 'fetchPerformanceData',
+        period: state.period
+      };
+
+      // Add custom dates if custom period
+      if (state.period === 'custom') {
+        message.customStart = state.dateRange.startDate;
+        message.customEnd = state.dateRange.endDate;
+      }
+
+      console.log('[Dashboard] Sending fetch request to FCLM:', message);
+
+      // Send message to content script
+      const response = await browser.tabs.sendMessage(fclmTab.id, message);
+
+      if (response && response.success) {
+        console.log('[Dashboard] Received performance data:', response);
+
+        // Update state with new data
+        state.warehouseId = response.warehouseId;
+        state.employees = response.employees || [];
+
+        if (response.dateRange) {
+          state.dateRange = response.dateRange;
+        }
+
+        // Process the performance data
+        if (response.performanceData && response.performanceData.length > 0) {
+          processRealPerformanceData(response.performanceData);
+          showToast(`Loaded ${response.performanceData.length} records for ${response.employees.length} employees`, 'success');
+        } else {
+          state.performanceData = [];
+          renderAll();
+          showToast('No performance data found for this period', 'warning');
+        }
+
+        // Update warehouse badge
+        elements.warehouseBadge.textContent = state.warehouseId;
+      } else {
+        throw new Error(response?.error || 'Failed to fetch data');
+      }
     } catch (error) {
-      showToast('Error refreshing data', 'error');
+      console.error('[Dashboard] Error fetching data:', error);
+      showToast('Error fetching data: ' + error.message, 'error');
     } finally {
       showLoading(false);
     }
@@ -292,6 +391,8 @@
 
   /**
    * Handle add employees
+   * NOTE: Employee list is populated from FCLM function rollup data.
+   * This function is kept for future use to manually add employees to filter/track.
    */
   function handleAddEmployees() {
     const input = elements.employeeInput.value.trim();
@@ -315,9 +416,8 @@
     });
 
     if (addedCount > 0) {
-      showToast(`Added ${addedCount} employee(s)`, 'success');
+      showToast(`Added ${addedCount} employee(s). Click "Load Data" to fetch performance.`, 'success');
       elements.employeeInput.value = '';
-      generateSampleData();
     } else {
       showToast('All employees already added', 'warning');
     }
