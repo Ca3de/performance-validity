@@ -579,73 +579,166 @@
   }
 
   /**
-   * Handle floating button click - opens dashboard
+   * Handle floating button click - fetches REAL data then opens dashboard
    */
-  function handleFabClick() {
-    log('FAB clicked, opening dashboard');
+  async function handleFabClick() {
+    log('FAB clicked, fetching real data...');
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
     const shift = getShiftDateRange();
-    const selectedEmployees = getSelectedEmployees();
 
-    browser.runtime.sendMessage({
-      action: 'openDashboard',
-      data: {
-        warehouseId,
-        employees: selectedEmployees,
-        shift,
-        paths: PATHS,
-        processIds: PROCESS_IDS,
-        sourceUrl: window.location.href
+    // Show loading state
+    const fab = document.getElementById('perf-validity-fab');
+    if (fab) {
+      fab.classList.add('loading');
+      fab.querySelector('.perf-fab-text').textContent = 'Loading...';
+    }
+
+    try {
+      // Get employees from the current page
+      const selectedEmployees = getSelectedEmployees();
+      log(`Found ${selectedEmployees.length} employees on page`);
+
+      // Fetch REAL time details for each employee
+      const performanceData = [];
+
+      for (const employee of selectedEmployees) {
+        log(`Fetching time details for ${employee.name} (${employee.id})...`);
+
+        try {
+          const timeDetails = await fetchEmployeeTimeDetails(employee.id);
+
+          if (timeDetails.success && timeDetails.sessions) {
+            // Group sessions by path and calculate totals
+            const pathData = {};
+
+            timeDetails.sessions.forEach(session => {
+              const pathId = session.pathId || 'unknown';
+              if (!pathData[pathId]) {
+                pathData[pathId] = {
+                  pathId: pathId,
+                  title: session.title,
+                  totalMinutes: 0,
+                  sessions: 0
+                };
+              }
+              pathData[pathId].totalMinutes += session.durationMinutes || 0;
+              pathData[pathId].sessions += 1;
+            });
+
+            // Add to performance data
+            for (const [pathId, data] of Object.entries(pathData)) {
+              const pathConfig = PATHS.find(p => p.id === pathId) || { name: data.title, color: '#666', goal: 30 };
+              const hours = Math.round(data.totalMinutes / 60 * 10) / 10;
+
+              performanceData.push({
+                employeeId: employee.id,
+                employeeName: employee.name,
+                pathId: pathId,
+                pathName: pathConfig.name || data.title,
+                pathColor: pathConfig.color || '#666',
+                hours: hours,
+                totalMinutes: data.totalMinutes,
+                sessions: data.sessions
+              });
+            }
+          }
+        } catch (err) {
+          log(`Error fetching time details for ${employee.id}:`, err);
+        }
       }
-    }).then(response => {
-      log('Dashboard opened');
-    }).catch(err => {
-      log('Error opening dashboard:', err);
-    });
+
+      log(`Collected ${performanceData.length} performance records`);
+
+      // Store real data for dashboard
+      await browser.storage.local.set({
+        dashboardData: {
+          warehouseId,
+          employees: selectedEmployees,
+          performanceData: performanceData,
+          shift,
+          paths: PATHS,
+          processIds: PROCESS_IDS,
+          sourceUrl: window.location.href,
+          fetchedAt: new Date().toISOString()
+        }
+      });
+
+      // Open dashboard
+      browser.runtime.sendMessage({
+        action: 'openDashboard',
+        data: { warehouseId }
+      });
+
+    } catch (error) {
+      log('Error fetching data:', error);
+    } finally {
+      // Reset FAB state
+      if (fab) {
+        fab.classList.remove('loading');
+        fab.querySelector('.perf-fab-text').textContent = 'AA Performance';
+      }
+    }
   }
 
   /**
    * Extract employees from FCLM page
-   * Based on scan-check implementation - properly gets badge ID from links
+   * Tries multiple methods to find employees on various FCLM page types
    */
   function getSelectedEmployees() {
     const employees = [];
     const seen = new Set();
 
-    // Look for employee rows in tables (AMZN type rows)
+    // Method 1: Look for AMZN rows in tables (function rollup pages)
     document.querySelectorAll('table tr').forEach(row => {
       const cells = row.querySelectorAll('td');
       if (cells.length < 3) return;
 
-      // Check if this is an AMZN row (first cell contains "AMZN")
       const firstCellText = cells[0]?.textContent?.trim() || '';
-      if (firstCellText !== 'AMZN') return;
 
-      // Get badge ID from ID column (usually column 1) - may be inside a link!
-      const idCell = cells[1];
-      const idLink = idCell?.querySelector('a');
-      const badgeId = idLink ? idLink.textContent.trim() : idCell?.textContent?.trim();
+      // AMZN rows (function rollup)
+      if (firstCellText === 'AMZN') {
+        const idCell = cells[1];
+        const idLink = idCell?.querySelector('a');
+        const badgeId = idLink ? idLink.textContent.trim() : idCell?.textContent?.trim();
 
-      // Validate badge ID - must be numeric
-      if (!badgeId || !/^\d+$/.test(badgeId)) return;
-
-      // Skip if already seen
-      if (seen.has(badgeId)) return;
-      seen.add(badgeId);
-
-      // Get name from Name column (usually column 2) - may also be inside a link
-      const nameCell = cells[2];
-      const nameLink = nameCell?.querySelector('a');
-      let name = nameLink ? nameLink.textContent.trim() : nameCell?.textContent?.trim();
-
-      // Sanitize name - avoid dropdown content
-      if (!name || name.length > 50 || name.includes('Default Menu') || name.includes('Home Area')) {
-        name = badgeId;
+        if (badgeId && /^\d+$/.test(badgeId) && !seen.has(badgeId)) {
+          seen.add(badgeId);
+          const nameCell = cells[2];
+          const nameLink = nameCell?.querySelector('a');
+          let name = nameLink ? nameLink.textContent.trim() : nameCell?.textContent?.trim();
+          if (!name || name.length > 50) name = badgeId;
+          employees.push({ id: badgeId, badgeId, name });
+        }
       }
+    });
 
-      employees.push({ id: badgeId, badgeId: badgeId, name });
-      log(`Found employee: ${name} (${badgeId})`);
+    // Method 2: Look for employee links (time details pages, search results)
+    document.querySelectorAll('a[href*="employeeId="]').forEach(link => {
+      const href = link.getAttribute('href') || '';
+      const match = href.match(/employeeId=(\d+)/);
+      if (match) {
+        const badgeId = match[1];
+        if (!seen.has(badgeId)) {
+          seen.add(badgeId);
+          const name = link.textContent.trim() || badgeId;
+          employees.push({ id: badgeId, badgeId, name: name.length > 50 ? badgeId : name });
+        }
+      }
+    });
+
+    // Method 3: Look for badge IDs in table cells with links
+    document.querySelectorAll('table td a').forEach(link => {
+      const text = link.textContent.trim();
+      if (/^\d{6,9}$/.test(text) && !seen.has(text)) {
+        seen.add(text);
+        // Try to get name from next cell
+        const cell = link.closest('td');
+        const nextCell = cell?.nextElementSibling;
+        let name = nextCell?.textContent?.trim() || text;
+        if (name.length > 50) name = text;
+        employees.push({ id: text, badgeId: text, name });
+      }
     });
 
     log(`Found ${employees.length} employees on page`);

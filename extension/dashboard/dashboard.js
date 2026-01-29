@@ -141,6 +141,7 @@
 
   /**
    * Load initial data from storage (passed from FCLM)
+   * Uses REAL performance data fetched from FCLM, not sample data
    */
   async function loadInitialData() {
     try {
@@ -163,9 +164,15 @@
         // Update UI
         elements.warehouseBadge.textContent = state.warehouseId;
 
-        // If we have employees, generate sample data for demo
-        if (state.employees.length > 0) {
-          generateSampleData();
+        // Use REAL performance data from FCLM (not sample data!)
+        if (data.performanceData && data.performanceData.length > 0) {
+          console.log('[Dashboard] Using REAL performance data:', data.performanceData.length, 'records');
+          processRealPerformanceData(data.performanceData);
+        } else if (state.employees.length > 0) {
+          // No pre-fetched data - show empty state
+          console.log('[Dashboard] No performance data available');
+          state.performanceData = [];
+          renderAll();
         }
 
         // Clear the stored data
@@ -177,52 +184,46 @@
   }
 
   /**
-   * Generate sample performance data for demonstration
+   * Process REAL performance data from FCLM
+   * This replaces the old generateSampleData function
    */
-  function generateSampleData() {
+  function processRealPerformanceData(rawData) {
     state.performanceData = [];
 
-    const paths = Object.keys(PATH_CONFIG);
+    rawData.forEach(record => {
+      // Get path config for goal and color
+      const pathConfig = PATH_CONFIG[record.pathId] || {
+        name: record.pathName || record.pathId,
+        color: record.pathColor || '#666',
+        goal: 30
+      };
 
-    state.employees.forEach(employee => {
-      // Each employee gets data for 2-4 random paths
-      const numPaths = Math.floor(Math.random() * 3) + 2;
-      const selectedPaths = shuffleArray([...paths]).slice(0, numPaths);
+      const hours = record.hours || 0;
+      const goal = pathConfig.goal || 30;
 
-      selectedPaths.forEach(pathId => {
-        const config = PATH_CONFIG[pathId];
-        const goal = config.goal || 30;
-        const hours = Math.floor(Math.random() * 80) + 20;
-        const baseRate = goal * (0.7 + Math.random() * 0.6);
-        const rate = Math.round(baseRate * 10) / 10;
-        const units = Math.round(rate * hours);
-        const percentToGoal = Math.round((rate / goal) * 100);
+      // Calculate rate if we have units, otherwise use hours as proxy
+      const units = record.units || Math.round(hours * goal);
+      const rate = hours > 0 ? Math.round(units / hours * 10) / 10 : 0;
+      const percentToGoal = goal > 0 ? Math.round((rate / goal) * 100) : 0;
 
-        state.performanceData.push({
-          employeeId: employee.id,
-          employeeName: employee.name || employee.id,
-          pathId: pathId,
-          pathName: config.name,
-          pathColor: config.color,
-          hours: hours,
-          units: units,
-          rate: rate,
-          goal: goal,
-          percentToGoal: percentToGoal,
-          status: percentToGoal >= 100 ? 'good' : percentToGoal >= 85 ? 'warning' : 'poor'
-        });
+      state.performanceData.push({
+        employeeId: record.employeeId,
+        employeeName: record.employeeName || record.employeeId,
+        pathId: record.pathId,
+        pathName: pathConfig.name || record.pathName || record.pathId,
+        pathColor: pathConfig.color || record.pathColor || '#666',
+        hours: hours,
+        units: units,
+        rate: rate,
+        goal: goal,
+        percentToGoal: percentToGoal,
+        status: percentToGoal >= 100 ? 'good' : percentToGoal >= 85 ? 'warning' : 'poor',
+        sessions: record.sessions || 0
       });
     });
 
+    console.log('[Dashboard] Processed', state.performanceData.length, 'performance records');
     renderAll();
-  }
-
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
   }
 
   /**
