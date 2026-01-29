@@ -621,6 +621,30 @@ tbody tr:hover {
   color: var(--primary);
 }
 
+/* Hide any accidental dropdown/select content in table cells */
+table td select,
+table td .dropdown,
+table td .dropdown-menu {
+  display: none !important;
+}
+
+/* Truncate long text in table cells */
+table td {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table td:first-child {
+  max-width: 150px;
+}
+
+table td:nth-child(2) {
+  white-space: normal;
+  max-width: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .app-header {

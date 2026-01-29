@@ -347,6 +347,23 @@
   }
 
   /**
+   * Get clean text from an element, excluding select/dropdown content
+   */
+  function getCleanCellText(element) {
+    if (!element) return '';
+    // Clone the element and remove select/option elements
+    const clone = element.cloneNode(true);
+    clone.querySelectorAll('select, option, .dropdown, .dropdown-menu').forEach(el => el.remove());
+    const text = clone.textContent.trim();
+    // If text is too long, it probably contains dropdown content - take first part only
+    if (text.length > 100) {
+      const firstLine = text.split('\n')[0].trim();
+      return firstLine.length < 50 ? firstLine : text.substring(0, 50);
+    }
+    return text;
+  }
+
+  /**
    * Parse function rollup HTML to extract employee performance data
    * Based on scan-check implementation
    */
@@ -365,7 +382,7 @@
       if (!headerRow) return;
 
       const headerCells = headerRow.querySelectorAll('th, td');
-      const headers = Array.from(headerCells).map(h => h.textContent.trim().toLowerCase());
+      const headers = Array.from(headerCells).map(h => getCleanCellText(h).toLowerCase());
 
       // Look for tables with Type, ID, Name columns (like scan-check does)
       const typeIndex = headers.findIndex(h => h === 'type');
@@ -394,7 +411,8 @@
         const cells = row.querySelectorAll('td');
         if (cells.length < 5) return;
 
-        const cellTexts = Array.from(cells).map(c => c.textContent.trim());
+        // Get clean text from each cell, excluding dropdown content
+        const cellTexts = Array.from(cells).map(c => getCleanCellText(c));
 
         // Skip total/summary rows
         if (cellTexts[0]?.toLowerCase() === 'total' || cellTexts[1]?.toLowerCase() === 'total') return;
@@ -406,7 +424,13 @@
         // But for now, process all rows to be inclusive
 
         const id = idIndex >= 0 ? cellTexts[idIndex] : cellTexts[1] || '';
-        const name = nameIndex >= 0 ? cellTexts[nameIndex] : cellTexts[2] || '';
+        let name = nameIndex >= 0 ? cellTexts[nameIndex] : cellTexts[2] || '';
+
+        // Sanitize name - skip if it looks like dropdown content
+        if (name.length > 50 || name.includes('Default Menu') || name.includes('Home Area')) {
+          name = id; // Fall back to ID
+        }
+
         const manager = managerIndex >= 0 ? cellTexts[managerIndex] : '';
 
         // Get total hours from Total column
@@ -554,6 +578,7 @@
 
   /**
    * Extract employees from FCLM page
+   * Carefully avoids capturing dropdown/select content
    */
   function getSelectedEmployees() {
     const employees = [];
@@ -561,7 +586,21 @@
 
     // Look for employee IDs in tables
     document.querySelectorAll('table tr').forEach(row => {
-      const text = row.textContent;
+      // Skip rows that are just dropdowns or selects
+      if (row.querySelector('select') && row.querySelectorAll('td').length < 3) {
+        return;
+      }
+
+      // Get direct text content, excluding select/option elements
+      const getCleanText = (element) => {
+        if (!element) return '';
+        // Clone the element and remove select/option elements
+        const clone = element.cloneNode(true);
+        clone.querySelectorAll('select, option, .dropdown, .dropdown-menu').forEach(el => el.remove());
+        return clone.textContent.trim();
+      };
+
+      const text = getCleanText(row);
 
       // Match badge IDs (8-9 digit numbers)
       const badgeMatches = text.match(/\b(\d{8,9})\b/g);
@@ -569,13 +608,20 @@
         badgeMatches.forEach(badge => {
           if (!seen.has(badge)) {
             seen.add(badge);
-            // Try to get name from adjacent cell
+            // Try to get name from adjacent cell (without dropdown content)
             const cells = row.querySelectorAll('td');
             let name = badge;
             cells.forEach(cell => {
-              if (cell.textContent.includes(badge)) {
+              const cleanCellText = getCleanText(cell);
+              if (cleanCellText.includes(badge)) {
                 const nextCell = cell.nextElementSibling;
-                if (nextCell) name = nextCell.textContent.trim() || badge;
+                if (nextCell) {
+                  // Get clean text from next cell, limit length to avoid dropdown content
+                  const nextText = getCleanText(nextCell);
+                  if (nextText && nextText.length < 50) {
+                    name = nextText;
+                  }
+                }
               }
             });
             employees.push({ id: badge, name });

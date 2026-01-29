@@ -382,6 +382,27 @@
   /**
    * Render performance table
    */
+  /**
+   * Sanitize employee name - remove dropdown/menu content if present
+   */
+  function sanitizeEmployeeName(name, employeeId) {
+    if (!name || name === employeeId) return null;
+
+    // If name is too long, it probably contains dropdown content
+    if (name.length > 50) return null;
+
+    // If name contains typical dropdown keywords, skip it
+    const dropdownKeywords = ['Default Menu', 'Home Area', 'Settings', '(None)', 'C-Returns', 'V-Returns'];
+    if (dropdownKeywords.some(keyword => name.includes(keyword))) {
+      return null;
+    }
+
+    return name;
+  }
+
+  /**
+   * Render performance table
+   */
   function renderPerformanceTable() {
     let data = [...state.performanceData];
 
@@ -432,41 +453,46 @@
       return;
     }
 
-    elements.performanceBody.innerHTML = data.map(row => `
-      <tr>
-        <td>
-          <strong>${row.employeeId}</strong>
-          ${row.employeeName !== row.employeeId ? `<br><small style="color: var(--text-secondary)">${row.employeeName}</small>` : ''}
-        </td>
-        <td>
-          <span style="color: ${row.pathColor}; font-weight: 500;">${row.pathName}</span>
-        </td>
-        <td>${row.hours}h</td>
-        <td>${row.units.toLocaleString()}</td>
-        <td><strong>${row.rate}</strong></td>
-        <td>${row.goal || 'N/A'}</td>
-        <td>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div class="progress-bar">
-              <div class="progress-fill ${row.status}" style="width: ${Math.min(row.percentToGoal, 100)}%"></div>
+    elements.performanceBody.innerHTML = data.map(row => {
+      // Sanitize employee name to avoid displaying dropdown content
+      const cleanName = sanitizeEmployeeName(row.employeeName, row.employeeId);
+
+      return `
+        <tr>
+          <td>
+            <strong>${row.employeeId}</strong>
+            ${cleanName ? `<br><small style="color: var(--text-secondary)">${cleanName}</small>` : ''}
+          </td>
+          <td>
+            <span style="color: ${row.pathColor}; font-weight: 500;">${row.pathName}</span>
+          </td>
+          <td>${row.hours}h</td>
+          <td>${row.units.toLocaleString()}</td>
+          <td><strong>${row.rate}</strong></td>
+          <td>${row.goal || 'N/A'}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="progress-bar">
+                <div class="progress-fill ${row.status}" style="width: ${Math.min(row.percentToGoal, 100)}%"></div>
+              </div>
+              <span>${row.percentToGoal}%</span>
             </div>
-            <span>${row.percentToGoal}%</span>
-          </div>
-        </td>
-        <td>
-          <span class="status-badge ${row.status}">
-            ${row.status === 'good' ? 'Meeting' : row.status === 'warning' ? 'Near' : 'Below'}
-          </span>
-        </td>
-        <td>
-          <button class="action-btn" title="View details" onclick="viewDetails('${row.employeeId}', '${row.pathId}')">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-            </svg>
-          </button>
-        </td>
-      </tr>
-    `).join('');
+          </td>
+          <td>
+            <span class="status-badge ${row.status}">
+              ${row.status === 'good' ? 'Meeting' : row.status === 'warning' ? 'Near' : 'Below'}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn" title="View details" onclick="viewDetails('${row.employeeId}', '${row.pathId}')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   /**
