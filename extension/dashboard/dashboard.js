@@ -10,6 +10,7 @@
     warehouseId: 'UNKNOWN',
     employees: [],
     performanceData: [],
+    period: 'today',
     dateRange: {
       startDate: null,
       endDate: null
@@ -17,26 +18,35 @@
     paths: [],
     activePath: 'all',
     searchQuery: '',
-    sortBy: 'employee'
+    sortBy: 'employee',
+    fclmTabId: null
   };
 
-  // Path configuration with colors
+  // Path configuration with colors and JPH goals (matching fclm.js PATHS)
   const PATH_CONFIG = {
-    'pick_multis': { name: 'Pick Multis', color: '#4CAF50', goal: 30 },
-    'pick_liquidation': { name: 'Pick Liquidation', color: '#2196F3', goal: 25 },
-    'pick_singles': { name: 'Pick Singles', color: '#8BC34A', goal: 35 },
-    'stow': { name: 'Stow', color: '#FF9800', goal: 45 },
-    'pack_singles': { name: 'Pack Singles', color: '#9C27B0', goal: 40 },
-    'pack_multis': { name: 'Pack Multis', color: '#E91E63', goal: 35 },
-    'count': { name: 'Count', color: '#00BCD4', goal: 50 },
-    'receive': { name: 'Receive', color: '#FFC107', goal: 40 },
-    'problem_solve': { name: 'Problem Solve', color: '#795548', goal: 20 },
-    'water_spider': { name: 'Water Spider', color: '#607D8B', goal: null }
+    // Pick paths
+    'pick_multis': { name: 'FRACS Multis Pick', color: '#4CAF50', goal: 30 },
+    'pick_singles': { name: 'FRACS Singles Pick', color: '#8BC34A', goal: 35 },
+    'pick_ltl': { name: 'FRACS LTL Pick', color: '#CDDC39', goal: 25 },
+    'pick_liquidations': { name: 'Liquidations Pick', color: '#FFC107', goal: 25 },
+    'pick_whd': { name: 'WHD Pick to Sp00', color: '#FF9800', goal: 20 },
+    // Pack paths
+    'pack_ils': { name: 'V-Returns PacknHold (ILS)', color: '#2196F3', goal: 35 },
+    'packing': { name: 'Packing', color: '#03A9F4', goal: 40 },
+    'pack_singles': { name: 'Pack Singles', color: '#00BCD4', goal: 40 },
+    'pack_fracs_ltl': { name: 'Pack FracsLTL', color: '#009688', goal: 30 },
+    // Stow paths
+    'stow_c_returns': { name: 'Stow C Returns', color: '#9C27B0', goal: 45 },
+    // Support paths
+    'support_c': { name: 'C-Returns Support', color: '#607D8B', goal: null },
+    'support_v': { name: 'V-Returns Support', color: '#795548', goal: null }
   };
 
   // DOM Elements
   const elements = {
     warehouseBadge: document.getElementById('warehouseBadge'),
+    periodSelect: document.getElementById('periodSelect'),
+    customDateRange: document.getElementById('customDateRange'),
     startDate: document.getElementById('startDate'),
     endDate: document.getElementById('endDate'),
     applyDateRange: document.getElementById('applyDateRange'),
@@ -80,18 +90,24 @@
   }
 
   /**
-   * Set default date range to past 30 days
+   * Set default date range and period
    */
   function setDefaultDateRange() {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30);
+    const today = new Date();
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
 
-    state.dateRange.startDate = formatDate(startDate);
-    state.dateRange.endDate = formatDate(endDate);
+    // Default custom dates (in case user switches to custom)
+    state.dateRange.startDate = formatDate(weekAgo);
+    state.dateRange.endDate = formatDate(today);
 
     elements.startDate.value = state.dateRange.startDate;
     elements.endDate.value = state.dateRange.endDate;
+
+    // Default period is "today" (current shift)
+    state.period = 'today';
+    elements.periodSelect.value = 'today';
+    elements.customDateRange.style.display = 'none';
   }
 
   function formatDate(date) {
@@ -141,6 +157,7 @@
 
   /**
    * Load initial data from storage (passed from FCLM)
+   * Uses REAL performance data fetched from FCLM, not sample data
    */
   async function loadInitialData() {
     try {
@@ -156,16 +173,32 @@
 
         if (data.dateRange) {
           state.dateRange = data.dateRange;
-          elements.startDate.value = data.dateRange.startDate;
-          elements.endDate.value = data.dateRange.endDate;
+
+          // Update period selector if period was saved
+          if (data.dateRange.period) {
+            state.period = data.dateRange.period;
+            elements.periodSelect.value = data.dateRange.period;
+
+            if (data.dateRange.period === 'custom') {
+              elements.customDateRange.style.display = 'flex';
+              elements.startDate.value = data.dateRange.startDate;
+              elements.endDate.value = data.dateRange.endDate;
+            }
+          }
         }
 
         // Update UI
         elements.warehouseBadge.textContent = state.warehouseId;
 
-        // If we have employees, generate sample data for demo
-        if (state.employees.length > 0) {
-          generateSampleData();
+        // Use REAL performance data from FCLM (not sample data!)
+        if (data.performanceData && data.performanceData.length > 0) {
+          console.log('[Dashboard] Using REAL performance data:', data.performanceData.length, 'records');
+          processRealPerformanceData(data.performanceData);
+        } else if (state.employees.length > 0) {
+          // No pre-fetched data - show empty state
+          console.log('[Dashboard] No performance data available');
+          state.performanceData = [];
+          renderAll();
         }
 
         // Clear the stored data
@@ -177,58 +210,57 @@
   }
 
   /**
-   * Generate sample performance data for demonstration
+   * Process REAL performance data from FCLM function rollup
+   * Data already contains hours and JPH from the rollup
    */
-  function generateSampleData() {
+  function processRealPerformanceData(rawData) {
     state.performanceData = [];
 
-    const paths = Object.keys(PATH_CONFIG);
+    rawData.forEach(record => {
+      // Get path config for goal and color
+      const pathConfig = PATH_CONFIG[record.pathId] || {
+        name: record.pathName || record.pathId,
+        color: record.pathColor || '#666',
+        goal: null
+      };
 
-    state.employees.forEach(employee => {
-      // Each employee gets data for 2-4 random paths
-      const numPaths = Math.floor(Math.random() * 3) + 2;
-      const selectedPaths = shuffleArray([...paths]).slice(0, numPaths);
+      const hours = record.hours || 0;
+      const jph = record.jph || 0;  // JPH comes directly from function rollup
+      const jobs = record.jobs || 0;
+      const units = record.units || 0;
+      const uph = record.uph || 0;
+      const goal = pathConfig.goal;
 
-      selectedPaths.forEach(pathId => {
-        const config = PATH_CONFIG[pathId];
-        const goal = config.goal || 30;
-        const hours = Math.floor(Math.random() * 80) + 20;
-        const baseRate = goal * (0.7 + Math.random() * 0.6);
-        const rate = Math.round(baseRate * 10) / 10;
-        const units = Math.round(rate * hours);
-        const percentToGoal = Math.round((rate / goal) * 100);
+      // Calculate % to goal if we have a goal
+      const percentToGoal = goal && jph > 0 ? Math.round((jph / goal) * 100) : null;
 
-        state.performanceData.push({
-          employeeId: employee.id,
-          employeeName: employee.name || employee.id,
-          pathId: pathId,
-          pathName: config.name,
-          pathColor: config.color,
-          hours: hours,
-          units: units,
-          rate: rate,
-          goal: goal,
-          percentToGoal: percentToGoal,
-          status: percentToGoal >= 100 ? 'good' : percentToGoal >= 85 ? 'warning' : 'poor'
-        });
+      state.performanceData.push({
+        employeeId: record.employeeId,
+        employeeName: record.employeeName || record.employeeId,
+        pathId: record.pathId,
+        pathName: pathConfig.name || record.pathName || record.pathId,
+        pathColor: pathConfig.color || record.pathColor || '#666',
+        category: record.category || 'Other',
+        hours: hours,
+        jobs: jobs,
+        jph: jph,
+        units: units,
+        uph: uph,
+        goal: goal,
+        percentToGoal: percentToGoal,
+        status: percentToGoal ? (percentToGoal >= 100 ? 'good' : percentToGoal >= 85 ? 'warning' : 'poor') : 'neutral'
       });
     });
 
+    console.log('[Dashboard] Processed', state.performanceData.length, 'performance records');
     renderAll();
-  }
-
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
   }
 
   /**
    * Attach event listeners
    */
   function attachEventListeners() {
+    elements.periodSelect.addEventListener('change', handlePeriodChange);
     elements.applyDateRange.addEventListener('click', handleApplyDateRange);
     elements.refreshBtn.addEventListener('click', handleRefresh);
     elements.employeeSearch.addEventListener('input', handleSearch);
@@ -238,34 +270,112 @@
   }
 
   /**
+   * Handle period selector change
+   */
+  function handlePeriodChange(e) {
+    const period = e.target.value;
+    state.period = period;
+
+    // Show/hide custom date range inputs
+    if (period === 'custom') {
+      elements.customDateRange.style.display = 'flex';
+    } else {
+      elements.customDateRange.style.display = 'none';
+    }
+  }
+
+  /**
    * Handle date range apply
    */
-  function handleApplyDateRange() {
-    state.dateRange.startDate = elements.startDate.value;
-    state.dateRange.endDate = elements.endDate.value;
+  async function handleApplyDateRange() {
+    const period = state.period;
 
-    showToast('Date range updated', 'success');
-    handleRefresh();
+    // Update date range from inputs for custom period
+    if (period === 'custom') {
+      state.dateRange.startDate = elements.startDate.value;
+      state.dateRange.endDate = elements.endDate.value;
+
+      if (!state.dateRange.startDate || !state.dateRange.endDate) {
+        showToast('Please select both start and end dates', 'warning');
+        return;
+      }
+    }
+
+    await fetchDataFromFCLM();
   }
 
   /**
    * Handle refresh button
    */
   async function handleRefresh() {
+    await fetchDataFromFCLM();
+  }
+
+  /**
+   * Find FCLM tab and send message to fetch data
+   */
+  async function fetchDataFromFCLM() {
     showLoading(true);
 
     try {
-      // In a real implementation, this would fetch fresh data from FCLM
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Find the FCLM tab
+      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
 
-      // Regenerate sample data for demo
-      if (state.employees.length > 0) {
-        generateSampleData();
+      if (tabs.length === 0) {
+        showToast('FCLM portal not open. Please open FCLM in another tab.', 'error');
+        showLoading(false);
+        return;
       }
 
-      showToast('Data refreshed', 'success');
+      const fclmTab = tabs[0];
+      state.fclmTabId = fclmTab.id;
+
+      // Build the message
+      const message = {
+        action: 'fetchPerformanceData',
+        period: state.period
+      };
+
+      // Add custom dates if custom period
+      if (state.period === 'custom') {
+        message.customStart = state.dateRange.startDate;
+        message.customEnd = state.dateRange.endDate;
+      }
+
+      console.log('[Dashboard] Sending fetch request to FCLM:', message);
+
+      // Send message to content script
+      const response = await browser.tabs.sendMessage(fclmTab.id, message);
+
+      if (response && response.success) {
+        console.log('[Dashboard] Received performance data:', response);
+
+        // Update state with new data
+        state.warehouseId = response.warehouseId;
+        state.employees = response.employees || [];
+
+        if (response.dateRange) {
+          state.dateRange = response.dateRange;
+        }
+
+        // Process the performance data
+        if (response.performanceData && response.performanceData.length > 0) {
+          processRealPerformanceData(response.performanceData);
+          showToast(`Loaded ${response.performanceData.length} records for ${response.employees.length} employees`, 'success');
+        } else {
+          state.performanceData = [];
+          renderAll();
+          showToast('No performance data found for this period', 'warning');
+        }
+
+        // Update warehouse badge
+        elements.warehouseBadge.textContent = state.warehouseId;
+      } else {
+        throw new Error(response?.error || 'Failed to fetch data');
+      }
     } catch (error) {
-      showToast('Error refreshing data', 'error');
+      console.error('[Dashboard] Error fetching data:', error);
+      showToast('Error fetching data: ' + error.message, 'error');
     } finally {
       showLoading(false);
     }
@@ -281,6 +391,8 @@
 
   /**
    * Handle add employees
+   * NOTE: Employee list is populated from FCLM function rollup data.
+   * This function is kept for future use to manually add employees to filter/track.
    */
   function handleAddEmployees() {
     const input = elements.employeeInput.value.trim();
@@ -304,9 +416,8 @@
     });
 
     if (addedCount > 0) {
-      showToast(`Added ${addedCount} employee(s)`, 'success');
+      showToast(`Added ${addedCount} employee(s). Click "Load Data" to fetch performance.`, 'success');
       elements.employeeInput.value = '';
-      generateSampleData();
     } else {
       showToast('All employees already added', 'warning');
     }
@@ -428,7 +539,7 @@
         data.sort((a, b) => a.pathName.localeCompare(b.pathName));
         break;
       case 'rate':
-        data.sort((a, b) => b.rate - a.rate);
+        data.sort((a, b) => (b.jph || 0) - (a.jph || 0));
         break;
       case 'hours':
         data.sort((a, b) => b.hours - a.hours);
@@ -456,6 +567,7 @@
     elements.performanceBody.innerHTML = data.map(row => {
       // Sanitize employee name to avoid displaying dropdown content
       const cleanName = sanitizeEmployeeName(row.employeeName, row.employeeId);
+      const hasGoal = row.goal && row.percentToGoal !== null;
 
       return `
         <tr>
@@ -467,21 +579,25 @@
             <span style="color: ${row.pathColor}; font-weight: 500;">${row.pathName}</span>
           </td>
           <td>${row.hours}h</td>
-          <td>${row.units.toLocaleString()}</td>
-          <td><strong>${row.rate}</strong></td>
+          <td>${row.jobs ? row.jobs.toLocaleString() : '-'}</td>
+          <td><strong>${row.jph || '-'}</strong></td>
           <td>${row.goal || 'N/A'}</td>
           <td>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div class="progress-bar">
-                <div class="progress-fill ${row.status}" style="width: ${Math.min(row.percentToGoal, 100)}%"></div>
+            ${hasGoal ? `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="progress-bar">
+                  <div class="progress-fill ${row.status}" style="width: ${Math.min(row.percentToGoal, 100)}%"></div>
+                </div>
+                <span>${row.percentToGoal}%</span>
               </div>
-              <span>${row.percentToGoal}%</span>
-            </div>
+            ` : '<span style="color: var(--text-secondary)">-</span>'}
           </td>
           <td>
-            <span class="status-badge ${row.status}">
-              ${row.status === 'good' ? 'Meeting' : row.status === 'warning' ? 'Near' : 'Below'}
-            </span>
+            ${hasGoal ? `
+              <span class="status-badge ${row.status}">
+                ${row.status === 'good' ? 'Meeting' : row.status === 'warning' ? 'Near' : 'Below'}
+              </span>
+            ` : '<span class="status-badge neutral">N/A</span>'}
           </td>
           <td>
             <button class="action-btn" title="View details" onclick="viewDetails('${row.employeeId}', '${row.pathId}')">
@@ -509,16 +625,16 @@
           goal: row.goal,
           employees: new Set(),
           totalHours: 0,
-          totalUnits: 0,
-          rates: []
+          totalJobs: 0,
+          jphValues: []
         };
       }
 
       const summary = pathSummary[row.pathId];
       summary.employees.add(row.employeeId);
-      summary.totalHours += row.hours;
-      summary.totalUnits += row.units;
-      summary.rates.push(row.rate);
+      summary.totalHours += row.hours || 0;
+      summary.totalJobs += row.jobs || 0;
+      if (row.jph) summary.jphValues.push(row.jph);
     });
 
     if (Object.keys(pathSummary).length === 0) {
@@ -527,8 +643,8 @@
     }
 
     elements.pathCards.innerHTML = Object.entries(pathSummary).map(([pathId, summary]) => {
-      const avgRate = summary.rates.length > 0
-        ? Math.round(summary.rates.reduce((a, b) => a + b, 0) / summary.rates.length * 10) / 10
+      const avgJph = summary.jphValues.length > 0
+        ? Math.round(summary.jphValues.reduce((a, b) => a + b, 0) / summary.jphValues.length * 10) / 10
         : 0;
 
       return `
@@ -539,16 +655,16 @@
           </div>
           <div class="path-stats">
             <div class="path-stat">
-              <div class="path-stat-value">${summary.totalHours}h</div>
+              <div class="path-stat-value">${Math.round(summary.totalHours * 10) / 10}h</div>
               <div class="path-stat-label">Total Hours</div>
             </div>
             <div class="path-stat">
-              <div class="path-stat-value">${summary.totalUnits.toLocaleString()}</div>
-              <div class="path-stat-label">Total Units</div>
+              <div class="path-stat-value">${summary.totalJobs.toLocaleString()}</div>
+              <div class="path-stat-label">Total Jobs</div>
             </div>
             <div class="path-stat">
-              <div class="path-stat-value">${avgRate}</div>
-              <div class="path-stat-label">Avg Rate (UPH)</div>
+              <div class="path-stat-value">${avgJph}</div>
+              <div class="path-stat-label">Avg JPH</div>
             </div>
             <div class="path-stat">
               <div class="path-stat-value">${summary.goal || 'N/A'}</div>

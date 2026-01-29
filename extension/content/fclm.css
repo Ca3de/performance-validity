@@ -33,6 +33,16 @@
   transform: translateY(0);
 }
 
+#perf-validity-fab.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  background: linear-gradient(135deg, #90CAF9 0%, #64B5F6 100%);
+}
+
+#perf-validity-fab.loading .perf-fab-icon svg {
+  animation: spin 1s linear infinite;
+}
+
 .perf-fab-icon {
   display: flex;
   align-items: center;
