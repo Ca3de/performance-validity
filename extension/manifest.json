@@ -1,0 +1,69 @@
+{
+  "manifest_version": 2,
+  "name": "AA Performance Validity",
+  "version": "1.0.0",
+  "description": "Check AA performance metrics across various paths (Pick Multis, Pick Liquidation, Stow, etc.) within the past month",
+  "author": "Ca3de",
+
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "*://fclm-portal.amazon.com/*",
+    "*://fclm-iad-portal.amazon.com/*",
+    "*://fclm*.amazon.com/*",
+    "*://rodeo-iad.amazon.com/*",
+    "*://fcmenu-iad-regionalized.corp.amazon.com/*"
+  ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "*://fclm-portal.amazon.com/*",
+        "*://fclm-iad-portal.amazon.com/*",
+        "*://fclm*.amazon.com/*",
+        "*://fcmenu-iad-regionalized.corp.amazon.com/*"
+      ],
+      "js": ["content/fclm.js"],
+      "css": ["content/fclm.css"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "browser_action": {
+    "default_icon": {
+      "16": "icons/icon-16.svg",
+      "32": "icons/icon-32.svg",
+      "48": "icons/icon-48.svg",
+      "128": "icons/icon-128.svg"
+    },
+    "default_title": "AA Performance Validity",
+    "default_popup": "popup/popup.html"
+  },
+
+  "icons": {
+    "16": "icons/icon-16.svg",
+    "32": "icons/icon-32.svg",
+    "48": "icons/icon-48.svg",
+    "128": "icons/icon-128.svg"
+  },
+
+  "web_accessible_resources": [
+    "dashboard/dashboard.html",
+    "dashboard/dashboard.css",
+    "dashboard/dashboard.js",
+    "icons/*"
+  ],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "aa-performance-validity@ca3de",
+      "strict_min_version": "109.0"
+    }
+  }
+}
