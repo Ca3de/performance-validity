@@ -180,7 +180,7 @@
     const url = new URL('https://fclm-portal.amazon.com/employee/timeDetails');
     url.searchParams.set('employeeId', employeeId);
     url.searchParams.set('warehouseId', warehouseId);
-    url.searchParams.set('startDateDay', formatDateForURL(shift.startDate));
+    url.searchParams.set('startDateDay', formatDateForURL(shift.endDate));
     url.searchParams.set('maxIntradayDays', '1');
     url.searchParams.set('spanType', spanType);
     url.searchParams.set('startDateIntraday', formatDateForURL(shift.startDate));
@@ -207,6 +207,7 @@
 
   /**
    * Parse time details HTML - extracts work sessions by path
+   * Based on scan-check implementation using gantt chart table
    */
   function parseTimeDetailsHTML(html) {
     const parser = new DOMParser();
@@ -215,10 +216,26 @@
     const sessions = [];
     const pathSummary = {};
 
-    // Find all table rows
-    const rows = doc.querySelectorAll('table tr');
+    // Look for the gantt chart table specifically (like scan-check does)
+    const table = doc.querySelector('table.ganttChart[aria-label="Time Details"]') ||
+                  doc.querySelector('table.ganttChart') ||
+                  doc.querySelector('table');
+
+    if (!table) {
+      log('No time details table found');
+      return { success: false, error: 'No time details table found', sessions: [], pathSummary: {} };
+    }
+
+    const rows = table.querySelectorAll('tr');
 
     rows.forEach(row => {
+      // Skip aggregate rows (function-seg) and clock entries (clock-seg)
+      // Only process job segment rows (job-seg) which contain actual work
+      if (row.classList.contains('function-seg') || row.classList.contains('clock-seg')) {
+        return;
+      }
+
+      // For job-seg rows or rows without specific class
       const cells = row.querySelectorAll('td');
       if (cells.length < 4) return;
 
@@ -227,7 +244,7 @@
       const end = cells[2]?.textContent?.trim() || '';
       const duration = cells[3]?.textContent?.trim() || '';
 
-      // Skip clock entries
+      // Skip clock entries by title as well
       if (title.includes('Clock') || title.includes('Paid') || title.includes('UnPaid')) {
         return;
       }
@@ -239,7 +256,7 @@
         durationMinutes = parseInt(durationMatch[1]) + parseInt(durationMatch[2]) / 60;
       }
 
-      // Map title to path
+      // Map title to path using TIME_DETAIL_MAP first, then fuzzy match
       const pathId = TIME_DETAIL_MAP[title] || findPathFromTitle(title);
 
       if (title && durationMinutes > 0) {
@@ -249,7 +266,8 @@
           start,
           end,
           duration,
-          durationMinutes
+          durationMinutes,
+          isJobSeg: row.classList.contains('job-seg')
         });
 
         // Aggregate by path
@@ -292,7 +310,7 @@
   /**
    * Fetch function rollup report for a specific process
    * URL format: /reports/functionRollup?reportFormat=HTML&warehouseId=IND8&processId=1003034
-   *   &startDateWeek=2026/01/25&maxIntradayDays=1&spanType=Intraday
+   *   &maxIntradayDays=1&spanType=Intraday
    *   &startDateIntraday=2026/01/28&startHourIntraday=18&startMinuteIntraday=0
    *   &endDateIntraday=2026/01/29&endHourIntraday=6&endMinuteIntraday=0
    */
@@ -300,15 +318,10 @@
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
     const shift = customRange || getShiftDateRange();
 
-    // Calculate week start date (Sunday of the week)
-    const weekStart = new Date(shift.startDate);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-
     const url = new URL('https://fclm-portal.amazon.com/reports/functionRollup');
     url.searchParams.set('reportFormat', 'HTML');
     url.searchParams.set('warehouseId', warehouseId);
     url.searchParams.set('processId', processId);
-    url.searchParams.set('startDateWeek', formatDateForURL(weekStart));
     url.searchParams.set('maxIntradayDays', '1');
     url.searchParams.set('spanType', spanType);
     url.searchParams.set('startDateIntraday', formatDateForURL(shift.startDate));
@@ -335,13 +348,13 @@
 
   /**
    * Parse function rollup HTML to extract employee performance data
+   * Based on scan-check implementation
    */
   function parseFunctionRollupHTML(html, processId) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
     const employees = [];
-    const functions = [];
 
     // Find all tables with employee data
     const tables = doc.querySelectorAll('table');
@@ -351,19 +364,25 @@
       const headerRow = table.querySelector('tr');
       if (!headerRow) return;
 
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map(h => h.textContent.trim().toLowerCase());
+      const headerCells = headerRow.querySelectorAll('th, td');
+      const headers = Array.from(headerCells).map(h => h.textContent.trim().toLowerCase());
 
-      // Look for tables with ID/Name columns
+      // Look for tables with Type, ID, Name columns (like scan-check does)
+      const typeIndex = headers.findIndex(h => h === 'type');
       const idIndex = headers.findIndex(h => h === 'id');
       const nameIndex = headers.findIndex(h => h === 'name');
       const managerIndex = headers.findIndex(h => h === 'manager');
-      const totalHoursIndex = headers.findIndex(h => h.includes('total') && headers.indexOf(h) < 10);
+
+      // Find Total column index
+      const totalIndex = headers.findIndex(h => h === 'total');
+
+      // Find Jobs, JPH columns
       const jobsIndex = headers.findIndex(h => h === 'jobs');
       const jphIndex = headers.findIndex(h => h === 'jph');
 
-      // Find EACH-Total columns
-      const unitTotalIndex = headers.findIndex((h, i) => h === 'unit' && headers[i - 1]?.includes('total'));
-      const uphTotalIndex = headers.findIndex((h, i) => h === 'uph' && headers[i - 1] === 'unit');
+      // Find Unit, UPH columns (EACH-Total section)
+      const unitIndex = headers.lastIndexOf('unit');
+      const uphIndex = headers.lastIndexOf('uph');
 
       if (idIndex === -1 && nameIndex === -1) return;
 
@@ -380,36 +399,40 @@
         // Skip total/summary rows
         if (cellTexts[0]?.toLowerCase() === 'total' || cellTexts[1]?.toLowerCase() === 'total') return;
 
-        // Extract employee data
-        const type = cellTexts[0] || '';
-        const id = cellTexts[idIndex] || cellTexts[1] || '';
-        const name = cellTexts[nameIndex] || cellTexts[2] || '';
+        // Get type - look for AMZN rows (like scan-check does)
+        const type = typeIndex >= 0 ? cellTexts[typeIndex] : cellTexts[0] || '';
+
+        // Only process AMZN (Amazon employee) rows, skip contractors if needed
+        // But for now, process all rows to be inclusive
+
+        const id = idIndex >= 0 ? cellTexts[idIndex] : cellTexts[1] || '';
+        const name = nameIndex >= 0 ? cellTexts[nameIndex] : cellTexts[2] || '';
         const manager = managerIndex >= 0 ? cellTexts[managerIndex] : '';
 
-        // Find total hours (usually after manager column)
+        // Get total hours from Total column
         let totalHours = 0;
-        for (let i = 4; i < Math.min(10, cellTexts.length); i++) {
-          const val = parseFloat(cellTexts[i]);
-          if (!isNaN(val) && val > 0 && val < 24) {
-            totalHours = val;
-            break;
+        if (totalIndex >= 0 && cellTexts[totalIndex]) {
+          totalHours = parseFloat(cellTexts[totalIndex]) || 0;
+        } else {
+          // Fallback: find first reasonable hours value
+          for (let i = 4; i < Math.min(10, cellTexts.length); i++) {
+            const val = parseFloat(cellTexts[i]);
+            if (!isNaN(val) && val > 0 && val < 24) {
+              totalHours = val;
+              break;
+            }
           }
         }
 
-        // Find Jobs, JPH, Units, UPH from later columns
-        let jobs = 0, jph = 0, units = 0, uph = 0;
-        for (let i = 5; i < cellTexts.length; i++) {
-          const val = parseFloat(cellTexts[i]);
-          if (isNaN(val)) continue;
+        // Get Jobs and JPH
+        const jobs = jobsIndex >= 0 ? (parseFloat(cellTexts[jobsIndex]) || 0) : 0;
+        const jph = jphIndex >= 0 ? (parseFloat(cellTexts[jphIndex]) || 0) : 0;
 
-          // Try to identify columns by position or value range
-          if (val > 50 && val < 5000 && jobs === 0) jobs = val;
-          else if (val > 20 && val < 300 && jph === 0) jph = val;
-          else if (val > 10 && val < 10000 && units === 0) units = val;
-          else if (val > 20 && val < 500 && uph === 0) uph = val;
-        }
+        // Get Units and UPH
+        const units = unitIndex >= 0 ? (parseFloat(cellTexts[unitIndex]) || 0) : 0;
+        const uph = uphIndex >= 0 ? (parseFloat(cellTexts[uphIndex]) || 0) : 0;
 
-        // Only add if we have valid employee ID
+        // Only add if we have valid employee ID (6+ digits)
         if (id && id.match(/^\d{6,}$/)) {
           employees.push({
             type,
