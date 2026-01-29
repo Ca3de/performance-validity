@@ -440,6 +440,12 @@
       let unitColumnIndex = -1;
       let uphColumnIndex = -1;
 
+      // Helper function to strip sort indicators from header text
+      const cleanHeaderText = (text) => {
+        // Remove sort indicators (≠, ↑, ↓, ▲, ▼) and trim
+        return (text || '').replace(/[≠↑↓▲▼]/g, '').trim().toLowerCase();
+      };
+
       // First pass: find header row and column indices
       for (const row of rows) {
         const headerCells = row.querySelectorAll('th');
@@ -450,14 +456,15 @@
 
           // This is a header row - find column indices
           for (let i = 0; i < headerCells.length; i++) {
-            const headerText = headerCells[i]?.textContent?.trim()?.toLowerCase() || '';
+            const headerText = cleanHeaderText(headerCells[i]?.textContent);
+            log(`  Header[${i}]: "${headerText}"`);
             if (headerText === 'total') totalColumnIndex = i;
             if (headerText === 'id' || headerText === 'badge' || headerText === 'employee id') idColumnIndex = i;
             if (headerText === 'name' || headerText === 'employee name') nameColumnIndex = i;
             if (headerText === 'jobs' || headerText === 'job') jobsColumnIndex = i;
-            if (headerText === 'jph' || headerText === 'jobs/hr') jphColumnIndex = i;
+            if (headerText === 'jph' || headerText === 'jobs/hr' || headerText === 'jobs per hour') jphColumnIndex = i;
             if (headerText === 'unit' || headerText === 'units') unitColumnIndex = i;
-            if (headerText === 'uph' || headerText === 'units/hr') uphColumnIndex = i;
+            if (headerText === 'uph' || headerText === 'units/hr' || headerText === 'units per hour') uphColumnIndex = i;
           }
           log(`Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
           break;
@@ -466,21 +473,22 @@
         // Also check for header-style td cells (some tables use td for headers)
         const cells = row.querySelectorAll('td');
         if (cells.length > 0) {
-          const firstCellText = cells[0]?.textContent?.trim() || '';
-          if (firstCellText === 'Type') {
+          const firstCellText = cleanHeaderText(cells[0]?.textContent);
+          if (firstCellText === 'type') {
             // Log header cells for debugging
             const headers = Array.from(cells).map(c => c.textContent.trim());
             log(`Table ${tableIndex} headers (td):`, headers);
 
             for (let i = 0; i < cells.length; i++) {
-              const cellText = cells[i]?.textContent?.trim()?.toLowerCase() || '';
+              const cellText = cleanHeaderText(cells[i]?.textContent);
+              log(`  Header[${i}]: "${cellText}"`);
               if (cellText === 'total') totalColumnIndex = i;
               if (cellText === 'id' || cellText === 'badge') idColumnIndex = i;
               if (cellText === 'name') nameColumnIndex = i;
               if (cellText === 'jobs' || cellText === 'job') jobsColumnIndex = i;
-              if (cellText === 'jph' || cellText === 'jobs/hr') jphColumnIndex = i;
+              if (cellText === 'jph' || cellText === 'jobs/hr' || cellText === 'jobs per hour') jphColumnIndex = i;
               if (cellText === 'unit' || cellText === 'units') unitColumnIndex = i;
-              if (cellText === 'uph' || cellText === 'units/hr') uphColumnIndex = i;
+              if (cellText === 'uph' || cellText === 'units/hr' || cellText === 'units per hour') uphColumnIndex = i;
             }
             log(`Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
             break;
@@ -550,16 +558,25 @@
         }
 
         // Get Jobs and JPH
-        const jobs = jobsColumnIndex >= 0 && jobsColumnIndex < cells.length
-          ? (parseFloat(cells[jobsColumnIndex]?.textContent?.trim()) || 0) : 0;
-        const jph = jphColumnIndex >= 0 && jphColumnIndex < cells.length
-          ? (parseFloat(cells[jphColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const jobsRaw = jobsColumnIndex >= 0 && jobsColumnIndex < cells.length
+          ? cells[jobsColumnIndex]?.textContent?.trim() : '';
+        const jphRaw = jphColumnIndex >= 0 && jphColumnIndex < cells.length
+          ? cells[jphColumnIndex]?.textContent?.trim() : '';
+        const jobs = parseFloat(jobsRaw) || 0;
+        const jph = parseFloat(jphRaw) || 0;
 
         // Get Units and UPH
-        const units = unitColumnIndex >= 0 && unitColumnIndex < cells.length
-          ? (parseFloat(cells[unitColumnIndex]?.textContent?.trim()) || 0) : 0;
-        const uph = uphColumnIndex >= 0 && uphColumnIndex < cells.length
-          ? (parseFloat(cells[uphColumnIndex]?.textContent?.trim()) || 0) : 0;
+        const unitsRaw = unitColumnIndex >= 0 && unitColumnIndex < cells.length
+          ? cells[unitColumnIndex]?.textContent?.trim() : '';
+        const uphRaw = uphColumnIndex >= 0 && uphColumnIndex < cells.length
+          ? cells[uphColumnIndex]?.textContent?.trim() : '';
+        const units = parseFloat(unitsRaw) || 0;
+        const uph = parseFloat(uphRaw) || 0;
+
+        // Debug logging for first few rows
+        if (rowCount <= 3) {
+          log(`  Row ${rowCount}: Jobs col=${jobsColumnIndex} raw="${jobsRaw}" parsed=${jobs}, JPH col=${jphColumnIndex} raw="${jphRaw}" parsed=${jph}`);
+        }
 
         employees.push({
           type: 'AMZN',
