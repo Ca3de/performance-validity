@@ -19,7 +19,10 @@
     activePath: 'all',
     searchQuery: '',
     sortBy: 'employee',
-    fclmTabId: null
+    fclmTabId: null,
+    // AA Lookup state
+    selectedAA: null,
+    selectedLookupPath: 'all'
   };
 
   // Path configuration with colors and JPH goals (matching fclm.js PATHS)
@@ -65,7 +68,38 @@
     sortSelect: document.getElementById('sortSelect'),
     pathCards: document.getElementById('pathCards'),
     loadingOverlay: document.getElementById('loadingOverlay'),
-    toastContainer: document.getElementById('toastContainer')
+    toastContainer: document.getElementById('toastContainer'),
+    // AA Lookup elements
+    aaLookupInput: document.getElementById('aaLookupInput'),
+    clearLookupBtn: document.getElementById('clearLookupBtn'),
+    lookupPathSelect: document.getElementById('lookupPathSelect'),
+    lookupBtn: document.getElementById('lookupBtn'),
+    aaDetailPanel: document.getElementById('aaDetailPanel'),
+    closeDetailBtn: document.getElementById('closeDetailBtn'),
+    aaDetailName: document.getElementById('aaDetailName'),
+    aaDetailId: document.getElementById('aaDetailId'),
+    aaDetailPath: document.getElementById('aaDetailPath'),
+    // Metrics
+    metricJPH: document.getElementById('metricJPH'),
+    metricAvgJPH: document.getElementById('metricAvgJPH'),
+    metricHours: document.getElementById('metricHours'),
+    metricAvgHours: document.getElementById('metricAvgHours'),
+    metricSessions: document.getElementById('metricSessions'),
+    metricJobs: document.getElementById('metricJobs'),
+    // Comparison
+    compBarAAJPH: document.getElementById('compBarAAJPH'),
+    compBarAvgJPH: document.getElementById('compBarAvgJPH'),
+    compValAAJPH: document.getElementById('compValAAJPH'),
+    compValAvgJPH: document.getElementById('compValAvgJPH'),
+    compBarAAHours: document.getElementById('compBarAAHours'),
+    compBarAvgHours: document.getElementById('compBarAvgHours'),
+    compValAAHours: document.getElementById('compValAAHours'),
+    compValAvgHours: document.getElementById('compValAvgHours'),
+    rankNumber: document.getElementById('rankNumber'),
+    rankTotal: document.getElementById('rankTotal'),
+    rankDescription: document.getElementById('rankDescription'),
+    pathHistory: document.getElementById('pathHistory'),
+    pathHistoryTable: document.getElementById('pathHistoryTable')
   };
 
   /**
@@ -267,6 +301,24 @@
     elements.addEmployeesBtn.addEventListener('click', handleAddEmployees);
     elements.exportCsvBtn.addEventListener('click', handleExportCsv);
     elements.sortSelect.addEventListener('change', handleSortChange);
+
+    // AA Lookup event listeners
+    elements.lookupBtn.addEventListener('click', handleAALookup);
+    elements.aaLookupInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleAALookup();
+    });
+    elements.clearLookupBtn.addEventListener('click', () => {
+      elements.aaLookupInput.value = '';
+      elements.aaLookupInput.focus();
+    });
+    elements.lookupPathSelect.addEventListener('change', (e) => {
+      state.selectedLookupPath = e.target.value;
+      // If AA is already selected, refresh the detail view
+      if (state.selectedAA) {
+        displayAADetails(state.selectedAA, state.selectedLookupPath);
+      }
+    });
+    elements.closeDetailBtn.addEventListener('click', closeAADetailPanel);
   }
 
   /**
@@ -429,6 +481,262 @@
   function handleSortChange(e) {
     state.sortBy = e.target.value;
     renderPerformanceTable();
+  }
+
+  /**
+   * Handle AA Lookup - finds AA by badge ID, employee ID, or name
+   */
+  function handleAALookup() {
+    const input = elements.aaLookupInput.value.trim();
+    if (!input) {
+      showToast('Please enter a badge ID, employee ID, or name', 'warning');
+      return;
+    }
+
+    const searchTerm = input.toLowerCase();
+
+    // Search in loaded performance data
+    const matches = state.performanceData.filter(record => {
+      return record.employeeId.toLowerCase().includes(searchTerm) ||
+             (record.employeeName && record.employeeName.toLowerCase().includes(searchTerm));
+    });
+
+    if (matches.length === 0) {
+      showToast(`No AA found matching "${input}"`, 'error');
+      return;
+    }
+
+    // Get unique employee ID (may have multiple path records)
+    const employeeId = matches[0].employeeId;
+    const employeeName = matches[0].employeeName;
+
+    // Store selected AA
+    state.selectedAA = {
+      id: employeeId,
+      name: employeeName,
+      records: state.performanceData.filter(r => r.employeeId === employeeId)
+    };
+
+    // Display details
+    displayAADetails(state.selectedAA, state.selectedLookupPath);
+    showToast(`Found ${state.selectedAA.records.length} path record(s) for ${employeeName || employeeId}`, 'success');
+  }
+
+  /**
+   * Display AA details in the detail panel
+   */
+  function displayAADetails(aa, selectedPath) {
+    const panel = elements.aaDetailPanel;
+
+    // Show panel
+    panel.style.display = 'block';
+
+    // Set AA info
+    elements.aaDetailName.textContent = aa.name || aa.id;
+    elements.aaDetailId.textContent = `Badge: ${aa.id}`;
+
+    // Filter records by selected path
+    let records = aa.records;
+    if (selectedPath !== 'all') {
+      records = records.filter(r => r.pathId === selectedPath);
+    }
+
+    // Update path display
+    if (selectedPath === 'all') {
+      elements.aaDetailPath.textContent = `All Paths (${aa.records.length} total)`;
+    } else {
+      const pathConfig = PATH_CONFIG[selectedPath];
+      elements.aaDetailPath.textContent = pathConfig ? pathConfig.name : selectedPath;
+      elements.aaDetailPath.style.color = pathConfig ? pathConfig.color : 'inherit';
+    }
+
+    // Calculate metrics
+    if (records.length === 0) {
+      // No data for selected path
+      elements.metricJPH.textContent = '--';
+      elements.metricAvgJPH.textContent = '--';
+      elements.metricHours.textContent = '--';
+      elements.metricAvgHours.textContent = '--';
+      elements.metricSessions.textContent = '0';
+      elements.metricJobs.textContent = '--';
+      updateComparisonBars(null, selectedPath);
+      return;
+    }
+
+    const totalHours = records.reduce((sum, r) => sum + (r.hours || 0), 0);
+    const totalJobs = records.reduce((sum, r) => sum + (r.jobs || 0), 0);
+    const jphValues = records.filter(r => r.jph > 0).map(r => r.jph);
+    const avgJPH = jphValues.length > 0 ? jphValues.reduce((a, b) => a + b, 0) / jphValues.length : 0;
+    const currentJPH = records.length > 0 ? records[0].jph : 0;
+    const avgHoursPerSession = totalHours / records.length;
+
+    // Update metrics display
+    elements.metricJPH.textContent = currentJPH.toFixed(1);
+    elements.metricAvgJPH.textContent = avgJPH.toFixed(1);
+    elements.metricHours.textContent = totalHours.toFixed(1) + 'h';
+    elements.metricAvgHours.textContent = avgHoursPerSession.toFixed(1) + 'h';
+    elements.metricSessions.textContent = records.length;
+    elements.metricJobs.textContent = totalJobs.toLocaleString();
+
+    // Update comparison bars
+    updateComparisonBars(aa, selectedPath);
+
+    // Show path history if viewing all paths
+    if (selectedPath === 'all' && aa.records.length > 1) {
+      elements.pathHistory.style.display = 'block';
+      renderPathHistory(aa.records);
+    } else {
+      elements.pathHistory.style.display = 'none';
+    }
+
+    // Scroll to panel
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /**
+   * Update comparison bars showing AA vs path average
+   */
+  function updateComparisonBars(aa, selectedPath) {
+    // Get all AAs in the selected path for comparison
+    let pathRecords;
+    if (selectedPath === 'all') {
+      pathRecords = state.performanceData;
+    } else {
+      pathRecords = state.performanceData.filter(r => r.pathId === selectedPath);
+    }
+
+    if (pathRecords.length === 0 || !aa) {
+      elements.compBarAAJPH.style.width = '0%';
+      elements.compBarAvgJPH.style.width = '0%';
+      elements.compValAAJPH.textContent = '--';
+      elements.compValAvgJPH.textContent = '--';
+      elements.compBarAAHours.style.width = '0%';
+      elements.compBarAvgHours.style.width = '0%';
+      elements.compValAAHours.textContent = '--';
+      elements.compValAvgHours.textContent = '--';
+      elements.rankNumber.textContent = '#--';
+      elements.rankTotal.textContent = 'of --';
+      return;
+    }
+
+    // Calculate path averages
+    const uniqueEmployees = new Map();
+    pathRecords.forEach(r => {
+      if (!uniqueEmployees.has(r.employeeId)) {
+        uniqueEmployees.set(r.employeeId, { jphSum: 0, jphCount: 0, hoursSum: 0 });
+      }
+      const emp = uniqueEmployees.get(r.employeeId);
+      if (r.jph > 0) {
+        emp.jphSum += r.jph;
+        emp.jphCount += 1;
+      }
+      emp.hoursSum += r.hours || 0;
+    });
+
+    // Get AA's metrics for selected path
+    let aaRecords = aa.records;
+    if (selectedPath !== 'all') {
+      aaRecords = aaRecords.filter(r => r.pathId === selectedPath);
+    }
+
+    const aaJPH = aaRecords.length > 0 && aaRecords[0].jph > 0 ? aaRecords[0].jph : 0;
+    const aaHours = aaRecords.reduce((sum, r) => sum + (r.hours || 0), 0);
+
+    // Calculate averages
+    const allJPHs = [];
+    const allHours = [];
+    uniqueEmployees.forEach((emp, empId) => {
+      if (emp.jphCount > 0) {
+        allJPHs.push({ id: empId, jph: emp.jphSum / emp.jphCount });
+      }
+      allHours.push({ id: empId, hours: emp.hoursSum });
+    });
+
+    const avgJPH = allJPHs.length > 0 ? allJPHs.reduce((sum, e) => sum + e.jph, 0) / allJPHs.length : 0;
+    const avgHours = allHours.length > 0 ? allHours.reduce((sum, e) => sum + e.hours, 0) / allHours.length : 0;
+
+    // Calculate max for scaling bars
+    const maxJPH = Math.max(aaJPH, avgJPH, 1);
+    const maxHours = Math.max(aaHours, avgHours, 1);
+
+    // Update JPH bars
+    elements.compBarAAJPH.style.width = `${(aaJPH / maxJPH) * 100}%`;
+    elements.compBarAvgJPH.style.width = `${(avgJPH / maxJPH) * 100}%`;
+    elements.compValAAJPH.textContent = aaJPH.toFixed(1);
+    elements.compValAvgJPH.textContent = avgJPH.toFixed(1) + ' avg';
+
+    // Update Hours bars
+    elements.compBarAAHours.style.width = `${(aaHours / maxHours) * 100}%`;
+    elements.compBarAvgHours.style.width = `${(avgHours / maxHours) * 100}%`;
+    elements.compValAAHours.textContent = aaHours.toFixed(1) + 'h';
+    elements.compValAvgHours.textContent = avgHours.toFixed(1) + 'h avg';
+
+    // Calculate ranking by JPH
+    allJPHs.sort((a, b) => b.jph - a.jph);
+    const rank = allJPHs.findIndex(e => e.id === aa.id) + 1;
+    elements.rankNumber.textContent = rank > 0 ? `#${rank}` : '#--';
+    elements.rankTotal.textContent = `of ${allJPHs.length}`;
+    elements.rankDescription.textContent = selectedPath === 'all' ? 'overall by JPH' : `in ${PATH_CONFIG[selectedPath]?.name || selectedPath} by JPH`;
+  }
+
+  /**
+   * Render path history table for AA
+   */
+  function renderPathHistory(records) {
+    // Group by path
+    const pathGroups = {};
+    records.forEach(r => {
+      if (!pathGroups[r.pathId]) {
+        pathGroups[r.pathId] = {
+          pathId: r.pathId,
+          pathName: r.pathName,
+          pathColor: r.pathColor,
+          records: []
+        };
+      }
+      pathGroups[r.pathId].records.push(r);
+    });
+
+    // Render
+    elements.pathHistoryTable.innerHTML = Object.values(pathGroups).map(group => {
+      const totalHours = group.records.reduce((sum, r) => sum + (r.hours || 0), 0);
+      const totalJobs = group.records.reduce((sum, r) => sum + (r.jobs || 0), 0);
+      const avgJPH = group.records.filter(r => r.jph > 0).length > 0
+        ? group.records.filter(r => r.jph > 0).reduce((sum, r) => sum + r.jph, 0) / group.records.filter(r => r.jph > 0).length
+        : 0;
+
+      return `
+        <div class="path-history-row">
+          <span class="path-name" style="color: ${group.pathColor}">${group.pathName}</span>
+          <div class="path-stats">
+            <div class="stat">
+              <span class="stat-value">${group.records.length}</span>
+              <span class="stat-label">Sessions</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">${totalHours.toFixed(1)}h</span>
+              <span class="stat-label">Hours</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">${totalJobs.toLocaleString()}</span>
+              <span class="stat-label">Jobs</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">${avgJPH.toFixed(1)}</span>
+              <span class="stat-label">Avg JPH</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /**
+   * Close AA detail panel
+   */
+  function closeAADetailPanel() {
+    elements.aaDetailPanel.style.display = 'none';
+    state.selectedAA = null;
   }
 
   /**
