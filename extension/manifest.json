@@ -10,9 +10,6 @@
     "storage",
     "tabs",
     "*://fclm-portal.amazon.com/*",
-    "*://fclm-iad-portal.amazon.com/*",
-    "*://fclm*.amazon.com/*",
-    "*://rodeo-iad.amazon.com/*",
     "*://fcmenu-iad-regionalized.corp.amazon.com/*"
   ],
 
@@ -25,8 +22,6 @@
     {
       "matches": [
         "*://fclm-portal.amazon.com/*",
-        "*://fclm-iad-portal.amazon.com/*",
-        "*://fclm*.amazon.com/*",
         "*://fcmenu-iad-regionalized.corp.amazon.com/*"
       ],
       "js": ["content/fclm.js"],
