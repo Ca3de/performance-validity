@@ -161,11 +161,13 @@
         return getShiftDateRange();
 
       case 'week':
-        // This week (Sunday to today)
+        // This week (Sunday to Saturday)
         startDate = new Date(now);
         startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
         startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(now);
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 7); // End of week (exclusive)
+        endDate.setHours(0, 0, 0, 0);
         spanType = 'Week';
         break;
 
@@ -175,30 +177,49 @@
         startDate.setDate(startDate.getDate() - startDate.getDay() - 7); // Go to last Sunday
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 6); // Saturday
+        endDate.setDate(endDate.getDate() + 7); // End of week (exclusive)
+        endDate.setHours(0, 0, 0, 0);
         spanType = 'Week';
         break;
 
       case 'month':
-        // This month
+        // This month (1st of month to 1st of next month)
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        endDate = new Date(now);
-        spanType = 'Week';
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        endDate.setHours(0, 0, 0, 0);
+        spanType = 'Month';
         break;
 
       case 'lastMonth':
-        // Last month
+        // Last month (1st of last month to 1st of this month)
         startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        endDate = new Date(now.getFullYear(), now.getMonth(), 0); // Last day of previous month
-        spanType = 'Week';
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate.setHours(0, 0, 0, 0);
+        spanType = 'Month';
         break;
 
       case 'custom':
         startDate = customStart || new Date();
         endDate = customEnd || new Date();
-        // Use Week span for ranges > 1 day
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+        // Calculate days difference to determine span type
         const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-        spanType = daysDiff > 1 ? 'Week' : 'Intraday';
+        if (daysDiff <= 1) {
+          spanType = 'Intraday';
+        } else if (daysDiff <= 7) {
+          spanType = 'Week';
+          // Adjust endDate to be exclusive (add 1 day)
+          endDate = new Date(endDate);
+          endDate.setDate(endDate.getDate() + 1);
+        } else {
+          spanType = 'Month';
+          // Adjust endDate to be exclusive (add 1 day)
+          endDate = new Date(endDate);
+          endDate.setDate(endDate.getDate() + 1);
+        }
         break;
 
       default:
@@ -362,18 +383,26 @@
     const spanType = range.spanType || 'Intraday';
 
     const url = new URL('https://fclm-portal.amazon.com/reports/functionRollup');
-    url.searchParams.set('reportFormat', 'HTML');
     url.searchParams.set('warehouseId', warehouseId);
-    url.searchParams.set('processId', processId);
+    url.searchParams.set('reportFormat', 'HTML');
 
-    if (spanType === 'Week') {
-      // Week span - for multi-day queries
-      // FCLM Week span only needs startDateWeek, it calculates the week automatically
-      url.searchParams.set('spanType', 'Week');
-      url.searchParams.set('startDateWeek', formatDateForURL(range.startDate));
-      // Note: endDateWeek is NOT used by FCLM for Week span
+    // Format date as ISO string for Week/Month spans
+    const formatDateISO = (date) => {
+      const d = new Date(date);
+      return d.toISOString().split('.')[0] + '.000';  // 2026-01-04T00:00:00.000
+    };
+
+    if (spanType === 'Week' || spanType === 'Month') {
+      // Week/Month span - use startDate and endDate in ISO format
+      // Process ID needs leading 0 for Week/Month spans
+      url.searchParams.set('processId', '0' + processId);
+      url.searchParams.set('spanType', spanType);
+      url.searchParams.set('startDate', formatDateISO(range.startDate));
+      url.searchParams.set('endDate', formatDateISO(range.endDate));
     } else {
       // Intraday span - for single day/shift queries
+      // Intraday uses processId without leading 0
+      url.searchParams.set('processId', processId);
       url.searchParams.set('spanType', 'Intraday');
       url.searchParams.set('maxIntradayDays', '1');
       url.searchParams.set('startDateIntraday', formatDateForURL(range.startDate));
