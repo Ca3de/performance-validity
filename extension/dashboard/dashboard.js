@@ -627,18 +627,23 @@
       return;
     }
 
-    // Calculate path averages
+    // Calculate path averages using total jobs / total hours (more accurate than averaging JPH values)
     const uniqueEmployees = new Map();
+    let pathTotalJobs = 0;
+    let pathTotalHours = 0;
+
     pathRecords.forEach(r => {
       if (!uniqueEmployees.has(r.employeeId)) {
-        uniqueEmployees.set(r.employeeId, { jphSum: 0, jphCount: 0, hoursSum: 0 });
+        uniqueEmployees.set(r.employeeId, { jobsSum: 0, hoursSum: 0 });
       }
       const emp = uniqueEmployees.get(r.employeeId);
-      if (r.jph > 0) {
-        emp.jphSum += r.jph;
-        emp.jphCount += 1;
+      // Only count records with reasonable data (sanity check: JPH < 500)
+      if (r.jobs > 0 && r.hours > 0 && (r.jph < 500 || r.jph === 0)) {
+        emp.jobsSum += r.jobs;
+        emp.hoursSum += r.hours;
+        pathTotalJobs += r.jobs;
+        pathTotalHours += r.hours;
       }
-      emp.hoursSum += r.hours || 0;
     });
 
     // Get AA's metrics for selected path
@@ -647,21 +652,13 @@
       aaRecords = aaRecords.filter(r => r.pathId === selectedPath);
     }
 
-    const aaJPH = aaRecords.length > 0 && aaRecords[0].jph > 0 ? aaRecords[0].jph : 0;
+    const aaJobs = aaRecords.reduce((sum, r) => sum + (r.jobs || 0), 0);
     const aaHours = aaRecords.reduce((sum, r) => sum + (r.hours || 0), 0);
+    const aaJPH = aaHours > 0 ? aaJobs / aaHours : 0;
 
-    // Calculate averages
-    const allJPHs = [];
-    const allHours = [];
-    uniqueEmployees.forEach((emp, empId) => {
-      if (emp.jphCount > 0) {
-        allJPHs.push({ id: empId, jph: emp.jphSum / emp.jphCount });
-      }
-      allHours.push({ id: empId, hours: emp.hoursSum });
-    });
-
-    const avgJPH = allJPHs.length > 0 ? allJPHs.reduce((sum, e) => sum + e.jph, 0) / allJPHs.length : 0;
-    const avgHours = allHours.length > 0 ? allHours.reduce((sum, e) => sum + e.hours, 0) / allHours.length : 0;
+    // Calculate path average JPH as total jobs / total hours
+    const avgJPH = pathTotalHours > 0 ? pathTotalJobs / pathTotalHours : 0;
+    const avgHours = uniqueEmployees.size > 0 ? pathTotalHours / uniqueEmployees.size : 0;
 
     // Calculate max for scaling bars
     const maxJPH = Math.max(aaJPH, avgJPH, 1);
