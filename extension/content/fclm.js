@@ -386,10 +386,17 @@
     url.searchParams.set('warehouseId', warehouseId);
     url.searchParams.set('reportFormat', 'HTML');
 
-    // Format date as ISO string for Week/Month spans
+    // Format date as ISO-like string in LOCAL timezone for Week/Month spans
+    // IMPORTANT: Do NOT use toISOString() as it converts to UTC, causing date shifts
     const formatDateISO = (date) => {
       const d = new Date(date);
-      return d.toISOString().split('.')[0] + '.000';  // 2026-01-04T00:00:00.000
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      const seconds = String(d.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
     };
 
     if (spanType === 'Week' || spanType === 'Month') {
@@ -414,6 +421,7 @@
     }
 
     log(`Fetching function rollup (${spanType}):`, url.toString());
+    log(`  Date range: ${range.startDate} to ${range.endDate}`);
 
     try {
       const response = await fetch(url.toString(), { credentials: 'include' });
