@@ -161,15 +161,13 @@
         return getShiftDateRange();
 
       case 'week':
-        // This week (Sunday to now+1 day to include ongoing shift)
+        // This week (Sunday to now) - use Intraday for real-time data
         startDate = new Date(now);
         startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
         startDate.setHours(0, 0, 0, 0);
-        // End date is tomorrow to include current ongoing shift
         endDate = new Date(now);
-        endDate.setDate(endDate.getDate() + 1);
-        endDate.setHours(0, 0, 0, 0);
-        spanType = 'Week';
+        // Use Intraday span to get real-time data for current week
+        spanType = 'Intraday';
         break;
 
       case 'lastWeek':
@@ -184,14 +182,12 @@
         break;
 
       case 'month':
-        // This month (1st of month to now+1 day to include ongoing shift)
+        // This month (1st of month to now) - use Intraday for real-time data
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate.setHours(0, 0, 0, 0);
-        // End date is tomorrow to include current ongoing shift
         endDate = new Date(now);
-        endDate.setDate(endDate.getDate() + 1);
-        endDate.setHours(0, 0, 0, 0);
-        spanType = 'Month';
+        // Use Intraday span to get real-time data for current month
+        spanType = 'Intraday';
         break;
 
       case 'lastMonth':
@@ -410,17 +406,21 @@
       url.searchParams.set('startDate', formatDateISO(range.startDate));
       url.searchParams.set('endDate', formatDateISO(range.endDate));
     } else {
-      // Intraday span - for single day/shift queries
+      // Intraday span - for single/multi day queries with real-time data
       // Intraday uses processId without leading 0
       url.searchParams.set('processId', processId);
       url.searchParams.set('spanType', 'Intraday');
-      url.searchParams.set('maxIntradayDays', '1');
+
+      // Calculate days difference for maxIntradayDays
+      const daysDiff = Math.ceil((range.endDate - range.startDate) / (1000 * 60 * 60 * 24)) + 1;
+      url.searchParams.set('maxIntradayDays', String(Math.max(1, daysDiff)));
+
       url.searchParams.set('startDateIntraday', formatDateForURL(range.startDate));
       url.searchParams.set('startHourIntraday', String(range.startHour || 0));
       url.searchParams.set('startMinuteIntraday', '0');
       url.searchParams.set('endDateIntraday', formatDateForURL(range.endDate));
       url.searchParams.set('endHourIntraday', String(range.endHour || 23));
-      url.searchParams.set('endMinuteIntraday', '0');
+      url.searchParams.set('endMinuteIntraday', '59');
     }
 
     log(`Fetching function rollup (${spanType}):`, url.toString());
