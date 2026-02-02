@@ -483,16 +483,26 @@
 
       // Known sub-function patterns to look for
       const knownPatterns = [
+        // Pick patterns
         /FRACS\s+(?:Multis|Singles|LTL)\s+Pick/i,
         /Liquidations?\s+Pick/i,
         /WHD\s+(?:Pick|Grading|SpecialtyGrading)/i,
         /(?:Multis|Singles)\s*\[\d+\]/i,
+        /Remove\s+Hazmat/i,
+        // Pack patterns
         /Pack(?:ing|nHold|Singles|FracsLTL)/i,
         /V-Returns\s+Pack/i,
-        /Stow\s+C\s+Returns/i,
+        /Pack\s+Singles/i,
+        /Pack\s+FracsLTL/i,
+        // Stow patterns - multiple variations
+        /Stow\s+C[\s-]*Returns/i,
+        /C[\s-]*Returns\s+Stow/i,
+        /C-Returns\s+Stow/i,
+        /Stow\s*\[\d+\]/i,
+        // Support patterns
         /C-Returns[_\s]+EndofLine/i,
         /V-Returns\s+Support/i,
-        /Remove\s+Hazmat/i
+        /C-Returns\s+Support/i
       ];
 
       // Helper to extract function name from text using patterns
