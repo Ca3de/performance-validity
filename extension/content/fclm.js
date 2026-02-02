@@ -541,16 +541,30 @@
         const subHeaders = Array.from(subCells).map(c => c.textContent.trim());
         log(`  Sub-header row: ${subHeaders.join(' | ')}`);
 
-        // Find the starting column offset - sub-headers start at the first grouped column
-        // (because Type, ID, Name, Manager have rowspan=2 and don't appear in sub-header row)
+        // Determine which group the sub-headers belong to by checking content
+        // Jobs/JPH/EACH are under ItemPicked, not Paid Hours
+        const firstSubText = cleanHeaderText(subCells[0]?.textContent);
         let startOffset = 0;
-        for (const col of columnMap) {
-          if (col.isGroup) {
-            startOffset = col.startCol;
-            break;
+
+        // If sub-header starts with jobs/jph/each, it's for ItemPicked group
+        if (firstSubText === 'jobs' || firstSubText === 'jph' || firstSubText.startsWith('each')) {
+          // Find the ItemPicked group
+          for (const col of columnMap) {
+            if (col.isGroup && (col.header.includes('item') || col.header.includes('picked'))) {
+              startOffset = col.startCol;
+              break;
+            }
+          }
+        } else {
+          // Otherwise start from the first grouped column (Paid Hours)
+          for (const col of columnMap) {
+            if (col.isGroup) {
+              startOffset = col.startCol;
+              break;
+            }
           }
         }
-        log(`  Sub-header starts at column offset: ${startOffset}`);
+        log(`  Sub-header starts at column offset: ${startOffset} (first sub: "${firstSubText}")`);
 
         // Iterate through all sub-header cells and track actual column position
         let subColIndex = startOffset;
