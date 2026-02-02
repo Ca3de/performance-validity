@@ -535,36 +535,33 @@
         }
       }
 
-      // If we have a sub-header row, check for Jobs/JPH there too
+      // If we have a sub-header row, parse ALL sub-headers to find Jobs/JPH
       if (subHeaderRow && (jobsColumnIndex === -1 || jphColumnIndex === -1)) {
         const { cells: subCells } = subHeaderRow;
+        const subHeaders = Array.from(subCells).map(c => c.textContent.trim());
+        log(`  Sub-header row: ${subHeaders.join(' | ')}`);
+
+        // Iterate through all sub-header cells and track actual column position
         let subColIndex = 0;
+        for (let s = 0; s < subCells.length; s++) {
+          const subText = cleanHeaderText(subCells[s]?.textContent);
+          const subColspan = parseInt(subCells[s]?.getAttribute('colspan')) || 1;
 
-        // Need to align sub-header positions with main header colspan
-        let mainColOffset = 0;
-        for (const col of columnMap) {
-          if (col.isGroup) {
-            // This is where sub-headers apply
-            for (let s = 0; s < subCells.length && subColIndex < col.startCol + col.colspan; s++) {
-              const subText = cleanHeaderText(subCells[s]?.textContent);
-              const subColspan = parseInt(subCells[s]?.getAttribute('colspan')) || 1;
+          log(`    Sub[${s}] col=${subColIndex}: "${subText}"`);
 
-              if (subColIndex >= col.startCol) {
-                if ((subText === 'jobs' || subText === 'job') && jobsColumnIndex === -1) {
-                  jobsColumnIndex = subColIndex;
-                  log(`  Found Jobs in sub-header at col ${subColIndex}`);
-                }
-                if ((subText === 'jph' || subText.includes('jobs/hr')) && jphColumnIndex === -1) {
-                  jphColumnIndex = subColIndex;
-                  log(`  Found JPH in sub-header at col ${subColIndex}`);
-                }
-                if (subText === 'total' && totalColumnIndex === -1) {
-                  totalColumnIndex = subColIndex;
-                }
-              }
-              subColIndex += subColspan;
-            }
+          if ((subText === 'jobs' || subText === 'job') && jobsColumnIndex === -1) {
+            jobsColumnIndex = subColIndex;
+            log(`    -> Found Jobs at col ${subColIndex}`);
           }
+          if ((subText === 'jph' || subText.includes('jobs/hr') || subText.includes('jobs per')) && jphColumnIndex === -1) {
+            jphColumnIndex = subColIndex;
+            log(`    -> Found JPH at col ${subColIndex}`);
+          }
+          if (subText === 'total' && totalColumnIndex === -1) {
+            totalColumnIndex = subColIndex;
+          }
+
+          subColIndex += subColspan;
         }
       }
 
