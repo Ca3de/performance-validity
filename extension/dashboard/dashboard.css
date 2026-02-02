@@ -1029,6 +1029,473 @@ table td:nth-child(2) {
   color: var(--text-secondary);
 }
 
+/* ============================================
+   GAME-STYLE PLAYER CARD
+   FM26/FIFA Inspired Design
+   ============================================ */
+
+.player-card {
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border: none;
+  border-radius: 16px;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(79, 172, 254, 0.1);
+}
+
+.player-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: linear-gradient(90deg, rgba(79, 172, 254, 0.2) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-rating-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #4facfe 0%, #00f2fe 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(79, 172, 254, 0.4);
+  flex-shrink: 0;
+}
+
+.player-rating-circle .rating-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a2e;
+  line-height: 1;
+}
+
+.player-rating-circle .rating-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #1a1a2e;
+  opacity: 0.8;
+}
+
+.player-card .player-info {
+  flex: 1;
+}
+
+.player-card .player-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #fff;
+}
+
+.player-card .player-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.player-card .badge-id {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: monospace;
+}
+
+.player-card .player-position {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  background: rgba(79, 172, 254, 0.3);
+  border-radius: 20px;
+  color: #4facfe;
+}
+
+.player-card .close-btn {
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.player-card .close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Tier Badge */
+.tier-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tier-badge .tier-icon {
+  font-size: 20px;
+}
+
+.tier-badge .tier-name {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ffd700;
+}
+
+/* Stats Grid */
+.player-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.stat-hexagon {
+  text-align: center;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-hexagon:hover {
+  background: rgba(79, 172, 254, 0.1);
+  border-color: rgba(79, 172, 254, 0.3);
+  transform: translateY(-2px);
+}
+
+.stat-hexagon .stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4facfe;
+  margin-bottom: 4px;
+}
+
+.stat-hexagon .stat-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.stat-hexagon .stat-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stat-hexagon .stat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* VS Comparison */
+.vs-comparison {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.vs-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 2px;
+}
+
+.vs-path {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  background: rgba(79, 172, 254, 0.2);
+  border-radius: 20px;
+  color: #4facfe;
+}
+
+.vs-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.vs-stat {
+  text-align: center;
+}
+
+.vs-stat .vs-label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 4px;
+}
+
+.vs-stat .vs-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.vs-stat .vs-value.highlight {
+  color: #4facfe;
+}
+
+.vs-divider {
+  font-size: 24px;
+}
+
+.vs-result {
+  text-align: center;
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.vs-result .vs-diff {
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.vs-result .vs-diff.positive { color: #00e676; }
+.vs-result .vs-diff.negative { color: #ff5252; }
+
+.vs-result .vs-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Leaderboard Rank */
+.leaderboard-rank {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rank-display {
+  display: flex;
+  align-items: baseline;
+  background: linear-gradient(145deg, #ffd700, #ffaa00);
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.rank-display .rank-hash {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.rank-display .rank-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.rank-context {
+  flex: 1;
+}
+
+.rank-context .rank-of {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.rank-context .rank-path {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.rank-percentile {
+  text-align: center;
+  padding: 8px 16px;
+  background: rgba(0, 230, 118, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+}
+
+.rank-percentile .percentile-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: #00e676;
+}
+
+.rank-percentile .percentile-label {
+  font-size: 10px;
+  color: rgba(0, 230, 118, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Sub-Path Section */
+.subpath-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subpath-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.subpath-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.subpath-toggle .toggle-icon {
+  transition: transform 0.3s;
+}
+
+.subpath-toggle.expanded .toggle-icon {
+  transform: rotate(90deg);
+}
+
+.subpath-toggle .toggle-text {
+  flex: 1;
+  text-align: left;
+}
+
+.subpath-toggle .subpath-count {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: rgba(79, 172, 254, 0.2);
+  border-radius: 12px;
+  color: #4facfe;
+}
+
+.subpath-details {
+  padding: 0 24px 20px;
+}
+
+.subpath-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subpath-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #4facfe;
+}
+
+.subpath-item .subpath-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.subpath-item .subpath-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.subpath-item .subpath-stat {
+  text-align: center;
+}
+
+.subpath-item .subpath-stat-value {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #4facfe;
+}
+
+.subpath-item .subpath-stat-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.subpath-item .subpath-rank {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  color: #ffd700;
+}
+
+/* Path History in Player Card */
+.player-card .path-history {
+  padding: 20px 24px;
+  border-top: none;
+  margin-top: 0;
+}
+
+.player-card .path-history h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16px;
+}
+
+.player-card .path-history h3 svg {
+  fill: #4facfe;
+}
+
+.player-card .path-history-table {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.player-card .path-history-row {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.player-card .path-history-row:last-child {
+  border-bottom: none;
+}
+
+.player-card .path-history-row .path-color-dot {
+  background: #4facfe;
+}
+
+.player-card .path-history-row .path-name {
+  color: #fff;
+}
+
+.player-card .path-history-row .stat-value {
+  color: #4facfe;
+}
+
+.player-card .path-history-row .stat-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .app-header {
