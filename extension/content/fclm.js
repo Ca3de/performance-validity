@@ -368,9 +368,10 @@
 
     if (spanType === 'Week') {
       // Week span - for multi-day queries
+      // FCLM Week span only needs startDateWeek, it calculates the week automatically
       url.searchParams.set('spanType', 'Week');
       url.searchParams.set('startDateWeek', formatDateForURL(range.startDate));
-      url.searchParams.set('endDateWeek', formatDateForURL(range.endDate));
+      // Note: endDateWeek is NOT used by FCLM for Week span
     } else {
       // Intraday span - for single day/shift queries
       url.searchParams.set('spanType', 'Intraday');
@@ -1110,16 +1111,35 @@
    */
   async function fetchPerformanceDataForRange(period, customStart = null, customEnd = null) {
     log(`Fetching performance data for period: ${period}`);
+    log(`Custom dates: start=${customStart}, end=${customEnd}`);
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
 
     // Get date range for the selected period
     let dateRange;
     if (period === 'custom' && customStart && customEnd) {
-      dateRange = getDateRangeForPeriod('custom', new Date(customStart), new Date(customEnd));
+      // Parse dates - handle both YYYY/MM/DD and YYYY-MM-DD formats
+      const parseDate = (dateStr) => {
+        if (!dateStr) return new Date();
+        // Convert YYYY/MM/DD to YYYY-MM-DD for reliable parsing
+        const normalized = String(dateStr).replace(/\//g, '-');
+        const parsed = new Date(normalized);
+        log(`  Parsed date: "${dateStr}" -> "${normalized}" -> ${parsed.toISOString()}`);
+        return parsed;
+      };
+      dateRange = getDateRangeForPeriod('custom', parseDate(customStart), parseDate(customEnd));
     } else {
       dateRange = getDateRangeForPeriod(period);
     }
+
+    log(`Date range: ${JSON.stringify({
+      startDate: dateRange.startDate?.toISOString?.() || dateRange.startDate,
+      endDate: dateRange.endDate?.toISOString?.() || dateRange.endDate,
+      spanType: dateRange.spanType,
+      startHour: dateRange.startHour,
+      endHour: dateRange.endHour
+    })}`);
+
 
     const performanceData = [];
     const allEmployees = new Map();
