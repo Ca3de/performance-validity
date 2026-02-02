@@ -739,16 +739,17 @@
         log(`  Sub-header row: ${subHeaders.join(' | ')}`);
 
         // Determine which group the sub-headers belong to by checking content
-        // Jobs/JPH/EACH are under ItemPicked, not Paid Hours
+        // Jobs/JPH/EACH are under ItemPicked (Pick) or EachStowed (Stow), not Paid Hours
         const firstSubText = cleanHeaderText(subCells[0]?.textContent);
         let startOffset = 0;
 
-        // If sub-header starts with jobs/jph/each, it's for ItemPicked group
+        // If sub-header starts with jobs/jph/each, it's for the job action group (ItemPicked or EachStowed)
         if (firstSubText === 'jobs' || firstSubText === 'jph' || firstSubText.startsWith('each')) {
-          // Find the ItemPicked group
+          // Find the job action group (ItemPicked for Pick, EachStowed for Stow)
           for (const col of columnMap) {
-            if (col.isGroup && (col.header.includes('item') || col.header.includes('picked'))) {
+            if (col.isGroup && (col.header.includes('item') || col.header.includes('picked') || col.header.includes('stowed') || col.header.includes('each'))) {
               startOffset = col.startCol;
+              log(`  Found job action group "${col.header}" at col ${col.startCol}`);
               break;
             }
           }
