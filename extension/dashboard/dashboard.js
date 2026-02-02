@@ -589,8 +589,22 @@
       records = records.filter(r => r.pathId === selectedPath);
     }
 
-    // Get path name
-    const pathName = selectedPath === 'all' ? 'All Paths' : (PATH_CONFIG[selectedPath]?.name || selectedPath);
+    // Get path name - use actual sub-function names if available
+    let pathName = 'All Paths';
+    if (selectedPath !== 'all') {
+      // Get unique sub-function names for this path
+      const subFunctionNames = [...new Set(records.map(r => r.pathName).filter(n => n))];
+      if (subFunctionNames.length === 1) {
+        // Single sub-function - show its name
+        pathName = subFunctionNames[0];
+      } else if (subFunctionNames.length > 1) {
+        // Multiple sub-functions - show parent path with count
+        pathName = `${PATH_CONFIG[selectedPath]?.name || selectedPath} (${subFunctionNames.length} sub-functions)`;
+      } else {
+        // Fallback to parent path name
+        pathName = PATH_CONFIG[selectedPath]?.name || selectedPath;
+      }
+    }
     elements.aaDetailPath.textContent = pathName;
 
     // Calculate metrics
