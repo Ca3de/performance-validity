@@ -430,6 +430,20 @@
     const tables = doc.querySelectorAll('table');
     log(`Found ${tables.length} tables in function rollup response`);
 
+    // Debug: Log all potential section headings in the document
+    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, b, strong, .title, .header, .function-name');
+    const headingTexts = Array.from(headings).map(h => h.textContent.trim().substring(0, 80)).filter(t => t.length > 0 && t.length < 80);
+    log('Document headings:', headingTexts.slice(0, 15).join(' | '));
+
+    // Debug: Look for any text containing sub-function keywords
+    const bodyText = doc.body?.innerHTML || '';
+    const subFuncMatches = bodyText.match(/(Multis|Singles|LTL|Liquidation|WHD|Hazmat|PacknHold|Packing|FRACS|Stow C|EndofLine)[^<]*/gi);
+    if (subFuncMatches) {
+      log('Sub-function matches in HTML:', subFuncMatches.slice(0, 10).join(' | '));
+    } else {
+      log('No sub-function keyword matches found in HTML');
+    }
+
     tables.forEach((table, tableIndex) => {
       const rows = table.querySelectorAll('tr');
       let totalColumnIndex = -1;
@@ -443,13 +457,38 @@
       // Try to find the sub-function name for this table
       let subFunctionName = '';
 
+      // Known sub-function keywords to look for
+      const knownSubFunctions = [
+        'Multis', 'Singles', 'LTL', 'Liquidation', 'WHD', 'Hazmat', 'Remove',
+        'PacknHold', 'Packing', 'FracsLTL', 'FRACS', 'ILS',
+        'Stow C Returns', 'EndofLine', 'Support'
+      ];
+
+      // Helper to check if text contains a known sub-function
+      const findSubFunction = (text) => {
+        if (!text) return '';
+        for (const keyword of knownSubFunctions) {
+          if (text.toLowerCase().includes(keyword.toLowerCase())) {
+            return text.trim();
+          }
+        }
+        return '';
+      };
+
       // Method 1: Check for caption element
       const caption = table.querySelector('caption');
       if (caption) {
         subFunctionName = caption.textContent.trim();
       }
 
-      // Method 2: Check for a title row (first row with single cell spanning all columns)
+      // Method 2: Check table id or class for function name
+      if (!subFunctionName) {
+        const tableId = table.getAttribute('id') || '';
+        const tableClass = table.getAttribute('class') || '';
+        subFunctionName = findSubFunction(tableId) || findSubFunction(tableClass);
+      }
+
+      // Method 3: Check for a title row (first row with single cell spanning all columns)
       if (!subFunctionName) {
         const firstRow = rows[0];
         if (firstRow) {
@@ -464,14 +503,20 @@
         }
       }
 
-      // Method 3: Look at preceding sibling elements for a heading
+      // Method 4: Look at preceding sibling elements for a heading or text with sub-function name
       if (!subFunctionName) {
         let prevElement = table.previousElementSibling;
-        for (let i = 0; i < 3 && prevElement; i++) {
-          const tagName = prevElement.tagName?.toLowerCase();
-          if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3' || tagName === 'h4' || tagName === 'div') {
-            const text = prevElement.textContent.trim();
-            if (text && text.length < 100 && !text.includes('Color Scheme')) {
+        for (let i = 0; i < 5 && prevElement; i++) {
+          const text = prevElement.textContent.trim();
+          if (text && text.length < 150 && !text.includes('Color Scheme')) {
+            const found = findSubFunction(text);
+            if (found) {
+              subFunctionName = found;
+              break;
+            }
+            // Also check if it's a short heading that could be the function name
+            const tagName = prevElement.tagName?.toLowerCase();
+            if ((tagName === 'h1' || tagName === 'h2' || tagName === 'h3' || tagName === 'h4' || tagName === 'b' || tagName === 'strong') && text.length < 80) {
               subFunctionName = text;
               break;
             }
@@ -480,7 +525,34 @@
         }
       }
 
-      // Method 4: Check first th row for function name
+      // Method 5: Check parent elements for function name
+      if (!subFunctionName) {
+        let parent = table.parentElement;
+        for (let i = 0; i < 3 && parent; i++) {
+          // Check parent's id, class, or data attributes
+          const parentId = parent.getAttribute('id') || '';
+          const parentClass = parent.getAttribute('class') || '';
+          const found = findSubFunction(parentId) || findSubFunction(parentClass);
+          if (found) {
+            subFunctionName = found;
+            break;
+          }
+          // Check for heading children before the table
+          const headings = parent.querySelectorAll('h1, h2, h3, h4, h5, b, strong');
+          for (const heading of headings) {
+            const text = heading.textContent.trim();
+            const headingFound = findSubFunction(text);
+            if (headingFound) {
+              subFunctionName = headingFound;
+              break;
+            }
+          }
+          if (subFunctionName) break;
+          parent = parent.parentElement;
+        }
+      }
+
+      // Method 6: Check first th row for function name
       if (!subFunctionName) {
         for (const row of rows) {
           const thCells = row.querySelectorAll('th');
@@ -496,7 +568,30 @@
         }
       }
 
-      log(`Table ${tableIndex} sub-function: "${subFunctionName}"`);
+      // Method 7: Look at the document for a section heading that applies to this table
+      if (!subFunctionName) {
+        // Search backwards in the DOM for any text containing known keywords
+        const allElements = doc.body.querySelectorAll('*');
+        const tableIdx = Array.from(allElements).indexOf(table);
+        for (let i = tableIdx - 1; i >= Math.max(0, tableIdx - 20); i--) {
+          const el = allElements[i];
+          if (el.tagName === 'TABLE') break; // Stop if we hit another table
+          const text = el.textContent.trim();
+          if (text.length < 100 && text.length > 3) {
+            const found = findSubFunction(text);
+            if (found) {
+              subFunctionName = found;
+              break;
+            }
+          }
+        }
+      }
+
+      // Log detailed context for debugging
+      const prevSibText = table.previousElementSibling?.textContent?.substring(0, 100) || '(none)';
+      const parentId = table.parentElement?.getAttribute('id') || '(no id)';
+      const parentClass = table.parentElement?.getAttribute('class') || '(no class)';
+      log(`Table ${tableIndex} sub-function: "${subFunctionName}" | prev: "${prevSibText}" | parent: id=${parentId} class=${parentClass}`);
 
       // Helper function to strip sort indicators from header text
       const cleanHeaderText = (text) => {
