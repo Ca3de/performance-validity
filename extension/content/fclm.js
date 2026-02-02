@@ -446,53 +446,68 @@
         return (text || '').replace(/[≠↑↓▲▼]/g, '').trim().toLowerCase();
       };
 
-      // First pass: find header rows and column indices
-      // Handle multi-row headers with colspan by tracking actual data column positions
-      let headerRowsProcessed = 0;
+      // Collect ALL header cells from all rows to build column map
+      const allHeaderRows = [];
       for (const row of rows) {
         const headerCells = row.querySelectorAll('th');
         const tdCells = row.querySelectorAll('td');
 
-        // Check if this is a header row (has th cells or first td is "Type")
+        // Check if this is a header row
         const isThHeader = headerCells.length > 0;
-        const isTdHeader = tdCells.length > 0 && cleanHeaderText(tdCells[0]?.textContent) === 'type';
+        const firstTdText = cleanHeaderText(tdCells[0]?.textContent);
+        const isTdHeader = tdCells.length > 0 && (firstTdText === 'type' || firstTdText === 'amzn');
 
-        if (!isThHeader && !isTdHeader) continue;
+        if (isThHeader) {
+          allHeaderRows.push({ cells: headerCells, type: 'th' });
+        } else if (isTdHeader && firstTdText === 'type') {
+          allHeaderRows.push({ cells: tdCells, type: 'td' });
+        }
 
-        const cells = isThHeader ? headerCells : tdCells;
+        // Stop collecting after finding data rows
+        if (isTdHeader && firstTdText === 'amzn') break;
+      }
+
+      log(`Table ${tableIndex}: Found ${allHeaderRows.length} header rows`);
+
+      // Process header rows to find column indices
+      // Track column positions accounting for colspan in each row
+      for (let rowIdx = 0; rowIdx < allHeaderRows.length; rowIdx++) {
+        const { cells, type } = allHeaderRows[rowIdx];
         const headers = Array.from(cells).map(c => c.textContent.trim());
-        log(`Table ${tableIndex} header row ${headerRowsProcessed} (${isThHeader ? 'th' : 'td'}):`, headers);
+        log(`  Header row ${rowIdx} (${type}):`, headers.join(' | '));
 
-        // Track actual column position accounting for colspan
         let actualColIndex = 0;
         for (let i = 0; i < cells.length; i++) {
           const cell = cells[i];
           const headerText = cleanHeaderText(cell?.textContent);
           const colspan = parseInt(cell?.getAttribute('colspan')) || 1;
+          const rowspan = parseInt(cell?.getAttribute('rowspan')) || 1;
 
-          log(`  Header[${i}] col=${actualColIndex} colspan=${colspan}: "${headerText}"`);
-
-          // Match column names to actual data column positions
+          // Use partial matching for column detection
           if (headerText === 'total' && totalColumnIndex === -1) totalColumnIndex = actualColIndex;
-          if ((headerText === 'id' || headerText === 'badge' || headerText === 'employee id') && idColumnIndex === 1) idColumnIndex = actualColIndex;
-          if ((headerText === 'name' || headerText === 'employee name') && nameColumnIndex === 2) nameColumnIndex = actualColIndex;
-          if ((headerText === 'jobs' || headerText === 'job') && jobsColumnIndex === -1) jobsColumnIndex = actualColIndex;
-          if ((headerText === 'jph' || headerText === 'jobs/hr' || headerText === 'jobs per hour') && jphColumnIndex === -1) jphColumnIndex = actualColIndex;
+          if ((headerText === 'id' || headerText.includes('badge') || headerText === 'employee id') && idColumnIndex === 1) idColumnIndex = actualColIndex;
+          if ((headerText === 'name' || headerText.includes('employee name')) && nameColumnIndex === 2) nameColumnIndex = actualColIndex;
+
+          // Jobs column - match "jobs" exactly or text containing "jobs" but not "jph"
+          if (jobsColumnIndex === -1 && (headerText === 'jobs' || headerText === 'job' || (headerText.includes('jobs') && !headerText.includes('/')))) {
+            jobsColumnIndex = actualColIndex;
+            log(`    Found Jobs at col ${actualColIndex}: "${headerText}"`);
+          }
+
+          // JPH column - match variations
+          if (jphColumnIndex === -1 && (headerText === 'jph' || headerText.includes('jobs/hr') || headerText.includes('jobs per') || headerText.includes('jph'))) {
+            jphColumnIndex = actualColIndex;
+            log(`    Found JPH at col ${actualColIndex}: "${headerText}"`);
+          }
+
           if ((headerText === 'unit' || headerText === 'units') && unitColumnIndex === -1) unitColumnIndex = actualColIndex;
-          if ((headerText === 'uph' || headerText === 'units/hr' || headerText === 'units per hour') && uphColumnIndex === -1) uphColumnIndex = actualColIndex;
+          if ((headerText === 'uph' || headerText.includes('units/hr') || headerText.includes('uph')) && uphColumnIndex === -1) uphColumnIndex = actualColIndex;
 
           actualColIndex += colspan;
         }
-
-        headerRowsProcessed++;
-        log(`After row ${headerRowsProcessed} - Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
-
-        // Stop after processing 2 header rows (multi-row headers)
-        if (headerRowsProcessed >= 2) break;
-
-        // If we found Jobs/JPH in first row, we're done
-        if (jobsColumnIndex !== -1 && jphColumnIndex !== -1) break;
       }
+
+      log(`Table ${tableIndex} final column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`)
 
       // Second pass: parse data rows
       let rowCount = 0;
@@ -507,10 +522,13 @@
         // IMPORTANT: Only process AMZN rows (like scan-check does)
         if (firstCellText !== 'AMZN') continue;
 
-        // Log first data row for debugging
+        // Log first data row for debugging - show ALL cells with indices
         if (rowCount === 0) {
-          const rowData = Array.from(cells).map(c => c.textContent.trim().substring(0, 20));
-          log(`First AMZN row data:`, rowData);
+          log(`First AMZN row has ${cells.length} cells:`);
+          Array.from(cells).forEach((c, idx) => {
+            const val = c.textContent.trim().substring(0, 25);
+            log(`  [${idx}] = "${val}"`);
+          });
         }
         rowCount++;
 
