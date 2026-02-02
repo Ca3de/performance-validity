@@ -659,9 +659,20 @@
     const aaHours = aaRecords.reduce((sum, r) => sum + (r.hours || 0), 0);
     const aaJPH = aaHours > 0 ? aaJobs / aaHours : 0;
 
+    // Build allJPHs array for ranking - calculate each employee's JPH from their totals
+    const allJPHs = [];
+    uniqueEmployees.forEach((emp, empId) => {
+      if (emp.hoursSum > 0) {
+        allJPHs.push({ id: empId, jph: emp.jobsSum / emp.hoursSum });
+      }
+    });
+
     // Calculate path average JPH as total jobs / total hours
     const avgJPH = pathTotalHours > 0 ? pathTotalJobs / pathTotalHours : 0;
     const avgHours = uniqueEmployees.size > 0 ? pathTotalHours / uniqueEmployees.size : 0;
+
+    // Get the path name for display
+    const pathName = selectedPath === 'all' ? 'all paths' : (PATH_CONFIG[selectedPath]?.name || selectedPath);
 
     // Calculate max for scaling bars
     const maxJPH = Math.max(aaJPH, avgJPH, 1);
@@ -684,7 +695,7 @@
     const rank = allJPHs.findIndex(e => e.id === aa.id) + 1;
     elements.rankNumber.textContent = rank > 0 ? `#${rank}` : '#--';
     elements.rankTotal.textContent = `of ${allJPHs.length}`;
-    elements.rankDescription.textContent = selectedPath === 'all' ? 'overall by JPH' : `in ${PATH_CONFIG[selectedPath]?.name || selectedPath} by JPH`;
+    elements.rankDescription.textContent = `in ${pathName} by JPH`;
   }
 
   /**
