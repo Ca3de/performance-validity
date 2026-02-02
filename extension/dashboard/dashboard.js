@@ -275,7 +275,9 @@
         employeeId: record.employeeId,
         employeeName: record.employeeName || record.employeeId,
         pathId: record.pathId,
-        pathName: pathConfig.name || record.pathName || record.pathId,
+        // Prioritize record.pathName (sub-function) over pathConfig.name (parent path)
+        pathName: record.pathName || pathConfig.name || record.pathId,
+        parentPath: record.parentPath || pathConfig.name || record.pathId,
         pathColor: pathConfig.color || record.pathColor || '#666',
         category: record.category || 'Other',
         hours: hours,
