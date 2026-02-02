@@ -446,68 +446,129 @@
         return (text || '').replace(/[≠↑↓▲▼]/g, '').trim().toLowerCase();
       };
 
-      // Collect ALL header cells from all rows to build column map
-      const allHeaderRows = [];
-      for (const row of rows) {
-        const headerCells = row.querySelectorAll('th');
+      // Find the MAIN header row - the one that starts with "Type"
+      // This is the row that defines the actual column structure
+      let mainHeaderRow = null;
+      let subHeaderRow = null;
+
+      for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+        const row = rows[rowIdx];
+        const thCells = row.querySelectorAll('th');
         const tdCells = row.querySelectorAll('td');
 
-        // Check if this is a header row
-        const isThHeader = headerCells.length > 0;
-        const firstTdText = cleanHeaderText(tdCells[0]?.textContent);
-        const isTdHeader = tdCells.length > 0 && (firstTdText === 'type' || firstTdText === 'amzn');
-
-        if (isThHeader) {
-          allHeaderRows.push({ cells: headerCells, type: 'th' });
-        } else if (isTdHeader && firstTdText === 'type') {
-          allHeaderRows.push({ cells: tdCells, type: 'td' });
+        // Check th cells first
+        if (thCells.length > 0) {
+          const firstText = cleanHeaderText(thCells[0]?.textContent);
+          if (firstText === 'type') {
+            mainHeaderRow = { cells: thCells, rowIdx };
+            // Check if next row has sub-headers
+            if (rowIdx + 1 < rows.length) {
+              const nextRow = rows[rowIdx + 1];
+              const nextTh = nextRow.querySelectorAll('th');
+              if (nextTh.length > 0) {
+                subHeaderRow = { cells: nextTh, rowIdx: rowIdx + 1 };
+              }
+            }
+            break;
+          }
         }
 
-        // Stop collecting after finding data rows
-        if (isTdHeader && firstTdText === 'amzn') break;
-      }
-
-      log(`Table ${tableIndex}: Found ${allHeaderRows.length} header rows`);
-
-      // Process header rows to find column indices
-      // Track column positions accounting for colspan in each row
-      for (let rowIdx = 0; rowIdx < allHeaderRows.length; rowIdx++) {
-        const { cells, type } = allHeaderRows[rowIdx];
-        const headers = Array.from(cells).map(c => c.textContent.trim());
-        log(`  Header row ${rowIdx} (${type}):`, headers.join(' | '));
-
-        let actualColIndex = 0;
-        for (let i = 0; i < cells.length; i++) {
-          const cell = cells[i];
-          const headerText = cleanHeaderText(cell?.textContent);
-          const colspan = parseInt(cell?.getAttribute('colspan')) || 1;
-          const rowspan = parseInt(cell?.getAttribute('rowspan')) || 1;
-
-          // Use partial matching for column detection
-          if (headerText === 'total' && totalColumnIndex === -1) totalColumnIndex = actualColIndex;
-          if ((headerText === 'id' || headerText.includes('badge') || headerText === 'employee id') && idColumnIndex === 1) idColumnIndex = actualColIndex;
-          if ((headerText === 'name' || headerText.includes('employee name')) && nameColumnIndex === 2) nameColumnIndex = actualColIndex;
-
-          // Jobs column - match "jobs" exactly or text containing "jobs" but not "jph"
-          if (jobsColumnIndex === -1 && (headerText === 'jobs' || headerText === 'job' || (headerText.includes('jobs') && !headerText.includes('/')))) {
-            jobsColumnIndex = actualColIndex;
-            log(`    Found Jobs at col ${actualColIndex}: "${headerText}"`);
+        // Check td cells
+        if (tdCells.length > 0) {
+          const firstText = cleanHeaderText(tdCells[0]?.textContent);
+          if (firstText === 'type') {
+            mainHeaderRow = { cells: tdCells, rowIdx };
+            break;
           }
-
-          // JPH column - match variations
-          if (jphColumnIndex === -1 && (headerText === 'jph' || headerText.includes('jobs/hr') || headerText.includes('jobs per') || headerText.includes('jph'))) {
-            jphColumnIndex = actualColIndex;
-            log(`    Found JPH at col ${actualColIndex}: "${headerText}"`);
-          }
-
-          if ((headerText === 'unit' || headerText === 'units') && unitColumnIndex === -1) unitColumnIndex = actualColIndex;
-          if ((headerText === 'uph' || headerText.includes('units/hr') || headerText.includes('uph')) && uphColumnIndex === -1) uphColumnIndex = actualColIndex;
-
-          actualColIndex += colspan;
         }
       }
 
-      log(`Table ${tableIndex} final column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`)
+      if (!mainHeaderRow) {
+        log(`Table ${tableIndex}: No main header row found (no 'Type' column)`);
+        return; // Skip this table
+      }
+
+      // Parse main header row - build column position map accounting for colspan
+      const { cells: headerCells } = mainHeaderRow;
+      const headerTexts = Array.from(headerCells).map(c => c.textContent.trim());
+      log(`Table ${tableIndex} main header:`, headerTexts.join(' | '));
+
+      // Build a map of actual column index to header text, accounting for colspan
+      const columnMap = [];
+      let actualColIndex = 0;
+      for (let i = 0; i < headerCells.length; i++) {
+        const cell = headerCells[i];
+        const headerText = cleanHeaderText(cell?.textContent);
+        const colspan = parseInt(cell?.getAttribute('colspan')) || 1;
+
+        // For cells with colspan, we need to check the sub-header row for actual column names
+        if (colspan > 1 && subHeaderRow) {
+          // This cell spans multiple columns - sub-headers define the actual columns
+          columnMap.push({ header: headerText, startCol: actualColIndex, colspan, isGroup: true });
+        } else {
+          columnMap.push({ header: headerText, startCol: actualColIndex, colspan: 1, isGroup: false });
+        }
+        actualColIndex += colspan;
+      }
+
+      log(`Table ${tableIndex} column map:`, JSON.stringify(columnMap));
+
+      // Now find the column indices from the column map
+      for (const col of columnMap) {
+        const h = col.header;
+        const idx = col.startCol;
+
+        if (h === 'type') continue; // Skip type column
+        if (h === 'id' || h.includes('badge')) idColumnIndex = idx;
+        if (h === 'name') nameColumnIndex = idx;
+        if (h === 'total') totalColumnIndex = idx;
+        if (h === 'jobs' || h === 'job') jobsColumnIndex = idx;
+        if (h === 'jph' || h.includes('jobs/hr')) jphColumnIndex = idx;
+        if (h === 'units' || h === 'unit') unitColumnIndex = idx;
+        if (h === 'uph' || h.includes('units/hr')) uphColumnIndex = idx;
+
+        // Handle "Paid Hours" group - Total is usually the last sub-column
+        if (col.isGroup && h.includes('paid hours')) {
+          // Total hours is typically at startCol + colspan - 1
+          totalColumnIndex = idx + col.colspan - 1;
+          log(`  Paid Hours group at col ${idx}, Total at col ${totalColumnIndex}`);
+        }
+      }
+
+      // If we have a sub-header row, check for Jobs/JPH there too
+      if (subHeaderRow && (jobsColumnIndex === -1 || jphColumnIndex === -1)) {
+        const { cells: subCells } = subHeaderRow;
+        let subColIndex = 0;
+
+        // Need to align sub-header positions with main header colspan
+        let mainColOffset = 0;
+        for (const col of columnMap) {
+          if (col.isGroup) {
+            // This is where sub-headers apply
+            for (let s = 0; s < subCells.length && subColIndex < col.startCol + col.colspan; s++) {
+              const subText = cleanHeaderText(subCells[s]?.textContent);
+              const subColspan = parseInt(subCells[s]?.getAttribute('colspan')) || 1;
+
+              if (subColIndex >= col.startCol) {
+                if ((subText === 'jobs' || subText === 'job') && jobsColumnIndex === -1) {
+                  jobsColumnIndex = subColIndex;
+                  log(`  Found Jobs in sub-header at col ${subColIndex}`);
+                }
+                if ((subText === 'jph' || subText.includes('jobs/hr')) && jphColumnIndex === -1) {
+                  jphColumnIndex = subColIndex;
+                  log(`  Found JPH in sub-header at col ${subColIndex}`);
+                }
+                if (subText === 'total' && totalColumnIndex === -1) {
+                  totalColumnIndex = subColIndex;
+                }
+              }
+              subColIndex += subColspan;
+            }
+          }
+        }
+      }
+
+      log(`Table ${tableIndex} final indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Total: ${totalColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}`)
 
       // Second pass: parse data rows
       let rowCount = 0;
