@@ -494,7 +494,9 @@
         /V-Returns\s+Pack/i,
         /Pack\s+Singles/i,
         /Pack\s+FracsLTL/i,
-        // Stow patterns - multiple variations
+        // Stow patterns - multiple variations (exact match first)
+        /Stow C Returns/i,
+        /Stow\s+C\s+Returns/i,
         /Stow\s+C[\s-]*Returns/i,
         /C[\s-]*Returns\s+Stow/i,
         /C-Returns\s+Stow/i,
