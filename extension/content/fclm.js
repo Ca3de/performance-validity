@@ -426,23 +426,47 @@
     const employees = [];
     const seenKeys = new Set(); // Track by badgeId + subFunction to allow same AA in different sub-functions
 
+    // Store debug info about the HTML structure
+    const debugInfo = {
+      processId,
+      htmlLength: html.length,
+      tableCount: 0,
+      headings: [],
+      subFunctionMatches: [],
+      tableStructures: []
+    };
+
     // Find all tables with employee data
     const tables = doc.querySelectorAll('table');
+    debugInfo.tableCount = tables.length;
     log(`Found ${tables.length} tables in function rollup response`);
 
     // Debug: Log all potential section headings in the document
     const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, b, strong, .title, .header, .function-name');
     const headingTexts = Array.from(headings).map(h => h.textContent.trim().substring(0, 80)).filter(t => t.length > 0 && t.length < 80);
+    debugInfo.headings = headingTexts.slice(0, 20);
     log('Document headings:', headingTexts.slice(0, 15).join(' | '));
 
     // Debug: Look for any text containing sub-function keywords
     const bodyText = doc.body?.innerHTML || '';
     const subFuncMatches = bodyText.match(/(Multis|Singles|LTL|Liquidation|WHD|Hazmat|PacknHold|Packing|FRACS|Stow C|EndofLine)[^<]*/gi);
     if (subFuncMatches) {
+      debugInfo.subFunctionMatches = subFuncMatches.slice(0, 15);
       log('Sub-function matches in HTML:', subFuncMatches.slice(0, 10).join(' | '));
     } else {
       log('No sub-function keyword matches found in HTML');
     }
+
+    // Debug: Store a sample of the HTML structure
+    const htmlSample = html.substring(0, 5000);
+    debugInfo.htmlSample = htmlSample;
+
+    // Store debug info to local storage for inspection
+    browser.storage.local.get('fclmDebug').then(result => {
+      const fclmDebug = result.fclmDebug || {};
+      fclmDebug[processId] = debugInfo;
+      browser.storage.local.set({ fclmDebug });
+    });
 
     tables.forEach((table, tableIndex) => {
       const rows = table.querySelectorAll('tr');
@@ -666,6 +690,9 @@
 
       log(`Table ${tableIndex} column map:`, JSON.stringify(columnMap));
 
+      // Track function/process column index for per-row sub-function
+      let functionColumnIndex = -1;
+
       // Now find the column indices from the column map
       for (const col of columnMap) {
         const h = col.header;
@@ -679,6 +706,11 @@
         if (h === 'jph' || h.includes('jobs/hr')) jphColumnIndex = idx;
         if (h === 'units' || h === 'unit') unitColumnIndex = idx;
         if (h === 'uph' || h.includes('units/hr')) uphColumnIndex = idx;
+        // Check for function/process column (sub-function per row)
+        if (h === 'function' || h === 'process' || h.includes('sub-function') || h.includes('subfunction')) {
+          functionColumnIndex = idx;
+          log(`  Found Function column at index ${idx}`);
+        }
 
         // Handle "Paid Hours" group - Total is usually the last sub-column
         if (col.isGroup && h.includes('paid hours')) {
@@ -776,8 +808,21 @@
         // Validate badge ID - must be numeric
         if (!badgeId || !/^\d+$/.test(badgeId)) continue;
 
+        // Check if there's a per-row function column
+        let rowSubFunction = subFunctionName;
+        if (functionColumnIndex >= 0 && functionColumnIndex < cells.length) {
+          const funcCell = cells[functionColumnIndex];
+          const funcText = funcCell?.textContent?.trim();
+          if (funcText && funcText.length < 100) {
+            rowSubFunction = funcText;
+            if (rowCount <= 2) {
+              log(`  Row ${rowCount}: Function column value = "${funcText}"`);
+            }
+          }
+        }
+
         // Create unique key for dedup - allows same AA in different sub-functions
-        const dedupKey = `${badgeId}_${subFunctionName}`;
+        const dedupKey = `${badgeId}_${rowSubFunction}`;
         if (seenKeys.has(dedupKey)) continue;
         seenKeys.add(dedupKey);
 
@@ -842,7 +887,7 @@
           units,
           uph,
           processId,
-          subFunction: subFunctionName || 'Unknown'
+          subFunction: rowSubFunction || 'Unknown'
         });
 
         // Log first employee for debugging
