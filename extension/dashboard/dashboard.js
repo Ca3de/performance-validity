@@ -70,25 +70,37 @@
     aaDetailName: document.getElementById('aaDetailName'),
     aaDetailId: document.getElementById('aaDetailId'),
     aaDetailPath: document.getElementById('aaDetailPath'),
-    // Metrics
-    metricJPH: document.getElementById('metricJPH'),
-    metricAvgJPH: document.getElementById('metricAvgJPH'),
-    metricHours: document.getElementById('metricHours'),
-    metricAvgHours: document.getElementById('metricAvgHours'),
-    metricSessions: document.getElementById('metricSessions'),
-    metricJobs: document.getElementById('metricJobs'),
-    // Comparison
-    compBarAAJPH: document.getElementById('compBarAAJPH'),
-    compBarAvgJPH: document.getElementById('compBarAvgJPH'),
-    compValAAJPH: document.getElementById('compValAAJPH'),
-    compValAvgJPH: document.getElementById('compValAvgJPH'),
-    compBarAAHours: document.getElementById('compBarAAHours'),
-    compBarAvgHours: document.getElementById('compBarAvgHours'),
-    compValAAHours: document.getElementById('compValAAHours'),
-    compValAvgHours: document.getElementById('compValAvgHours'),
+    // Game-style elements
+    overallRating: document.getElementById('overallRating'),
+    tierBadge: document.getElementById('tierBadge'),
+    tierName: document.getElementById('tierName'),
+    // Stats
+    statJPH: document.getElementById('statJPH'),
+    statJobs: document.getElementById('statJobs'),
+    statHours: document.getElementById('statHours'),
+    statEfficiency: document.getElementById('statEfficiency'),
+    statBarJPH: document.getElementById('statBarJPH'),
+    statBarJobs: document.getElementById('statBarJobs'),
+    statBarHours: document.getElementById('statBarHours'),
+    statBarEfficiency: document.getElementById('statBarEfficiency'),
+    // VS Comparison
+    vsPathName: document.getElementById('vsPathName'),
+    vsYourJPH: document.getElementById('vsYourJPH'),
+    vsAvgJPH: document.getElementById('vsAvgJPH'),
+    vsResult: document.getElementById('vsResult'),
+    vsDiff: document.getElementById('vsDiff'),
+    vsText: document.getElementById('vsText'),
+    // Ranking
     rankNumber: document.getElementById('rankNumber'),
     rankTotal: document.getElementById('rankTotal'),
     rankDescription: document.getElementById('rankDescription'),
+    rankPercentile: document.getElementById('rankPercentile'),
+    // Sub-paths
+    subpathToggle: document.getElementById('subpathToggle'),
+    subpathDetails: document.getElementById('subpathDetails'),
+    subpathList: document.getElementById('subpathList'),
+    subpathCount: document.getElementById('subpathCount'),
+    // Path history
     pathHistory: document.getElementById('pathHistory'),
     pathHistoryTable: document.getElementById('pathHistoryTable')
   };
@@ -531,7 +543,35 @@
   }
 
   /**
-   * Display AA details in the detail panel
+   * Calculate performance tier based on JPH percentile
+   */
+  function calculateTier(percentile) {
+    if (percentile >= 95) return { name: 'ELITE', icon: '👑', color: '#ffd700' };
+    if (percentile >= 85) return { name: 'STAR', icon: '⭐', color: '#ff9800' };
+    if (percentile >= 70) return { name: 'PRO', icon: '🔥', color: '#4caf50' };
+    if (percentile >= 50) return { name: 'SOLID', icon: '💪', color: '#2196f3' };
+    if (percentile >= 30) return { name: 'DEVELOPING', icon: '📈', color: '#9c27b0' };
+    return { name: 'ROOKIE', icon: '🌱', color: '#607d8b' };
+  }
+
+  /**
+   * Calculate overall rating (0-99) based on performance metrics
+   */
+  function calculateOverallRating(jph, avgJph, percentile) {
+    // Base rating from percentile (40-99 range)
+    let rating = 40 + (percentile * 0.59);
+
+    // Bonus for being above average
+    if (jph > avgJph && avgJph > 0) {
+      const bonus = Math.min(10, ((jph - avgJph) / avgJph) * 20);
+      rating += bonus;
+    }
+
+    return Math.min(99, Math.max(1, Math.round(rating)));
+  }
+
+  /**
+   * Display AA details in the detail panel - Game Style
    */
   function displayAADetails(aa, selectedPath) {
     const panel = elements.aaDetailPanel;
@@ -549,45 +589,87 @@
       records = records.filter(r => r.pathId === selectedPath);
     }
 
-    // Update path display
-    if (selectedPath === 'all') {
-      elements.aaDetailPath.textContent = `All Paths (${aa.records.length} total)`;
-    } else {
-      const pathConfig = PATH_CONFIG[selectedPath];
-      elements.aaDetailPath.textContent = pathConfig ? pathConfig.name : selectedPath;
-      elements.aaDetailPath.style.color = pathConfig ? pathConfig.color : 'inherit';
-    }
+    // Get path name
+    const pathName = selectedPath === 'all' ? 'All Paths' : (PATH_CONFIG[selectedPath]?.name || selectedPath);
+    elements.aaDetailPath.textContent = pathName;
 
     // Calculate metrics
     if (records.length === 0) {
-      // No data for selected path
-      elements.metricJPH.textContent = '--';
-      elements.metricAvgJPH.textContent = '--';
-      elements.metricHours.textContent = '--';
-      elements.metricAvgHours.textContent = '--';
-      elements.metricSessions.textContent = '0';
-      elements.metricJobs.textContent = '--';
+      // No data for selected path - show empty state
+      if (elements.overallRating) {
+        elements.overallRating.querySelector('.rating-value').textContent = '--';
+      }
       updateComparisonBars(null, selectedPath);
       return;
     }
 
     const totalHours = records.reduce((sum, r) => sum + (r.hours || 0), 0);
     const totalJobs = records.reduce((sum, r) => sum + (r.jobs || 0), 0);
-    // Calculate true average JPH as total jobs / total hours (not average of per-path JPH values)
-    const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
-    const currentJPH = records.length > 0 ? records[0].jph : 0;
-    const avgHoursPerSession = totalHours / records.length;
+    const aaJPH = totalHours > 0 ? totalJobs / totalHours : 0;
 
-    // Update metrics display
-    elements.metricJPH.textContent = currentJPH.toFixed(1);
-    elements.metricAvgJPH.textContent = avgJPH.toFixed(1);
-    elements.metricHours.textContent = totalHours.toFixed(1) + 'h';
-    elements.metricAvgHours.textContent = avgHoursPerSession.toFixed(1) + 'h';
-    elements.metricSessions.textContent = records.length;
-    elements.metricJobs.textContent = totalJobs.toLocaleString();
+    // Update game-style stats
+    if (elements.statJPH) elements.statJPH.textContent = aaJPH.toFixed(1);
+    if (elements.statJobs) elements.statJobs.textContent = totalJobs.toLocaleString();
+    if (elements.statHours) elements.statHours.textContent = totalHours.toFixed(1);
 
-    // Update comparison bars
-    updateComparisonBars(aa, selectedPath);
+    // Update comparison and get path stats
+    const pathStats = updateComparisonBars(aa, selectedPath);
+
+    // Calculate efficiency (AA JPH vs path average)
+    const efficiency = pathStats && pathStats.avgJPH > 0
+      ? Math.round((aaJPH / pathStats.avgJPH) * 100)
+      : 100;
+    if (elements.statEfficiency) elements.statEfficiency.textContent = efficiency + '%';
+
+    // Calculate percentile and rating
+    const percentile = pathStats ? pathStats.percentile : 50;
+    const tier = calculateTier(percentile);
+    const overallRating = calculateOverallRating(aaJPH, pathStats?.avgJPH || aaJPH, percentile);
+
+    // Update overall rating circle
+    if (elements.overallRating) {
+      elements.overallRating.querySelector('.rating-value').textContent = overallRating;
+    }
+
+    // Update tier badge
+    if (elements.tierBadge) {
+      elements.tierBadge.querySelector('.tier-icon').textContent = tier.icon;
+      elements.tierBadge.querySelector('.tier-name').textContent = tier.name;
+      elements.tierBadge.style.background = `linear-gradient(90deg, ${tier.color}33 0%, ${tier.color}11 100%)`;
+      elements.tierBadge.querySelector('.tier-name').style.color = tier.color;
+    }
+
+    // Update stat bars (normalized to 100)
+    const maxJPH = pathStats ? Math.max(aaJPH, pathStats.maxJPH, 100) : 100;
+    const maxJobs = pathStats ? pathStats.maxJobs : totalJobs;
+    const maxHours = pathStats ? pathStats.maxHours : totalHours;
+
+    if (elements.statBarJPH) elements.statBarJPH.style.width = `${(aaJPH / maxJPH) * 100}%`;
+    if (elements.statBarJobs) elements.statBarJobs.style.width = `${(totalJobs / Math.max(maxJobs, 1)) * 100}%`;
+    if (elements.statBarHours) elements.statBarHours.style.width = `${(totalHours / Math.max(maxHours, 1)) * 100}%`;
+    if (elements.statBarEfficiency) elements.statBarEfficiency.style.width = `${Math.min(efficiency, 150) / 1.5}%`;
+
+    // Update VS comparison section
+    if (elements.vsPathName) elements.vsPathName.textContent = pathName;
+    if (elements.vsYourJPH) elements.vsYourJPH.textContent = aaJPH.toFixed(1);
+    if (elements.vsAvgJPH) elements.vsAvgJPH.textContent = pathStats ? pathStats.avgJPH.toFixed(1) : '--';
+
+    // Update VS result
+    if (pathStats && elements.vsDiff) {
+      const diff = aaJPH - pathStats.avgJPH;
+      elements.vsDiff.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1);
+      elements.vsDiff.className = 'vs-diff ' + (diff >= 0 ? 'positive' : 'negative');
+      elements.vsText.textContent = diff >= 0 ? 'above average' : 'below average';
+    }
+
+    // Update percentile display
+    if (elements.rankPercentile) {
+      const percValue = elements.rankPercentile.querySelector('.percentile-value');
+      if (percValue) percValue.textContent = `Top ${Math.round(100 - percentile)}%`;
+    }
+
+    // Setup sub-path breakdown
+    setupSubpathBreakdown(aa, selectedPath, pathStats);
 
     // Show path history if viewing all paths
     if (selectedPath === 'all' && aa.records.length > 1) {
@@ -603,6 +685,7 @@
 
   /**
    * Update comparison bars showing AA vs path average
+   * Returns stats for use in game-style display
    */
   function updateComparisonBars(aa, selectedPath) {
     // Get all AAs in the selected path for comparison
@@ -614,39 +697,35 @@
     }
 
     if (pathRecords.length === 0 || !aa) {
-      elements.compBarAAJPH.style.width = '0%';
-      elements.compBarAvgJPH.style.width = '0%';
-      elements.compValAAJPH.textContent = '--';
-      elements.compValAvgJPH.textContent = '--';
-      elements.compBarAAHours.style.width = '0%';
-      elements.compBarAvgHours.style.width = '0%';
-      elements.compValAAHours.textContent = '--';
-      elements.compValAvgHours.textContent = '--';
-      elements.rankNumber.textContent = '#--';
-      elements.rankTotal.textContent = 'of --';
-      return;
+      if (elements.rankNumber) elements.rankNumber.textContent = '--';
+      if (elements.rankTotal) elements.rankTotal.textContent = 'of --';
+      return null;
     }
 
-    // Calculate path averages using total jobs / total hours (more accurate than averaging JPH values)
+    // Calculate path averages using total jobs / total hours
     const uniqueEmployees = new Map();
     let pathTotalJobs = 0;
     let pathTotalHours = 0;
+    let maxEmpJobs = 0;
+    let maxEmpHours = 0;
 
     pathRecords.forEach(r => {
       if (!uniqueEmployees.has(r.employeeId)) {
         uniqueEmployees.set(r.employeeId, { jobsSum: 0, hoursSum: 0 });
       }
       const emp = uniqueEmployees.get(r.employeeId);
-      // Count all records with valid jobs and hours data
-      // Sanity check: skip records where jobs seems unreasonably high (likely parsing error)
       if (r.jobs > 0 && r.hours > 0 && r.jobs < 100000) {
         emp.jobsSum += r.jobs;
         emp.hoursSum += r.hours;
         pathTotalJobs += r.jobs;
         pathTotalHours += r.hours;
-      } else if (r.jobs >= 100000) {
-        console.warn('[Dashboard] Skipping record with suspicious jobs count:', r);
       }
+    });
+
+    // Calculate max values for scaling
+    uniqueEmployees.forEach(emp => {
+      if (emp.jobsSum > maxEmpJobs) maxEmpJobs = emp.jobsSum;
+      if (emp.hoursSum > maxEmpHours) maxEmpHours = emp.hoursSum;
     });
 
     // Get AA's metrics for selected path
@@ -659,7 +738,7 @@
     const aaHours = aaRecords.reduce((sum, r) => sum + (r.hours || 0), 0);
     const aaJPH = aaHours > 0 ? aaJobs / aaHours : 0;
 
-    // Build allJPHs array for ranking - calculate each employee's JPH from their totals
+    // Build allJPHs array for ranking
     const allJPHs = [];
     uniqueEmployees.forEach((emp, empId) => {
       if (emp.hoursSum > 0) {
@@ -667,35 +746,132 @@
       }
     });
 
-    // Calculate path average JPH as total jobs / total hours
+    // Calculate path average JPH
     const avgJPH = pathTotalHours > 0 ? pathTotalJobs / pathTotalHours : 0;
     const avgHours = uniqueEmployees.size > 0 ? pathTotalHours / uniqueEmployees.size : 0;
 
     // Get the path name for display
     const pathName = selectedPath === 'all' ? 'all paths' : (PATH_CONFIG[selectedPath]?.name || selectedPath);
 
-    // Calculate max for scaling bars
-    const maxJPH = Math.max(aaJPH, avgJPH, 1);
-    const maxHours = Math.max(aaHours, avgHours, 1);
-
-    // Update JPH bars
-    elements.compBarAAJPH.style.width = `${(aaJPH / maxJPH) * 100}%`;
-    elements.compBarAvgJPH.style.width = `${(avgJPH / maxJPH) * 100}%`;
-    elements.compValAAJPH.textContent = aaJPH.toFixed(1);
-    elements.compValAvgJPH.textContent = avgJPH.toFixed(1) + ' avg';
-
-    // Update Hours bars
-    elements.compBarAAHours.style.width = `${(aaHours / maxHours) * 100}%`;
-    elements.compBarAvgHours.style.width = `${(avgHours / maxHours) * 100}%`;
-    elements.compValAAHours.textContent = aaHours.toFixed(1) + 'h';
-    elements.compValAvgHours.textContent = avgHours.toFixed(1) + 'h avg';
-
     // Calculate ranking by JPH
     allJPHs.sort((a, b) => b.jph - a.jph);
     const rank = allJPHs.findIndex(e => e.id === aa.id) + 1;
-    elements.rankNumber.textContent = rank > 0 ? `#${rank}` : '#--';
-    elements.rankTotal.textContent = `of ${allJPHs.length}`;
-    elements.rankDescription.textContent = `in ${pathName} by JPH`;
+    const percentile = rank > 0 ? ((allJPHs.length - rank) / allJPHs.length) * 100 : 0;
+
+    // Find max JPH for scaling
+    const maxJPH = allJPHs.length > 0 ? allJPHs[0].jph : aaJPH;
+
+    // Update ranking display
+    if (elements.rankNumber) elements.rankNumber.textContent = rank > 0 ? rank : '--';
+    if (elements.rankTotal) elements.rankTotal.textContent = allJPHs.length;
+    if (elements.rankDescription) elements.rankDescription.textContent = `in ${pathName} by JPH`;
+
+    // Return stats for game-style display
+    return {
+      avgJPH,
+      avgHours,
+      maxJPH,
+      maxJobs: maxEmpJobs,
+      maxHours: maxEmpHours,
+      rank,
+      total: allJPHs.length,
+      percentile,
+      pathName,
+      allJPHs
+    };
+  }
+
+  /**
+   * Setup sub-path breakdown section
+   */
+  function setupSubpathBreakdown(aa, selectedPath, pathStats) {
+    if (!elements.subpathToggle || !elements.subpathList) return;
+
+    // Get unique sub-paths the AA has worked in
+    const subPaths = new Map();
+    aa.records.forEach(r => {
+      const key = r.pathName || r.pathId;
+      if (!subPaths.has(key)) {
+        subPaths.set(key, {
+          name: r.pathName || r.pathId,
+          pathId: r.pathId,
+          color: r.pathColor || '#4facfe',
+          jobs: 0,
+          hours: 0
+        });
+      }
+      const sp = subPaths.get(key);
+      sp.jobs += r.jobs || 0;
+      sp.hours += r.hours || 0;
+    });
+
+    // Update count
+    if (elements.subpathCount) {
+      elements.subpathCount.textContent = `${subPaths.size} ${subPaths.size === 1 ? 'path' : 'paths'}`;
+    }
+
+    // Build sub-path list HTML
+    let html = '';
+    subPaths.forEach((sp, name) => {
+      const jph = sp.hours > 0 ? sp.jobs / sp.hours : 0;
+
+      // Get rank in this specific sub-path
+      const subPathRecords = state.performanceData.filter(r => (r.pathName || r.pathId) === name);
+      const subPathEmployees = new Map();
+      subPathRecords.forEach(r => {
+        if (!subPathEmployees.has(r.employeeId)) {
+          subPathEmployees.set(r.employeeId, { jobs: 0, hours: 0 });
+        }
+        const emp = subPathEmployees.get(r.employeeId);
+        emp.jobs += r.jobs || 0;
+        emp.hours += r.hours || 0;
+      });
+
+      const subPathJPHs = [];
+      subPathEmployees.forEach((emp, id) => {
+        if (emp.hours > 0) {
+          subPathJPHs.push({ id, jph: emp.jobs / emp.hours });
+        }
+      });
+      subPathJPHs.sort((a, b) => b.jph - a.jph);
+      const subRank = subPathJPHs.findIndex(e => e.id === aa.id) + 1;
+
+      // Calculate sub-path average
+      let subAvgJPH = 0;
+      if (subPathJPHs.length > 0) {
+        subAvgJPH = subPathJPHs.reduce((sum, e) => sum + e.jph, 0) / subPathJPHs.length;
+      }
+
+      html += `
+        <div class="subpath-item" style="border-left-color: ${sp.color}">
+          <span class="subpath-name">${name}</span>
+          <div class="subpath-stats">
+            <div class="subpath-stat">
+              <span class="subpath-stat-value">${jph.toFixed(1)}</span>
+              <span class="subpath-stat-label">JPH</span>
+            </div>
+            <div class="subpath-stat">
+              <span class="subpath-stat-value">${sp.hours.toFixed(1)}h</span>
+              <span class="subpath-stat-label">Hours</span>
+            </div>
+            <div class="subpath-stat">
+              <span class="subpath-stat-value">${subAvgJPH.toFixed(1)}</span>
+              <span class="subpath-stat-label">Avg</span>
+            </div>
+          </div>
+          ${subRank > 0 ? `<span class="subpath-rank">#${subRank} of ${subPathJPHs.length}</span>` : ''}
+        </div>
+      `;
+    });
+
+    elements.subpathList.innerHTML = html;
+
+    // Toggle functionality
+    elements.subpathToggle.onclick = () => {
+      const isExpanded = elements.subpathDetails.style.display !== 'none';
+      elements.subpathDetails.style.display = isExpanded ? 'none' : 'block';
+      elements.subpathToggle.classList.toggle('expanded', !isExpanded);
+    };
   }
 
   /**
