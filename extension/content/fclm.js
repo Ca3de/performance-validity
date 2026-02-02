@@ -424,7 +424,7 @@
     const doc = parser.parseFromString(html, 'text/html');
 
     const employees = [];
-    const seenBadgeIds = new Set();
+    const seenKeys = new Set(); // Track by badgeId + subFunction to allow same AA in different sub-functions
 
     // Find all tables with employee data
     const tables = doc.querySelectorAll('table');
@@ -439,6 +439,64 @@
       let jphColumnIndex = -1;
       let unitColumnIndex = -1;
       let uphColumnIndex = -1;
+
+      // Try to find the sub-function name for this table
+      let subFunctionName = '';
+
+      // Method 1: Check for caption element
+      const caption = table.querySelector('caption');
+      if (caption) {
+        subFunctionName = caption.textContent.trim();
+      }
+
+      // Method 2: Check for a title row (first row with single cell spanning all columns)
+      if (!subFunctionName) {
+        const firstRow = rows[0];
+        if (firstRow) {
+          const cells = firstRow.querySelectorAll('th, td');
+          if (cells.length === 1) {
+            const text = cells[0].textContent.trim();
+            // Check if it looks like a sub-function name (not "Type" header)
+            if (text && !text.toLowerCase().startsWith('type') && text.length < 100) {
+              subFunctionName = text;
+            }
+          }
+        }
+      }
+
+      // Method 3: Look at preceding sibling elements for a heading
+      if (!subFunctionName) {
+        let prevElement = table.previousElementSibling;
+        for (let i = 0; i < 3 && prevElement; i++) {
+          const tagName = prevElement.tagName?.toLowerCase();
+          if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3' || tagName === 'h4' || tagName === 'div') {
+            const text = prevElement.textContent.trim();
+            if (text && text.length < 100 && !text.includes('Color Scheme')) {
+              subFunctionName = text;
+              break;
+            }
+          }
+          prevElement = prevElement.previousElementSibling;
+        }
+      }
+
+      // Method 4: Check first th row for function name
+      if (!subFunctionName) {
+        for (const row of rows) {
+          const thCells = row.querySelectorAll('th');
+          if (thCells.length === 1) {
+            const text = thCells[0].textContent.trim();
+            if (text && !text.toLowerCase().includes('type') && !text.toLowerCase().includes('color') && text.length < 100) {
+              subFunctionName = text;
+              break;
+            }
+          }
+          // Stop if we hit the main header row
+          if (thCells.length > 1) break;
+        }
+      }
+
+      log(`Table ${tableIndex} sub-function: "${subFunctionName}"`);
 
       // Helper function to strip sort indicators from header text
       const cleanHeaderText = (text) => {
@@ -623,9 +681,10 @@
         // Validate badge ID - must be numeric
         if (!badgeId || !/^\d+$/.test(badgeId)) continue;
 
-        // Skip if already seen (dedup by badge ID)
-        if (seenBadgeIds.has(badgeId)) continue;
-        seenBadgeIds.add(badgeId);
+        // Create unique key for dedup - allows same AA in different sub-functions
+        const dedupKey = `${badgeId}_${subFunctionName}`;
+        if (seenKeys.has(dedupKey)) continue;
+        seenKeys.add(dedupKey);
 
         // Get name from Name column - may also be inside a link
         const nameCell = cells[nameColumnIndex];
@@ -687,7 +746,8 @@
           jph,
           units,
           uph,
-          processId
+          processId,
+          subFunction: subFunctionName || 'Unknown'
         });
 
         // Log first employee for debugging
@@ -824,13 +884,16 @@
               }
 
               // Add performance record with hours and JPH from rollup
+              // Use subFunction name if available, otherwise use parent path name
+              const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
               performanceData.push({
                 employeeId: emp.badgeId,
                 employeeName: emp.name,
                 pathId: path.id,
-                pathName: path.name,
+                pathName: subFunctionName,
                 pathColor: path.color,
                 category: path.category,
+                parentPath: path.name,
                 hours: emp.totalHours,
                 jobs: emp.jobs,
                 jph: emp.jph,
@@ -918,13 +981,16 @@
               allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
             }
 
+            // Use subFunction name if available, otherwise use parent path name
+            const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
             performanceData.push({
               employeeId: emp.badgeId,
               employeeName: emp.name,
               pathId: path.id,
-              pathName: path.name,
+              pathName: subFunctionName,
               pathColor: path.color,
               category: path.category,
+              parentPath: path.name,
               hours: emp.totalHours,
               jobs: emp.jobs,
               jph: emp.jph,
