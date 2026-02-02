@@ -573,8 +573,8 @@
 
     const totalHours = records.reduce((sum, r) => sum + (r.hours || 0), 0);
     const totalJobs = records.reduce((sum, r) => sum + (r.jobs || 0), 0);
-    const jphValues = records.filter(r => r.jph > 0).map(r => r.jph);
-    const avgJPH = jphValues.length > 0 ? jphValues.reduce((a, b) => a + b, 0) / jphValues.length : 0;
+    // Calculate true average JPH as total jobs / total hours (not average of per-path JPH values)
+    const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
     const currentJPH = records.length > 0 ? records[0].jph : 0;
     const avgHoursPerSession = totalHours / records.length;
 
