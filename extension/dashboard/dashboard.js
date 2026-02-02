@@ -637,12 +637,15 @@
         uniqueEmployees.set(r.employeeId, { jobsSum: 0, hoursSum: 0 });
       }
       const emp = uniqueEmployees.get(r.employeeId);
-      // Only count records with reasonable data (sanity check: JPH < 500)
-      if (r.jobs > 0 && r.hours > 0 && (r.jph < 500 || r.jph === 0)) {
+      // Count all records with valid jobs and hours data
+      // Sanity check: skip records where jobs seems unreasonably high (likely parsing error)
+      if (r.jobs > 0 && r.hours > 0 && r.jobs < 100000) {
         emp.jobsSum += r.jobs;
         emp.hoursSum += r.hours;
         pathTotalJobs += r.jobs;
         pathTotalHours += r.hours;
+      } else if (r.jobs >= 100000) {
+        console.warn('[Dashboard] Skipping record with suspicious jobs count:', r);
       }
     });
 
