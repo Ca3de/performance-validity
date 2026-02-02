@@ -446,55 +446,68 @@
         return (text || '').replace(/[≠↑↓▲▼]/g, '').trim().toLowerCase();
       };
 
-      // First pass: find header row and column indices
+      // Collect ALL header cells from all rows to build column map
+      const allHeaderRows = [];
       for (const row of rows) {
         const headerCells = row.querySelectorAll('th');
-        if (headerCells.length > 0) {
-          // Log header cells for debugging
-          const headers = Array.from(headerCells).map(h => h.textContent.trim());
-          log(`Table ${tableIndex} headers (th):`, headers);
+        const tdCells = row.querySelectorAll('td');
 
-          // This is a header row - find column indices
-          for (let i = 0; i < headerCells.length; i++) {
-            const headerText = cleanHeaderText(headerCells[i]?.textContent);
-            log(`  Header[${i}]: "${headerText}"`);
-            if (headerText === 'total') totalColumnIndex = i;
-            if (headerText === 'id' || headerText === 'badge' || headerText === 'employee id') idColumnIndex = i;
-            if (headerText === 'name' || headerText === 'employee name') nameColumnIndex = i;
-            if (headerText === 'jobs' || headerText === 'job') jobsColumnIndex = i;
-            if (headerText === 'jph' || headerText === 'jobs/hr' || headerText === 'jobs per hour') jphColumnIndex = i;
-            if (headerText === 'unit' || headerText === 'units') unitColumnIndex = i;
-            if (headerText === 'uph' || headerText === 'units/hr' || headerText === 'units per hour') uphColumnIndex = i;
-          }
-          log(`Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
-          break;
+        // Check if this is a header row
+        const isThHeader = headerCells.length > 0;
+        const firstTdText = cleanHeaderText(tdCells[0]?.textContent);
+        const isTdHeader = tdCells.length > 0 && (firstTdText === 'type' || firstTdText === 'amzn');
+
+        if (isThHeader) {
+          allHeaderRows.push({ cells: headerCells, type: 'th' });
+        } else if (isTdHeader && firstTdText === 'type') {
+          allHeaderRows.push({ cells: tdCells, type: 'td' });
         }
 
-        // Also check for header-style td cells (some tables use td for headers)
-        const cells = row.querySelectorAll('td');
-        if (cells.length > 0) {
-          const firstCellText = cleanHeaderText(cells[0]?.textContent);
-          if (firstCellText === 'type') {
-            // Log header cells for debugging
-            const headers = Array.from(cells).map(c => c.textContent.trim());
-            log(`Table ${tableIndex} headers (td):`, headers);
+        // Stop collecting after finding data rows
+        if (isTdHeader && firstTdText === 'amzn') break;
+      }
 
-            for (let i = 0; i < cells.length; i++) {
-              const cellText = cleanHeaderText(cells[i]?.textContent);
-              log(`  Header[${i}]: "${cellText}"`);
-              if (cellText === 'total') totalColumnIndex = i;
-              if (cellText === 'id' || cellText === 'badge') idColumnIndex = i;
-              if (cellText === 'name') nameColumnIndex = i;
-              if (cellText === 'jobs' || cellText === 'job') jobsColumnIndex = i;
-              if (cellText === 'jph' || cellText === 'jobs/hr' || cellText === 'jobs per hour') jphColumnIndex = i;
-              if (cellText === 'unit' || cellText === 'units') unitColumnIndex = i;
-              if (cellText === 'uph' || cellText === 'units/hr' || cellText === 'units per hour') uphColumnIndex = i;
-            }
-            log(`Column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`);
-            break;
+      log(`Table ${tableIndex}: Found ${allHeaderRows.length} header rows`);
+
+      // Process header rows to find column indices
+      // Track column positions accounting for colspan in each row
+      for (let rowIdx = 0; rowIdx < allHeaderRows.length; rowIdx++) {
+        const { cells, type } = allHeaderRows[rowIdx];
+        const headers = Array.from(cells).map(c => c.textContent.trim());
+        log(`  Header row ${rowIdx} (${type}):`, headers.join(' | '));
+
+        let actualColIndex = 0;
+        for (let i = 0; i < cells.length; i++) {
+          const cell = cells[i];
+          const headerText = cleanHeaderText(cell?.textContent);
+          const colspan = parseInt(cell?.getAttribute('colspan')) || 1;
+          const rowspan = parseInt(cell?.getAttribute('rowspan')) || 1;
+
+          // Use partial matching for column detection
+          if (headerText === 'total' && totalColumnIndex === -1) totalColumnIndex = actualColIndex;
+          if ((headerText === 'id' || headerText.includes('badge') || headerText === 'employee id') && idColumnIndex === 1) idColumnIndex = actualColIndex;
+          if ((headerText === 'name' || headerText.includes('employee name')) && nameColumnIndex === 2) nameColumnIndex = actualColIndex;
+
+          // Jobs column - match "jobs" exactly or text containing "jobs" but not "jph"
+          if (jobsColumnIndex === -1 && (headerText === 'jobs' || headerText === 'job' || (headerText.includes('jobs') && !headerText.includes('/')))) {
+            jobsColumnIndex = actualColIndex;
+            log(`    Found Jobs at col ${actualColIndex}: "${headerText}"`);
           }
+
+          // JPH column - match variations
+          if (jphColumnIndex === -1 && (headerText === 'jph' || headerText.includes('jobs/hr') || headerText.includes('jobs per') || headerText.includes('jph'))) {
+            jphColumnIndex = actualColIndex;
+            log(`    Found JPH at col ${actualColIndex}: "${headerText}"`);
+          }
+
+          if ((headerText === 'unit' || headerText === 'units') && unitColumnIndex === -1) unitColumnIndex = actualColIndex;
+          if ((headerText === 'uph' || headerText.includes('units/hr') || headerText.includes('uph')) && uphColumnIndex === -1) uphColumnIndex = actualColIndex;
+
+          actualColIndex += colspan;
         }
       }
+
+      log(`Table ${tableIndex} final column indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}, Total: ${totalColumnIndex}`)
 
       // Second pass: parse data rows
       let rowCount = 0;
@@ -509,10 +522,13 @@
         // IMPORTANT: Only process AMZN rows (like scan-check does)
         if (firstCellText !== 'AMZN') continue;
 
-        // Log first data row for debugging
+        // Log first data row for debugging - show ALL cells with indices
         if (rowCount === 0) {
-          const rowData = Array.from(cells).map(c => c.textContent.trim().substring(0, 20));
-          log(`First AMZN row data:`, rowData);
+          log(`First AMZN row has ${cells.length} cells:`);
+          Array.from(cells).forEach((c, idx) => {
+            const val = c.textContent.trim().substring(0, 25);
+            log(`  [${idx}] = "${val}"`);
+          });
         }
         rowCount++;
 
