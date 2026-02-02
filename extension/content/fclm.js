@@ -161,12 +161,13 @@
         return getShiftDateRange();
 
       case 'week':
-        // This week (Sunday to Saturday)
+        // This week (Sunday to now+1 day to include ongoing shift)
         startDate = new Date(now);
         startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
         startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 7); // End of week (exclusive)
+        // End date is tomorrow to include current ongoing shift
+        endDate = new Date(now);
+        endDate.setDate(endDate.getDate() + 1);
         endDate.setHours(0, 0, 0, 0);
         spanType = 'Week';
         break;
@@ -183,10 +184,12 @@
         break;
 
       case 'month':
-        // This month (1st of month to 1st of next month)
+        // This month (1st of month to now+1 day to include ongoing shift)
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        // End date is tomorrow to include current ongoing shift
+        endDate = new Date(now);
+        endDate.setDate(endDate.getDate() + 1);
         endDate.setHours(0, 0, 0, 0);
         spanType = 'Month';
         break;
