@@ -541,8 +541,19 @@
         const subHeaders = Array.from(subCells).map(c => c.textContent.trim());
         log(`  Sub-header row: ${subHeaders.join(' | ')}`);
 
+        // Find the starting column offset - sub-headers start at the first grouped column
+        // (because Type, ID, Name, Manager have rowspan=2 and don't appear in sub-header row)
+        let startOffset = 0;
+        for (const col of columnMap) {
+          if (col.isGroup) {
+            startOffset = col.startCol;
+            break;
+          }
+        }
+        log(`  Sub-header starts at column offset: ${startOffset}`);
+
         // Iterate through all sub-header cells and track actual column position
-        let subColIndex = 0;
+        let subColIndex = startOffset;
         for (let s = 0; s < subCells.length; s++) {
           const subText = cleanHeaderText(subCells[s]?.textContent);
           const subColspan = parseInt(subCells[s]?.getAttribute('colspan')) || 1;
