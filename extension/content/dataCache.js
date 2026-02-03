@@ -141,19 +141,28 @@
         db = null;
       }
 
+      // Timeout for delete operation
+      const timeoutId = setTimeout(() => {
+        log('Database delete timeout');
+        reject(new Error('Database delete timeout after 5 seconds'));
+      }, 5000);
+
       const request = indexedDB.deleteDatabase(DB_NAME);
 
       request.onsuccess = () => {
+        clearTimeout(timeoutId);
         log('Database deleted, will recreate on next init');
         resolve();
       };
 
       request.onerror = () => {
+        clearTimeout(timeoutId);
         log('Error deleting database:', request.error);
         reject(request.error);
       };
 
       request.onblocked = () => {
+        clearTimeout(timeoutId);
         log('Database delete blocked');
         reject(new Error('Cannot delete - close other tabs'));
       };

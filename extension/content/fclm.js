@@ -1684,9 +1684,14 @@
           log('[Cache] Step 1: Database reset and opened');
         } catch (resetError) {
           log('[Cache] Database reset failed:', resetError.message);
-          log('[Cache] Continuing without cache - data will be fetched live');
-          updateCacheStatus('error', 'Cache unavailable');
+          log('[Cache] ============================================');
+          log('[Cache] CACHE UNAVAILABLE - Running in live mode');
+          log('[Cache] Close all other FCLM tabs and reload to enable caching');
+          log('[Cache] Or go to DevTools -> Application -> IndexedDB -> Delete FCLMPerformanceCache');
+          log('[Cache] ============================================');
+          updateCacheStatus('ready', 'Live mode (no cache)');
           fetchInProgress = false;
+          cacheInitialized = false; // Allow retry on next page load
           return;
         }
       }
