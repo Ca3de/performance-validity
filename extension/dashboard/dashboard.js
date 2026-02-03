@@ -12,9 +12,9 @@
     allCachedData: [],
     currentView: 'overview',
     // Overview state
-    overviewPeriod: 'month',
+    overviewPeriod: 'last30',
     // Lookup state
-    lookupPeriod: 'month',
+    lookupPeriod: 'last30',
     lookupPath: 'all',
     selectedAA: null,
     // Data hub state
@@ -30,6 +30,17 @@
     'pack': { name: 'Pack', color: '#2196F3', goal: 35 },
     'stow': { name: 'Stow', color: '#9C27B0', goal: 45 }
   };
+
+  // Badge photo URL helper
+  const BADGE_PHOTO_URL = 'https://badgephotos.corp.amazon.com/?fullsizeimage=1&uid=';
+
+  function getBadgePhotoUrl(login) {
+    if (!login) return null;
+    return `${BADGE_PHOTO_URL}${encodeURIComponent(login)}`;
+  }
+
+  // Default avatar SVG for fallback
+  const DEFAULT_AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
 
   // DOM Elements cache
   const el = {};
@@ -83,6 +94,7 @@
     el.lookupPath = document.getElementById('lookupPath');
     el.aaDetailCard = document.getElementById('aaDetailCard');
     el.closeDetail = document.getElementById('closeDetail');
+    el.aaAvatarImg = document.getElementById('aaAvatarImg');
     el.aaName = document.getElementById('aaName');
     el.aaBadge = document.getElementById('aaBadge');
     el.aaJPH = document.getElementById('aaJPH');
@@ -291,42 +303,92 @@
    * Filter data by period
    */
   function filterByPeriod(data, period) {
+    if (!data || data.length === 0) return [];
+
     const now = new Date();
-    const formatDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // Reset to start of day to avoid time comparison issues
+    now.setHours(0, 0, 0, 0);
+
+    const formatDate = (d) => {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
 
     let startDate, endDate;
+    const todayStr = formatDate(now);
 
     switch (period) {
       case 'today':
-        startDate = endDate = formatDate(now);
+        startDate = endDate = todayStr;
         break;
+
       case 'week': {
+        // This week: Sunday to today
         const weekStart = new Date(now);
-        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        weekStart.setDate(now.getDate() - now.getDay());
         startDate = formatDate(weekStart);
-        endDate = formatDate(now);
+        endDate = todayStr;
         break;
       }
+
       case 'lastWeek': {
-        const lastWeekEnd = new Date(now);
-        lastWeekEnd.setDate(lastWeekEnd.getDate() - lastWeekEnd.getDay() - 1);
-        const lastWeekStart = new Date(lastWeekEnd);
-        lastWeekStart.setDate(lastWeekStart.getDate() - 6);
-        startDate = formatDate(lastWeekStart);
-        endDate = formatDate(lastWeekEnd);
+        // Last week: Previous Sunday to Saturday
+        const thisWeekSunday = new Date(now);
+        thisWeekSunday.setDate(now.getDate() - now.getDay());
+
+        const lastWeekSaturday = new Date(thisWeekSunday);
+        lastWeekSaturday.setDate(thisWeekSunday.getDate() - 1);
+
+        const lastWeekSunday = new Date(lastWeekSaturday);
+        lastWeekSunday.setDate(lastWeekSaturday.getDate() - 6);
+
+        startDate = formatDate(lastWeekSunday);
+        endDate = formatDate(lastWeekSaturday);
         break;
       }
+
       case 'month': {
+        // This Month: 1st of current month to today (calendar month)
         const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate = formatDate(monthStart);
-        endDate = formatDate(now);
+        endDate = todayStr;
         break;
       }
+
+      case 'last30': {
+        // Last 30 days (rolling, not calendar month)
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 29); // 30 days including today
+        startDate = formatDate(thirtyDaysAgo);
+        endDate = todayStr;
+        break;
+      }
+
       default:
+        console.log('[Dashboard] Unknown period, returning all data:', period);
         return data;
     }
 
-    return data.filter(r => r.date && r.date >= startDate && r.date <= endDate);
+    console.log(`[Dashboard] Filtering period '${period}': ${startDate} to ${endDate}`);
+
+    const filtered = data.filter(r => {
+      if (!r.date) return false;
+      // Ensure date is string in YYYY-MM-DD format
+      const recordDate = String(r.date).substring(0, 10);
+      return recordDate >= startDate && recordDate <= endDate;
+    });
+
+    console.log(`[Dashboard] Filtered: ${filtered.length} of ${data.length} records`);
+
+    // Debug: show sample dates if no results
+    if (filtered.length === 0 && data.length > 0) {
+      const sampleDates = [...new Set(data.slice(0, 20).map(r => r.date))];
+      console.log('[Dashboard] Sample dates in data:', sampleDates);
+    }
+
+    return filtered;
   }
 
   /**
@@ -340,7 +402,7 @@
     data.forEach(r => {
       const id = r.employeeId;
       if (!employeeMap.has(id)) {
-        employeeMap.set(id, { id, name: r.employeeName, hours: 0, jobs: 0, paths: new Set() });
+        employeeMap.set(id, { id, name: r.employeeName, login: r.login || r.employeeId, hours: 0, jobs: 0, paths: new Set() });
       }
       const emp = employeeMap.get(id);
       emp.hours += r.hours || 0;
@@ -447,12 +509,15 @@
    */
   function renderPerformerItem(employee, rank, isWarning) {
     const pathNames = Array.from(employee.paths).map(p => PATH_CONFIG[p]?.name || p).join(', ');
+    const login = employee.login || employee.id;
+    const photoUrl = getBadgePhotoUrl(login);
 
     return `
       <div class="performer-item">
         <div class="performer-rank ${isWarning ? 'warning' : ''}">${rank}</div>
         <div class="performer-avatar">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <img src="${photoUrl}" alt="${employee.name || login}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div class="avatar-fallback" style="display:none;">${DEFAULT_AVATAR_SVG}</div>
         </div>
         <div class="performer-info">
           <div class="performer-name">${employee.name || employee.id}</div>
@@ -525,6 +590,13 @@
     const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
 
     // Update display
+    const login = first.login || employeeId;
+    const photoUrl = getBadgePhotoUrl(login);
+    el.aaAvatarImg.src = photoUrl;
+    el.aaAvatarImg.alt = employeeName;
+    el.aaAvatarImg.style.display = 'block';
+    el.aaAvatarImg.nextElementSibling.style.display = 'none';
+
     el.aaName.textContent = employeeName;
     el.aaBadge.textContent = `Badge: ${employeeId}`;
     el.aaJPH.textContent = avgJPH.toFixed(1);
@@ -769,13 +841,16 @@
       const jph = r.jph || (r.hours > 0 ? (r.jobs / r.hours).toFixed(1) : 0);
       const goal = PATH_CONFIG[pathId]?.goal || 35;
       const status = jph >= goal ? 'good' : jph >= goal * 0.85 ? 'warning' : 'poor';
+      const login = r.login || r.employeeId;
+      const photoUrl = getBadgePhotoUrl(login);
 
       return `
         <tr>
           <td>
             <div class="employee-cell">
               <div class="employee-avatar">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <img src="${photoUrl}" alt="${r.employeeName || login}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="avatar-fallback" style="display:none;">${DEFAULT_AVATAR_SVG}</div>
               </div>
               <div>
                 <div class="employee-name">${r.employeeName || r.employeeId}</div>
