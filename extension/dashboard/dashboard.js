@@ -9,8 +9,9 @@
   const state = {
     warehouseId: 'UNKNOWN',
     employees: [],
-    performanceData: [],
-    period: 'today',
+    allCachedData: [],        // ALL data from cache (unfiltered)
+    performanceData: [],       // Filtered data for display
+    period: 'lastMonth',       // Default to last month (cached data)
     dateRange: {
       startDate: null,
       endDate: null
@@ -20,9 +21,17 @@
     searchQuery: '',
     sortBy: 'employee',
     fclmTabId: null,
+    cacheStatus: {
+      initialized: false,
+      months: [],
+      totalRecords: 0
+    },
     // AA Lookup state
     selectedAA: null,
-    selectedLookupPath: 'all'
+    selectedLookupPath: 'all',
+    // Search suggestions
+    searchSuggestions: [],
+    showSuggestions: false
   };
 
   // Path configuration with colors and JPH goals (matching fclm.js PATHS)
@@ -131,19 +140,19 @@
    */
   function setDefaultDateRange() {
     const today = new Date();
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
 
     // Default custom dates (in case user switches to custom)
-    state.dateRange.startDate = formatDate(weekAgo);
+    state.dateRange.startDate = formatDate(monthAgo);
     state.dateRange.endDate = formatDate(today);
 
     elements.startDate.value = state.dateRange.startDate;
     elements.endDate.value = state.dateRange.endDate;
 
-    // Default period is "today" (current shift)
-    state.period = 'today';
-    elements.periodSelect.value = 'today';
+    // Default period is "lastMonth" (most complete cached data)
+    state.period = 'lastMonth';
+    elements.periodSelect.value = 'lastMonth';
     elements.customDateRange.style.display = 'none';
   }
 
@@ -193,56 +202,169 @@
   }
 
   /**
-   * Load initial data from storage (passed from FCLM)
-   * Uses REAL performance data fetched from FCLM, not sample data
+   * Load initial data - first from storage, then request ALL cached data
    */
   async function loadInitialData() {
     try {
+      // First check if we have data passed from FCLM button click
       const storage = await browser.storage.local.get('dashboardData');
-      const data = storage.dashboardData;
+      const passedData = storage.dashboardData;
 
-      if (data) {
-        console.log('[Dashboard] Loaded initial data:', data);
-
-        state.warehouseId = data.warehouseId || 'UNKNOWN';
-        state.employees = data.employees || [];
-        state.paths = data.paths || [];
-
-        if (data.dateRange) {
-          state.dateRange = data.dateRange;
-
-          // Update period selector if period was saved
-          if (data.dateRange.period) {
-            state.period = data.dateRange.period;
-            elements.periodSelect.value = data.dateRange.period;
-
-            if (data.dateRange.period === 'custom') {
-              elements.customDateRange.style.display = 'flex';
-              elements.startDate.value = data.dateRange.startDate;
-              elements.endDate.value = data.dateRange.endDate;
-            }
-          }
-        }
-
-        // Update UI
+      if (passedData) {
+        console.log('[Dashboard] Loaded passed data:', passedData);
+        state.warehouseId = passedData.warehouseId || 'UNKNOWN';
         elements.warehouseBadge.textContent = state.warehouseId;
-
-        // Use REAL performance data from FCLM (not sample data!)
-        if (data.performanceData && data.performanceData.length > 0) {
-          console.log('[Dashboard] Using REAL performance data:', data.performanceData.length, 'records');
-          processRealPerformanceData(data.performanceData);
-        } else if (state.employees.length > 0) {
-          // No pre-fetched data - show empty state
-          console.log('[Dashboard] No performance data available');
-          state.performanceData = [];
-          renderAll();
-        }
-
-        // Clear the stored data
         browser.storage.local.remove('dashboardData');
       }
+
+      // Now load ALL cached data from content script
+      await loadAllCachedData();
+
     } catch (error) {
       console.error('[Dashboard] Error loading initial data:', error);
+    }
+  }
+
+  /**
+   * Load ALL cached data from content script
+   */
+  async function loadAllCachedData() {
+    showLoading(true, 'Loading cached data...');
+
+    try {
+      // Find the FCLM tab
+      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
+
+      if (tabs.length === 0) {
+        showToast('FCLM portal not open. Please open FCLM in another tab.', 'error');
+        showLoading(false);
+        return;
+      }
+
+      const fclmTab = tabs[0];
+      state.fclmTabId = fclmTab.id;
+
+      console.log('[Dashboard] Requesting all cached data...');
+
+      // Request all cached data
+      const response = await browser.tabs.sendMessage(fclmTab.id, { action: 'getAllCachedData' });
+
+      if (response && response.success) {
+        console.log('[Dashboard] Received cached data:', response.totalRecords, 'records');
+
+        state.warehouseId = response.warehouseId || state.warehouseId;
+        state.employees = response.employees || [];
+        state.allCachedData = response.performanceData || [];
+        state.cacheStatus = {
+          initialized: true,
+          months: response.cachedMonths || [],
+          totalRecords: response.totalRecords || 0
+        };
+
+        elements.warehouseBadge.textContent = state.warehouseId;
+
+        // Apply default filter (last month)
+        applyDateFilter();
+
+        showToast(`Loaded ${response.totalRecords} records from ${response.cachedMonths?.length || 0} months`, 'success');
+      } else {
+        console.log('[Dashboard] No cached data available, fetching from FCLM...');
+        // Fall back to fetching from FCLM
+        await fetchDataFromFCLM('lastMonth');
+      }
+    } catch (error) {
+      console.error('[Dashboard] Error loading cached data:', error);
+      showToast('Error loading data: ' + error.message, 'error');
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  /**
+   * Apply date filter to cached data (client-side filtering)
+   */
+  function applyDateFilter() {
+    const period = state.period;
+    const now = new Date();
+    let startDate, endDate;
+
+    switch (period) {
+      case 'today':
+        // For today, we need fresh data - can't filter cached historical data
+        // Filter to just current day records
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        break;
+
+      case 'week':
+        // This week (Sunday to today)
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - startDate.getDay());
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(now);
+        endDate.setDate(endDate.getDate() + 1);
+        break;
+
+      case 'lastWeek':
+        // Last week (Sunday to Saturday)
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - startDate.getDay() - 7);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 7);
+        break;
+
+      case 'month':
+        // This month (1st to today)
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(now);
+        endDate.setDate(endDate.getDate() + 1);
+        break;
+
+      case 'lastMonth':
+        // Last month (full month)
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        endDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+
+      case 'custom':
+        startDate = new Date(state.dateRange.startDate);
+        endDate = new Date(state.dateRange.endDate);
+        endDate.setDate(endDate.getDate() + 1); // Include end date
+        break;
+
+      default:
+        // Show all data
+        startDate = new Date(0);
+        endDate = new Date(now.getFullYear() + 1, 0, 1);
+    }
+
+    console.log(`[Dashboard] Filtering data for ${period}: ${startDate.toDateString()} to ${endDate.toDateString()}`);
+
+    // Filter cached data by date range
+    // Note: Cached data has 'month' field like '2026-01'
+    const filteredData = state.allCachedData.filter(record => {
+      if (record.month) {
+        const [year, month] = record.month.split('-').map(Number);
+        const recordDate = new Date(year, month - 1, 15); // Mid-month approximation
+        return recordDate >= startDate && recordDate < endDate;
+      }
+      // Current day records
+      if (record.isCurrentDay) {
+        return period === 'today' || period === 'week' || period === 'month';
+      }
+      return true;
+    });
+
+    console.log(`[Dashboard] Filtered to ${filteredData.length} records`);
+
+    // Process the filtered data
+    if (filteredData.length > 0) {
+      processRealPerformanceData(filteredData);
+    } else {
+      state.performanceData = [];
+      renderAll();
+      showToast('No data found for selected date range', 'warning');
     }
   }
 
@@ -328,6 +450,21 @@
       }
     });
     elements.closeDetailBtn.addEventListener('click', closeAADetailPanel);
+
+    // Click outside to close suggestions
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-box')) {
+        hideSearchSuggestions();
+      }
+    });
+
+    // Focus on search shows suggestions if there's a query
+    elements.employeeSearch.addEventListener('focus', () => {
+      if (elements.employeeSearch.value.length >= 2) {
+        const suggestions = generateSearchSuggestions(elements.employeeSearch.value);
+        showSearchSuggestions(suggestions);
+      }
+    });
   }
 
   /**
@@ -342,6 +479,8 @@
       elements.customDateRange.style.display = 'flex';
     } else {
       elements.customDateRange.style.display = 'none';
+      // Auto-apply filter for non-custom periods
+      applyDateFilter();
     }
   }
 
@@ -362,14 +501,21 @@
       }
     }
 
-    await fetchDataFromFCLM();
+    // For 'today' period, we need fresh data from FCLM
+    if (period === 'today') {
+      await fetchDataFromFCLM();
+    } else {
+      // For other periods, filter cached data
+      applyDateFilter();
+    }
   }
 
   /**
-   * Handle refresh button
+   * Handle refresh button - always fetch fresh data
    */
   async function handleRefresh() {
-    await fetchDataFromFCLM();
+    // Refresh all cached data
+    await loadAllCachedData();
   }
 
   /**
@@ -443,11 +589,124 @@
   }
 
   /**
-   * Handle search input
+   * Handle search input with autocomplete suggestions
    */
   function handleSearch(e) {
-    state.searchQuery = e.target.value.toLowerCase();
+    const query = e.target.value.trim();
+    state.searchQuery = query.toLowerCase();
+
+    // Generate and show suggestions
+    if (query.length >= 2) {
+      const suggestions = generateSearchSuggestions(query);
+      showSearchSuggestions(suggestions);
+    } else {
+      hideSearchSuggestions();
+    }
+
     renderPerformanceTable();
+  }
+
+  /**
+   * Generate search suggestions from all cached data
+   */
+  function generateSearchSuggestions(query) {
+    const lowerQuery = query.toLowerCase();
+    const seen = new Map(); // Track unique employees by ID
+
+    // Search through all cached data
+    state.allCachedData.forEach(record => {
+      const id = record.employeeId;
+      const name = record.employeeName || '';
+
+      // Match on Badge ID, Name, or partial match
+      const matches =
+        id.toLowerCase().includes(lowerQuery) ||
+        name.toLowerCase().includes(lowerQuery);
+
+      if (matches && !seen.has(id)) {
+        seen.set(id, {
+          id,
+          name,
+          paths: new Set([record.pathName])
+        });
+      } else if (matches && seen.has(id)) {
+        // Add additional paths
+        seen.get(id).paths.add(record.pathName);
+      }
+    });
+
+    // Convert to array and sort by relevance (exact ID match first)
+    const suggestions = Array.from(seen.values())
+      .map(emp => ({
+        ...emp,
+        paths: Array.from(emp.paths).slice(0, 3).join(', ')
+      }))
+      .sort((a, b) => {
+        // Exact ID match first
+        if (a.id === query) return -1;
+        if (b.id === query) return 1;
+        // Then ID starts with query
+        if (a.id.startsWith(query) && !b.id.startsWith(query)) return -1;
+        if (b.id.startsWith(query) && !a.id.startsWith(query)) return 1;
+        // Then alphabetical
+        return a.id.localeCompare(b.id);
+      })
+      .slice(0, 10); // Limit to 10 suggestions
+
+    return suggestions;
+  }
+
+  /**
+   * Show search suggestions dropdown
+   */
+  function showSearchSuggestions(suggestions) {
+    let dropdown = document.getElementById('searchSuggestions');
+
+    if (!dropdown) {
+      dropdown = document.createElement('div');
+      dropdown.id = 'searchSuggestions';
+      dropdown.className = 'search-suggestions';
+      elements.employeeSearch.parentNode.appendChild(dropdown);
+    }
+
+    if (suggestions.length === 0) {
+      dropdown.innerHTML = '<div class="suggestion-empty">No matches found</div>';
+    } else {
+      dropdown.innerHTML = suggestions.map(s => `
+        <div class="suggestion-item" data-id="${s.id}">
+          <div class="suggestion-main">
+            <span class="suggestion-id">${s.id}</span>
+            <span class="suggestion-name">${s.name || 'Unknown'}</span>
+          </div>
+          <div class="suggestion-paths">${s.paths}</div>
+        </div>
+      `).join('');
+
+      // Add click handlers
+      dropdown.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = item.dataset.id;
+          elements.employeeSearch.value = id;
+          state.searchQuery = id.toLowerCase();
+          hideSearchSuggestions();
+          renderPerformanceTable();
+        });
+      });
+    }
+
+    dropdown.style.display = 'block';
+    state.showSuggestions = true;
+  }
+
+  /**
+   * Hide search suggestions dropdown
+   */
+  function hideSearchSuggestions() {
+    const dropdown = document.getElementById('searchSuggestions');
+    if (dropdown) {
+      dropdown.style.display = 'none';
+    }
+    state.showSuggestions = false;
   }
 
   /**

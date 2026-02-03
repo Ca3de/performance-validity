@@ -1394,6 +1394,20 @@
         sendResponse({ success: true });
         return true;
 
+      case 'getAllCachedData':
+        // Return all cached data for the dashboard
+        getAllCachedData()
+          .then(sendResponse)
+          .catch(err => sendResponse({ success: false, error: err.message }));
+        return true;
+
+      case 'getCacheStatus':
+        // Return cache status
+        getCacheStatus()
+          .then(sendResponse)
+          .catch(err => sendResponse({ success: false, error: err.message }));
+        return true;
+
       default:
         sendResponse({ success: false, error: 'Unknown action' });
         return true;
@@ -1602,6 +1616,99 @@
       if (text) {
         text.textContent = message || 'Performance Ready';
       }
+    }
+  }
+
+  /**
+   * Get ALL cached data for dashboard
+   * Returns all historical months + current day data
+   */
+  async function getAllCachedData() {
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+
+    if (!window.FCLMDataCache) {
+      log('[Cache] Cache not available');
+      return { success: false, error: 'Cache not initialized' };
+    }
+
+    try {
+      const allRecords = [];
+      const allEmployees = new Map();
+
+      // Get all cached months
+      const cachedMonths = await window.FCLMDataCache.getCachedMonths(warehouseId, 'all');
+      log(`[Cache] Found ${cachedMonths.length} cached months`);
+
+      for (const monthInfo of cachedMonths) {
+        const monthData = await window.FCLMDataCache.getMonthData(warehouseId, 'all', monthInfo.month);
+        if (monthData && monthData.records) {
+          monthData.records.forEach(record => {
+            allRecords.push(record);
+            if (!allEmployees.has(record.employeeId)) {
+              allEmployees.set(record.employeeId, {
+                id: record.employeeId,
+                name: record.employeeName
+              });
+            }
+          });
+        }
+      }
+
+      // Get current day data
+      const currentDayData = await window.FCLMDataCache.getCurrentDayData(warehouseId, 'all');
+      if (currentDayData && currentDayData.records) {
+        currentDayData.records.forEach(record => {
+          allRecords.push({ ...record, isCurrentDay: true });
+          if (!allEmployees.has(record.employeeId)) {
+            allEmployees.set(record.employeeId, {
+              id: record.employeeId,
+              name: record.employeeName
+            });
+          }
+        });
+      }
+
+      log(`[Cache] Returning ${allRecords.length} total records, ${allEmployees.size} unique employees`);
+
+      return {
+        success: true,
+        warehouseId,
+        employees: Array.from(allEmployees.values()),
+        performanceData: allRecords,
+        cachedMonths: cachedMonths.map(m => m.month),
+        totalRecords: allRecords.length,
+        fetchedAt: new Date().toISOString()
+      };
+    } catch (error) {
+      log('[Cache] Error getting all cached data:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get cache status for dashboard
+   */
+  async function getCacheStatus() {
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+
+    if (!window.FCLMDataCache) {
+      return { success: false, initialized: false };
+    }
+
+    try {
+      const stats = await window.FCLMDataCache.getCacheStats();
+      const cachedMonths = await window.FCLMDataCache.getCachedMonths(warehouseId, 'all');
+
+      return {
+        success: true,
+        initialized: cacheInitialized,
+        warehouseId,
+        months: cachedMonths,
+        totalRecords: stats.totalRecords,
+        lastUpdate: stats.months.length > 0 ? stats.months[stats.months.length - 1].fetchedAt : null
+      };
+    } catch (error) {
+      return { success: false, error: error.message };
     }
   }
 
