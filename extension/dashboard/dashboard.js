@@ -564,7 +564,7 @@
   /**
    * Handle lookup
    */
-  function handleLookup() {
+  async function handleLookup() {
     const input = el.lookupInput.value.trim();
 
     if (!input) {
@@ -583,7 +583,8 @@
     let matches = state.allCachedData.filter(r => {
       const id = String(r.employeeId || '').toLowerCase();
       const name = String(r.employeeName || '').toLowerCase();
-      return id.includes(searchTerm) || name.includes(searchTerm);
+      const login = String(r.login || '').toLowerCase();
+      return id.includes(searchTerm) || name.includes(searchTerm) || login.includes(searchTerm);
     });
 
     if (matches.length === 0) {
@@ -609,7 +610,7 @@
   /**
    * Display AA detail card
    */
-  function displayAADetail(records) {
+  async function displayAADetail(records) {
     const first = records[0];
     const employeeId = first.employeeId;
     const employeeName = first.employeeName || employeeId;
@@ -619,11 +620,7 @@
     const totalJobs = records.reduce((sum, r) => sum + (r.jobs || 0), 0);
     const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
 
-    // Update display
-    const login = first.login || employeeId;
-    const photoUrl = getBadgePhotoUrl(login);
-
-    // Setup avatar with proper event listeners (CSP-safe)
+    // Setup avatar with fallback initially
     el.aaAvatarImg.src = '';
     el.aaAvatarImg.alt = employeeName;
     el.aaAvatarImg.style.display = 'none';
@@ -642,6 +639,27 @@
       el.aaAvatarImg.style.display = 'none';
       el.aaAvatarFallback.style.display = 'flex';
     });
+
+    // Try to get login from FCLM for badge photo
+    let login = first.login;
+    if (!login && state.fclmTabId) {
+      try {
+        showToast('Loading employee info...', 'info');
+        const response = await browser.tabs.sendMessage(state.fclmTabId, {
+          action: 'fetchEmployeeInfo',
+          employeeId: employeeId
+        });
+        if (response?.success && response.login) {
+          login = response.login;
+          console.log(`[Dashboard] Got login for ${employeeId}: ${login}`);
+        }
+      } catch (err) {
+        console.log('[Dashboard] Could not fetch employee info:', err.message);
+      }
+    }
+
+    // Set photo URL (use login if available, otherwise fall back to employeeId)
+    const photoUrl = getBadgePhotoUrl(login || employeeId);
     el.aaAvatarImg.src = photoUrl;
 
     el.aaName.textContent = employeeName;

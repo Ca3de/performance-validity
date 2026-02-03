@@ -279,6 +279,9 @@
     const sessions = [];
     const pathSummary = {};
 
+    // Extract employee info (login, badge, etc.) from the page
+    const employeeInfo = extractEmployeeInfo(doc);
+
     // Look for the gantt chart table specifically (like scan-check does)
     const table = doc.querySelector('table.ganttChart[aria-label="Time Details"]') ||
                   doc.querySelector('table.ganttChart') ||
@@ -286,7 +289,7 @@
 
     if (!table) {
       log('No time details table found');
-      return { success: false, error: 'No time details table found', sessions: [], pathSummary: {} };
+      return { success: false, error: 'No time details table found', sessions: [], pathSummary: {}, employeeInfo };
     }
 
     const rows = table.querySelectorAll('tr');
@@ -345,8 +348,114 @@
     });
 
     log(`Parsed ${sessions.length} sessions across ${Object.keys(pathSummary).length} paths`);
-    return { success: true, sessions, pathSummary };
+    return { success: true, sessions, pathSummary, employeeInfo };
   }
+
+  /**
+   * Extract employee info from time details page HTML
+   * Parses the employeeInfo section to get login, badge, etc.
+   */
+  function extractEmployeeInfo(doc) {
+    const info = {
+      login: null,
+      employeeId: null,
+      badgeId: null,
+      name: null,
+      department: null,
+      location: null,
+      shift: null,
+      manager: null,
+      status: null
+    };
+
+    try {
+      // Look for the employeeInfo div with dl list
+      const employeeInfoDiv = doc.querySelector('.employeeInfo');
+      if (employeeInfoDiv) {
+        const dlLists = employeeInfoDiv.querySelectorAll('dl.list-side-by-side');
+
+        dlLists.forEach(dl => {
+          const dts = dl.querySelectorAll('dt');
+          const dds = dl.querySelectorAll('dd');
+
+          dts.forEach((dt, index) => {
+            const label = dt.textContent.trim().toLowerCase();
+            const value = dds[index]?.textContent?.trim() || '';
+
+            if (label === 'login') info.login = value;
+            else if (label === 'empl id') info.employeeId = value;
+            else if (label === 'badge') info.badgeId = value;
+            else if (label === 'dept id') info.department = value;
+            else if (label === 'location') info.location = value;
+            else if (label === 'shift') info.shift = value;
+            else if (label === 'status') info.status = value;
+            else if (label === 'manager') {
+              const managerLink = dds[index]?.querySelector('a');
+              info.manager = managerLink?.textContent?.trim() || value;
+            }
+          });
+        });
+      }
+
+      // Also try to get name from page title or header
+      const nameHeader = doc.querySelector('h1, h2, .employee-name, .name');
+      if (nameHeader) {
+        const nameText = nameHeader.textContent.trim();
+        // Check if it looks like a name (not a generic title)
+        if (nameText && !nameText.includes('Time Details') && nameText.length < 50) {
+          info.name = nameText;
+        }
+      }
+
+      log(`[EmployeeInfo] Extracted: login=${info.login}, badgeId=${info.badgeId}, employeeId=${info.employeeId}`);
+    } catch (error) {
+      log('[EmployeeInfo] Error extracting employee info:', error);
+    }
+
+    return info;
+  }
+
+  /**
+   * Fetch employee info (login, badge) from FCLM time details page
+   * @param {string} employeeId - The employee/badge ID
+   * @returns {Object} Employee info including login
+   */
+  async function fetchEmployeeInfo(employeeId) {
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+    const shift = getShiftDateRange();
+
+    const url = new URL('https://fclm-portal.amazon.com/employee/timeDetails');
+    url.searchParams.set('employeeId', employeeId);
+    url.searchParams.set('warehouseId', warehouseId);
+    url.searchParams.set('spanType', 'Intraday');
+    url.searchParams.set('startDateIntraday', formatDateForURL(shift.startDate));
+    url.searchParams.set('startHourIntraday', String(shift.startHour));
+    url.searchParams.set('startMinuteIntraday', '0');
+    url.searchParams.set('endDateIntraday', formatDateForURL(shift.endDate));
+    url.searchParams.set('endHourIntraday', String(shift.endHour));
+    url.searchParams.set('endMinuteIntraday', '0');
+
+    log(`[EmployeeInfo] Fetching info for ${employeeId}:`, url.toString());
+
+    try {
+      const response = await fetch(url.toString(), { credentials: 'include' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      const info = extractEmployeeInfo(doc);
+      return { success: true, ...info };
+    } catch (error) {
+      log('[EmployeeInfo] Error fetching employee info:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Cache for employee logins (to avoid repeated fetches)
+  const employeeLoginCache = new Map();
 
   /**
    * Try to find path from title using partial matching
@@ -1294,12 +1403,46 @@
   }
 
   /**
+   * Get employee login (with caching)
+   * @param {string} employeeId - The employee/badge ID
+   * @returns {string|null} The login or null if not found
+   */
+  async function getEmployeeLogin(employeeId) {
+    // Check cache first
+    if (employeeLoginCache.has(employeeId)) {
+      return employeeLoginCache.get(employeeId);
+    }
+
+    // Fetch from FCLM
+    const info = await fetchEmployeeInfo(employeeId);
+    if (info.success && info.login) {
+      employeeLoginCache.set(employeeId, info.login);
+      return info.login;
+    }
+
+    return null;
+  }
+
+  /**
    * Listen for messages from background script or popup
    */
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     log('Received message:', message.action);
 
     switch (message.action) {
+      case 'fetchEmployeeInfo':
+        // Fetch employee info (login, badge) from FCLM
+        fetchEmployeeInfo(message.employeeId)
+          .then(sendResponse);
+        return true;
+
+      case 'getEmployeeLogin':
+        // Get employee login (with caching)
+        getEmployeeLogin(message.employeeId)
+          .then(login => sendResponse({ success: true, login }))
+          .catch(err => sendResponse({ success: false, error: err.message }));
+        return true;
+
       case 'fetchEmployeeTimeDetails':
         fetchEmployeeTimeDetails(message.employeeId, message.spanType, message.customRange)
           .then(sendResponse);
