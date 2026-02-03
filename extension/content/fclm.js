@@ -426,30 +426,53 @@
     log(`Fetching function rollup (${spanType}):`, url.toString());
     log(`  Date range: ${range.startDate} to ${range.endDate}`);
 
-    try {
-      // Add timeout to prevent indefinite hanging
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    // Retry logic for rate limiting (429) errors
+    const maxRetries = 3;
+    let retryDelay = 2000; // Start with 2 second delay
 
-      const response = await fetch(url.toString(), {
-        credentials: 'include',
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        // Add timeout to prevent indefinite hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const response = await fetch(url.toString(), {
+          credentials: 'include',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (response.status === 429) {
+          // Rate limited - wait and retry
+          if (attempt < maxRetries) {
+            log(`Rate limited (429), waiting ${retryDelay/1000}s before retry ${attempt + 1}/${maxRetries}...`);
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+            retryDelay *= 2; // Exponential backoff
+            continue;
+          }
+          throw new Error('Rate limited (429) - max retries exceeded');
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        const html = await response.text();
+        return parseFunctionRollupHTML(html, processId);
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          log('Fetch timeout for function rollup');
+          return { success: false, error: 'Request timed out' };
+        }
+        // Only retry on network errors, not on final attempt
+        if (attempt < maxRetries && error.message.includes('429')) {
+          continue;
+        }
+        log('Error fetching function rollup:', error);
+        return { success: false, error: error.message };
       }
-      const html = await response.text();
-      return parseFunctionRollupHTML(html, processId);
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        log('Fetch timeout for function rollup');
-        return { success: false, error: 'Request timed out' };
-      }
-      log('Error fetching function rollup:', error);
-      return { success: false, error: error.message };
     }
+
+    return { success: false, error: 'Max retries exceeded' };
   }
 
   /**
@@ -1171,7 +1194,32 @@
 
     } catch (error) {
       log('Error fetching data:', error);
-      throw error;
+
+      // Still open dashboard even on error, with whatever data we have
+      const dashboardData = {
+        warehouseId,
+        employees: [],
+        performanceData: [],
+        dateRange: {
+          period,
+          startDate: formatDateForURL(dateRange.startDate),
+          endDate: formatDateForURL(dateRange.endDate),
+          spanType: dateRange.spanType
+        },
+        paths: PATHS,
+        processIds: PROCESS_IDS,
+        sourceUrl: window.location.href,
+        fetchedAt: new Date().toISOString(),
+        fromCache: false,
+        error: error.message
+      };
+
+      await browser.storage.local.set({ dashboardData });
+      browser.runtime.sendMessage({
+        action: 'openDashboard',
+        data: { warehouseId }
+      });
+
     } finally {
       // Reset FAB state
       if (fab) {
@@ -1613,7 +1661,8 @@
    * @param {Function} progressCallback - Optional callback for progress updates
    */
   async function fetchDaysInParallel(dates, progressCallback = null) {
-    const parallelFetches = window.FCLMDataCache?.CONFIG?.parallelFetches || 3;
+    const parallelFetches = window.FCLMDataCache?.CONFIG?.parallelFetches || 1;
+    const batchDelayMs = window.FCLMDataCache?.CONFIG?.batchDelayMs || 2000;
     const results = [];
 
     for (let i = 0; i < dates.length; i += parallelFetches) {
@@ -1637,9 +1686,9 @@
       const batchResults = await Promise.all(batchPromises);
       results.push(...batchResults.flat());
 
-      // Small delay between batches to avoid overwhelming the server
+      // Delay between batches to avoid rate limiting (429 errors)
       if (i + parallelFetches < dates.length) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, batchDelayMs));
       }
     }
 

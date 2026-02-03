@@ -20,7 +20,8 @@
   const CONFIG = {
     daysToCache: 60,            // Cache last 60 days
     currentDayRefreshMs: 60000, // Refresh current day every 60 seconds
-    parallelFetches: 3,         // Number of parallel API calls
+    parallelFetches: 1,         // Sequential fetches to avoid rate limiting
+    batchDelayMs: 2000,         // 2 second delay between batches
     debug: true
   };
 
