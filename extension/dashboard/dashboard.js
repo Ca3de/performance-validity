@@ -42,6 +42,31 @@
   // Default avatar SVG for fallback
   const DEFAULT_AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
 
+  /**
+   * Setup image error handlers for avatar fallback (CSP-safe)
+   * Call this after rendering any content with avatar images
+   */
+  function setupAvatarFallbacks(container) {
+    const avatarContainers = container
+      ? container.querySelectorAll('.performer-avatar, .employee-avatar, .aa-avatar')
+      : document.querySelectorAll('.performer-avatar, .employee-avatar, .aa-avatar');
+
+    avatarContainers.forEach(avatar => {
+      const img = avatar.querySelector('img');
+      const fallback = avatar.querySelector('.avatar-fallback');
+      if (img && fallback) {
+        img.addEventListener('error', () => {
+          img.style.display = 'none';
+          fallback.style.display = 'flex';
+        });
+        img.addEventListener('load', () => {
+          img.style.display = 'block';
+          fallback.style.display = 'none';
+        });
+      }
+    });
+  }
+
   // DOM Elements cache
   const el = {};
 
@@ -95,6 +120,7 @@
     el.aaDetailCard = document.getElementById('aaDetailCard');
     el.closeDetail = document.getElementById('closeDetail');
     el.aaAvatarImg = document.getElementById('aaAvatarImg');
+    el.aaAvatarFallback = document.getElementById('aaAvatarFallback');
     el.aaName = document.getElementById('aaName');
     el.aaBadge = document.getElementById('aaBadge');
     el.aaJPH = document.getElementById('aaJPH');
@@ -454,6 +480,10 @@
     el.needsAttention.innerHTML = needsAttention.length > 0
       ? needsAttention.map((e, i) => renderPerformerItem(e, i + 1, true)).join('')
       : '<div class="empty-state">Everyone is performing well!</div>';
+
+    // Setup avatar fallbacks after render
+    setupAvatarFallbacks(el.topPerformers);
+    setupAvatarFallbacks(el.needsAttention);
   }
 
   /**
@@ -516,8 +546,8 @@
       <div class="performer-item">
         <div class="performer-rank ${isWarning ? 'warning' : ''}">${rank}</div>
         <div class="performer-avatar">
-          <img src="${photoUrl}" alt="${employee.name || login}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div class="avatar-fallback" style="display:none;">${DEFAULT_AVATAR_SVG}</div>
+          <img src="${photoUrl}" alt="${employee.name || login}">
+          <div class="avatar-fallback">${DEFAULT_AVATAR_SVG}</div>
         </div>
         <div class="performer-info">
           <div class="performer-name">${employee.name || employee.id}</div>
@@ -534,7 +564,7 @@
   /**
    * Handle lookup
    */
-  function handleLookup() {
+  async function handleLookup() {
     const input = el.lookupInput.value.trim();
 
     if (!input) {
@@ -553,7 +583,8 @@
     let matches = state.allCachedData.filter(r => {
       const id = String(r.employeeId || '').toLowerCase();
       const name = String(r.employeeName || '').toLowerCase();
-      return id.includes(searchTerm) || name.includes(searchTerm);
+      const login = String(r.login || '').toLowerCase();
+      return id.includes(searchTerm) || name.includes(searchTerm) || login.includes(searchTerm);
     });
 
     if (matches.length === 0) {
@@ -579,7 +610,7 @@
   /**
    * Display AA detail card
    */
-  function displayAADetail(records) {
+  async function displayAADetail(records) {
     const first = records[0];
     const employeeId = first.employeeId;
     const employeeName = first.employeeName || employeeId;
@@ -589,13 +620,47 @@
     const totalJobs = records.reduce((sum, r) => sum + (r.jobs || 0), 0);
     const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
 
-    // Update display
-    const login = first.login || employeeId;
-    const photoUrl = getBadgePhotoUrl(login);
-    el.aaAvatarImg.src = photoUrl;
+    // Setup avatar with fallback initially
+    el.aaAvatarImg.src = '';
     el.aaAvatarImg.alt = employeeName;
-    el.aaAvatarImg.style.display = 'block';
-    el.aaAvatarImg.nextElementSibling.style.display = 'none';
+    el.aaAvatarImg.style.display = 'none';
+    el.aaAvatarFallback.style.display = 'flex';
+
+    // Remove old listeners by cloning
+    const newImg = el.aaAvatarImg.cloneNode(true);
+    el.aaAvatarImg.parentNode.replaceChild(newImg, el.aaAvatarImg);
+    el.aaAvatarImg = newImg;
+
+    el.aaAvatarImg.addEventListener('load', () => {
+      el.aaAvatarImg.style.display = 'block';
+      el.aaAvatarFallback.style.display = 'none';
+    });
+    el.aaAvatarImg.addEventListener('error', () => {
+      el.aaAvatarImg.style.display = 'none';
+      el.aaAvatarFallback.style.display = 'flex';
+    });
+
+    // Try to get login from FCLM for badge photo
+    let login = first.login;
+    if (!login && state.fclmTabId) {
+      try {
+        showToast('Loading employee info...', 'info');
+        const response = await browser.tabs.sendMessage(state.fclmTabId, {
+          action: 'fetchEmployeeInfo',
+          employeeId: employeeId
+        });
+        if (response?.success && response.login) {
+          login = response.login;
+          console.log(`[Dashboard] Got login for ${employeeId}: ${login}`);
+        }
+      } catch (err) {
+        console.log('[Dashboard] Could not fetch employee info:', err.message);
+      }
+    }
+
+    // Set photo URL (use login if available, otherwise fall back to employeeId)
+    const photoUrl = getBadgePhotoUrl(login || employeeId);
+    el.aaAvatarImg.src = photoUrl;
 
     el.aaName.textContent = employeeName;
     el.aaBadge.textContent = `Badge: ${employeeId}`;
@@ -849,8 +914,8 @@
           <td>
             <div class="employee-cell">
               <div class="employee-avatar">
-                <img src="${photoUrl}" alt="${r.employeeName || login}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="avatar-fallback" style="display:none;">${DEFAULT_AVATAR_SVG}</div>
+                <img src="${photoUrl}" alt="${r.employeeName || login}">
+                <div class="avatar-fallback">${DEFAULT_AVATAR_SVG}</div>
               </div>
               <div>
                 <div class="employee-name">${r.employeeName || r.employeeId}</div>
@@ -866,6 +931,9 @@
         </tr>
       `;
     }).join('');
+
+    // Setup avatar fallbacks after render
+    setupAvatarFallbacks(el.dataTableBody);
   }
 
   /**
