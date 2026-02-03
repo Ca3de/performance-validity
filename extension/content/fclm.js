@@ -427,13 +427,26 @@
     log(`  Date range: ${range.startDate} to ${range.endDate}`);
 
     try {
-      const response = await fetch(url.toString(), { credentials: 'include' });
+      // Add timeout to prevent indefinite hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      const response = await fetch(url.toString(), {
+        credentials: 'include',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const html = await response.text();
       return parseFunctionRollupHTML(html, processId);
     } catch (error) {
+      if (error.name === 'AbortError') {
+        log('Fetch timeout for function rollup');
+        return { success: false, error: 'Request timed out' };
+      }
       log('Error fetching function rollup:', error);
       return { success: false, error: error.message };
     }
@@ -1658,13 +1671,17 @@
     fetchInProgress = true;
 
     try {
+      log('[Cache] Step 1: Opening IndexedDB...');
       await window.FCLMDataCache.init();
+      log('[Cache] Step 1: IndexedDB opened');
 
       // Get list of dates to cache (last N days)
+      log('[Cache] Step 2: Getting dates to cache...');
       const datesToCache = window.FCLMDataCache.getDatesToCache();
-      log(`[Cache] Days to cache: ${datesToCache.length} days`);
+      log(`[Cache] Step 2: Will cache ${datesToCache.length} days: ${datesToCache.slice(0, 3).join(', ')}...`);
 
       // Track progress
+      log('[Cache] Step 3: Setting fetch progress...');
       await window.FCLMDataCache.setFetchProgress(warehouseId, {
         status: 'fetching',
         totalDays: datesToCache.length,
@@ -1674,6 +1691,7 @@
       updateCacheStatus('loading', `Loading 0/${datesToCache.length} days...`);
 
       // Check which days need fetching
+      log('[Cache] Step 4: Checking which days need fetching...');
       const daysToFetch = [];
       for (const dateStr of datesToCache) {
         const needsFetch = await window.FCLMDataCache.needsFetch(warehouseId, dateStr, 'all');
@@ -1682,12 +1700,14 @@
         }
       }
 
-      log(`[Cache] ${daysToFetch.length} days need fetching`);
+      log(`[Cache] Step 4: ${daysToFetch.length} of ${datesToCache.length} days need fetching`);
 
       if (daysToFetch.length > 0) {
+        log('[Cache] Step 5: Starting parallel fetch...');
         // Fetch in parallel with progress updates
         await fetchDaysInParallel(daysToFetch, (progress) => {
           const percent = Math.round((progress.current / progress.total) * 100);
+          log(`[Cache] Fetching batch: ${progress.batch.join(', ')} (${percent}%)`);
           updateCacheStatus('loading', `Loading ${progress.current}/${progress.total} days (${percent}%)...`);
           window.FCLMDataCache.setFetchProgress(warehouseId, {
             status: 'fetching',
@@ -1696,12 +1716,17 @@
             currentBatch: progress.batch
           });
         });
+        log('[Cache] Step 5: Parallel fetch complete');
+      } else {
+        log('[Cache] Step 5: No days need fetching (all cached)');
       }
 
       // Fetch current day data
+      log('[Cache] Step 6: Fetching current day data...');
       await fetchAndCacheCurrentDay();
+      log('[Cache] Step 6: Current day data fetched');
 
-      // Set up periodic refresh for current day (every 60 seconds)
+      // Set up periodic refresh for current day
       if (currentDayRefreshInterval) {
         clearInterval(currentDayRefreshInterval);
       }
@@ -1711,8 +1736,9 @@
       }, window.FCLMDataCache.CONFIG.currentDayRefreshMs);
 
       // Log cache stats
+      log('[Cache] Step 7: Getting cache stats...');
       const stats = await window.FCLMDataCache.getCacheStats();
-      log('[Cache] Cache stats:', stats);
+      log('[Cache] Step 7: Cache stats:', stats);
 
       await window.FCLMDataCache.setFetchProgress(warehouseId, {
         status: 'complete',
@@ -1722,9 +1748,11 @@
       });
 
       updateCacheStatus('ready', `${stats.totalRecords} records (${stats.totalDays} days)`);
+      log('[Cache] Initialization complete!');
 
     } catch (error) {
       log('[Cache] Error initializing cache:', error);
+      console.error('[Cache] Full error:', error);
       updateCacheStatus('error', 'Cache error');
     } finally {
       fetchInProgress = false;

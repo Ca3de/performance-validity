@@ -17,9 +17,9 @@
 
   // Cache configuration
   const CONFIG = {
-    daysToCache: 60,            // Cache 60 days of historical data
+    daysToCache: 7,             // Cache last 7 days (reduced for faster startup)
     currentDayRefreshMs: 60000, // Refresh current day every 60 seconds
-    parallelFetches: 3,         // Number of parallel API calls
+    parallelFetches: 2,         // Number of parallel API calls (reduced to avoid throttling)
     debug: true
   };
 
