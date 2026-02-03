@@ -31,6 +31,17 @@
     'stow': { name: 'Stow', color: '#9C27B0', goal: 45 }
   };
 
+  // Badge photo URL helper
+  const BADGE_PHOTO_URL = 'https://badgephotos.corp.amazon.com/?fullsizeimage=1&uid=';
+
+  function getBadgePhotoUrl(login) {
+    if (!login) return null;
+    return `${BADGE_PHOTO_URL}${encodeURIComponent(login)}`;
+  }
+
+  // Default avatar SVG for fallback
+  const DEFAULT_AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+
   // DOM Elements cache
   const el = {};
 
@@ -83,6 +94,7 @@
     el.lookupPath = document.getElementById('lookupPath');
     el.aaDetailCard = document.getElementById('aaDetailCard');
     el.closeDetail = document.getElementById('closeDetail');
+    el.aaAvatarImg = document.getElementById('aaAvatarImg');
     el.aaName = document.getElementById('aaName');
     el.aaBadge = document.getElementById('aaBadge');
     el.aaJPH = document.getElementById('aaJPH');
@@ -390,7 +402,7 @@
     data.forEach(r => {
       const id = r.employeeId;
       if (!employeeMap.has(id)) {
-        employeeMap.set(id, { id, name: r.employeeName, hours: 0, jobs: 0, paths: new Set() });
+        employeeMap.set(id, { id, name: r.employeeName, login: r.login || r.employeeId, hours: 0, jobs: 0, paths: new Set() });
       }
       const emp = employeeMap.get(id);
       emp.hours += r.hours || 0;
@@ -497,12 +509,15 @@
    */
   function renderPerformerItem(employee, rank, isWarning) {
     const pathNames = Array.from(employee.paths).map(p => PATH_CONFIG[p]?.name || p).join(', ');
+    const login = employee.login || employee.id;
+    const photoUrl = getBadgePhotoUrl(login);
 
     return `
       <div class="performer-item">
         <div class="performer-rank ${isWarning ? 'warning' : ''}">${rank}</div>
         <div class="performer-avatar">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <img src="${photoUrl}" alt="${employee.name || login}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div class="avatar-fallback" style="display:none;">${DEFAULT_AVATAR_SVG}</div>
         </div>
         <div class="performer-info">
           <div class="performer-name">${employee.name || employee.id}</div>
@@ -575,6 +590,13 @@
     const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
 
     // Update display
+    const login = first.login || employeeId;
+    const photoUrl = getBadgePhotoUrl(login);
+    el.aaAvatarImg.src = photoUrl;
+    el.aaAvatarImg.alt = employeeName;
+    el.aaAvatarImg.style.display = 'block';
+    el.aaAvatarImg.nextElementSibling.style.display = 'none';
+
     el.aaName.textContent = employeeName;
     el.aaBadge.textContent = `Badge: ${employeeId}`;
     el.aaJPH.textContent = avgJPH.toFixed(1);
@@ -819,13 +841,16 @@
       const jph = r.jph || (r.hours > 0 ? (r.jobs / r.hours).toFixed(1) : 0);
       const goal = PATH_CONFIG[pathId]?.goal || 35;
       const status = jph >= goal ? 'good' : jph >= goal * 0.85 ? 'warning' : 'poor';
+      const login = r.login || r.employeeId;
+      const photoUrl = getBadgePhotoUrl(login);
 
       return `
         <tr>
           <td>
             <div class="employee-cell">
               <div class="employee-avatar">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <img src="${photoUrl}" alt="${r.employeeName || login}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="avatar-fallback" style="display:none;">${DEFAULT_AVATAR_SVG}</div>
               </div>
               <div>
                 <div class="employee-name">${r.employeeName || r.employeeId}</div>

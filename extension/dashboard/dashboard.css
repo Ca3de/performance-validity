@@ -573,6 +573,21 @@ body {
   height: 20px;
 }
 
+.performer-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.performer-avatar .avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .performer-info {
   flex: 1;
   min-width: 0;
@@ -818,6 +833,21 @@ body {
 .aa-avatar svg {
   width: 32px;
   height: 32px;
+}
+
+.aa-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.aa-avatar .avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .aa-info {
@@ -1135,6 +1165,21 @@ body {
 .data-table .employee-avatar svg {
   width: 16px;
   height: 16px;
+}
+
+.data-table .employee-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.data-table .employee-avatar .avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .data-table .employee-name {
