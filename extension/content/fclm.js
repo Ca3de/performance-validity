@@ -1070,162 +1070,32 @@
    * @param {boolean} forceRefresh - Force live fetch even if cache available
    */
   async function handleFabClick(period = 'today', customStart = null, customEnd = null, forceRefresh = false) {
-    log(`FAB clicked, fetching data for period: ${period}...`);
+    log(`FAB clicked, opening dashboard immediately...`);
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
 
-    // Get date range for the selected period
-    let dateRange;
-    if (period === 'custom' && customStart && customEnd) {
-      dateRange = getDateRangeForPeriod('custom', new Date(customStart), new Date(customEnd));
-    } else {
-      dateRange = getDateRangeForPeriod(period);
-    }
-
-    log(`Date range: ${formatDateForURL(dateRange.startDate)} to ${formatDateForURL(dateRange.endDate)} (${dateRange.spanType})`);
-
-    // Show loading state
-    const fab = document.getElementById('perf-validity-fab');
-    if (fab) {
-      fab.classList.add('loading');
-      fab.querySelector('.perf-fab-text').textContent = 'Loading...';
-    }
+    // Open dashboard immediately - let it load data from cache
+    const dashboardData = {
+      warehouseId,
+      employees: [],
+      performanceData: [],
+      dateRange: { period, startDate: customStart, endDate: customEnd },
+      paths: PATHS,
+      processIds: PROCESS_IDS,
+      sourceUrl: window.location.href,
+      fetchedAt: new Date().toISOString(),
+      fromCache: false
+    };
 
     try {
-      let performanceData = [];
-      const allEmployees = new Map();
-      let fromCache = false;
-
-      // Try to get data from cache first (except for 'today' which needs fresh data)
-      if (!forceRefresh && period !== 'today' && window.FCLMDataCache) {
-        const cachedResult = await getDataFromCache(period, customStart, customEnd);
-        if (cachedResult && cachedResult.records.length > 0) {
-          log(`[Cache] Using ${cachedResult.records.length} cached records`);
-          performanceData = cachedResult.records;
-          fromCache = true;
-
-          // Extract unique employees from cached data
-          performanceData.forEach(record => {
-            if (!allEmployees.has(record.employeeId)) {
-              allEmployees.set(record.employeeId, {
-                id: record.employeeId,
-                name: record.employeeName
-              });
-            }
-          });
-        }
-      }
-
-      // If no cached data or 'today', fetch live data
-      if (performanceData.length === 0) {
-        log(`=== FETCHING ${ENABLED_PATHS.length} ENABLED PATHS ===`);
-        log('Enabled paths:', ENABLED_PATHS.map(p => `${p.name} (${p.processId})`));
-
-        for (const path of ENABLED_PATHS) {
-          log(`\n--- Fetching: ${path.name} ---`);
-          log(`  Process ID: ${path.processId}`);
-          log(`  Category: ${path.category}`);
-
-          try {
-            const rollupData = await fetchFunctionRollup(path.processId, dateRange);
-
-            if (rollupData.success && rollupData.employees && rollupData.employees.length > 0) {
-              rollupData.employees.forEach(emp => {
-                if (!allEmployees.has(emp.badgeId)) {
-                  allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
-                }
-
-                const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
-                performanceData.push({
-                  employeeId: emp.badgeId,
-                  employeeName: emp.name,
-                  pathId: path.id,
-                  pathName: subFunctionName,
-                  pathColor: path.color,
-                  category: path.category,
-                  parentPath: path.name,
-                  hours: emp.totalHours,
-                  jobs: emp.jobs,
-                  jph: emp.jph,
-                  units: emp.units,
-                  uph: emp.uph
-                });
-              });
-
-              log(`  ✓ Found ${rollupData.employees.length} employees`);
-            } else {
-              log(`  ✗ No employees found (success: ${rollupData.success}, error: ${rollupData.error || 'none'})`);
-            }
-          } catch (err) {
-            log(`  ✗ Error: ${err.message}`);
-          }
-        }
-      }
-
-      log(`Collected ${performanceData.length} performance records for ${allEmployees.size} unique employees${fromCache ? ' (from cache)' : ''}`);
-
-      // Store data for dashboard
-      const dashboardData = {
-        warehouseId,
-        employees: Array.from(allEmployees.values()),
-        performanceData: performanceData,
-        dateRange: {
-          period,
-          startDate: formatDateForURL(dateRange.startDate),
-          endDate: formatDateForURL(dateRange.endDate),
-          spanType: dateRange.spanType
-        },
-        paths: PATHS,
-        processIds: PROCESS_IDS,
-        sourceUrl: window.location.href,
-        fetchedAt: new Date().toISOString(),
-        fromCache
-      };
-
-      await browser.storage.local.set({ dashboardData });
-
-      // Open dashboard
-      browser.runtime.sendMessage({
-        action: 'openDashboard',
-        data: { warehouseId }
-      });
-
-      return dashboardData;
-
-    } catch (error) {
-      log('Error fetching data:', error);
-
-      // Still open dashboard even on error, with whatever data we have
-      const dashboardData = {
-        warehouseId,
-        employees: [],
-        performanceData: [],
-        dateRange: {
-          period,
-          startDate: formatDateForURL(dateRange.startDate),
-          endDate: formatDateForURL(dateRange.endDate),
-          spanType: dateRange.spanType
-        },
-        paths: PATHS,
-        processIds: PROCESS_IDS,
-        sourceUrl: window.location.href,
-        fetchedAt: new Date().toISOString(),
-        fromCache: false,
-        error: error.message
-      };
-
       await browser.storage.local.set({ dashboardData });
       browser.runtime.sendMessage({
         action: 'openDashboard',
         data: { warehouseId }
       });
-
-    } finally {
-      // Reset FAB state
-      if (fab) {
-        fab.classList.remove('loading');
-        fab.querySelector('.perf-fab-text').textContent = 'AA Performance';
-      }
+      log('Dashboard opened');
+    } catch (err) {
+      log('Error opening dashboard:', err);
     }
   }
 
