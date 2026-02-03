@@ -1672,8 +1672,24 @@
 
     try {
       log('[Cache] Step 1: Opening IndexedDB...');
-      await window.FCLMDataCache.init();
-      log('[Cache] Step 1: IndexedDB opened');
+      try {
+        await window.FCLMDataCache.init();
+        log('[Cache] Step 1: IndexedDB opened');
+      } catch (dbError) {
+        log('[Cache] Step 1 FAILED: Could not open IndexedDB:', dbError.message);
+        log('[Cache] Trying to reset database...');
+        try {
+          await window.FCLMDataCache.reset();
+          await window.FCLMDataCache.init();
+          log('[Cache] Step 1: Database reset and opened');
+        } catch (resetError) {
+          log('[Cache] Database reset failed:', resetError.message);
+          log('[Cache] Continuing without cache - data will be fetched live');
+          updateCacheStatus('error', 'Cache unavailable');
+          fetchInProgress = false;
+          return;
+        }
+      }
 
       // Get list of dates to cache (last N days)
       log('[Cache] Step 2: Getting dates to cache...');
