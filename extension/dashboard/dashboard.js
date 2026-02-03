@@ -244,14 +244,32 @@
       const fclmTab = tabs[0];
       state.fclmTabId = fclmTab.id;
 
+      // First check cache status
+      console.log('[Dashboard] Checking cache status...');
+      const statusResponse = await browser.tabs.sendMessage(fclmTab.id, { action: 'getCacheStatus' });
+      console.log('[Dashboard] Cache status:', statusResponse);
+
+      if (!statusResponse?.initialized) {
+        showToast('Cache is still initializing. Please wait a moment and try again.', 'warning');
+        showLoading(false);
+        // Retry after 3 seconds
+        setTimeout(() => loadAllCachedData(), 3000);
+        return;
+      }
+
       console.log('[Dashboard] Requesting all cached data...');
 
       // Request all cached data
       const response = await browser.tabs.sendMessage(fclmTab.id, { action: 'getAllCachedData' });
 
-      if (response && response.success) {
-        console.log('[Dashboard] Received cached data:', response.totalRecords, 'records');
+      console.log('[Dashboard] getAllCachedData response:', {
+        success: response?.success,
+        totalRecords: response?.totalRecords,
+        cachedMonths: response?.cachedMonths,
+        employeeCount: response?.employees?.length
+      });
 
+      if (response && response.success && response.totalRecords > 0) {
         state.warehouseId = response.warehouseId || state.warehouseId;
         state.employees = response.employees || [];
         state.allCachedData = response.performanceData || [];
@@ -263,18 +281,22 @@
 
         elements.warehouseBadge.textContent = state.warehouseId;
 
+        console.log('[Dashboard] Cached months available:', state.cacheStatus.months);
+
         // Apply default filter (last month)
         applyDateFilter();
 
-        showToast(`Loaded ${response.totalRecords} records from ${response.cachedMonths?.length || 0} months`, 'success');
+        showToast(`Loaded ${response.totalRecords} records from months: ${response.cachedMonths?.join(', ') || 'none'}`, 'success');
       } else {
-        console.log('[Dashboard] No cached data available, fetching from FCLM...');
+        console.log('[Dashboard] No cached data, falling back to FCLM fetch');
         // Fall back to fetching from FCLM
-        await fetchDataFromFCLM('lastMonth');
+        await fetchDataFromFCLM();
       }
     } catch (error) {
       console.error('[Dashboard] Error loading cached data:', error);
       showToast('Error loading data: ' + error.message, 'error');
+      // Fall back to FCLM fetch
+      await fetchDataFromFCLM();
     } finally {
       showLoading(false);
     }
@@ -282,81 +304,101 @@
 
   /**
    * Apply date filter to cached data (client-side filtering)
+   * Filters by month and includes current day data where appropriate
    */
   function applyDateFilter() {
     const period = state.period;
     const now = new Date();
-    let startDate, endDate;
+
+    // Determine which months to include based on period
+    const getMonthKey = (date) => {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    };
+
+    let monthsToInclude = new Set();
+    let includeCurrentDay = false;
 
     switch (period) {
       case 'today':
-        // For today, we need fresh data - can't filter cached historical data
-        // Filter to just current day records
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        // Only current day data
+        includeCurrentDay = true;
+        // Also include current month for any daily records
+        monthsToInclude.add(getMonthKey(now));
         break;
 
       case 'week':
-        // This week (Sunday to today)
-        startDate = new Date(now);
-        startDate.setDate(startDate.getDate() - startDate.getDay());
-        startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(now);
-        endDate.setDate(endDate.getDate() + 1);
+        // This week - include current month and possibly last month if week spans
+        includeCurrentDay = true;
+        monthsToInclude.add(getMonthKey(now));
+        // If we're in the first week of the month, also include last month
+        if (now.getDate() <= 7) {
+          const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+          monthsToInclude.add(getMonthKey(lastMonth));
+        }
         break;
 
       case 'lastWeek':
-        // Last week (Sunday to Saturday)
-        startDate = new Date(now);
-        startDate.setDate(startDate.getDate() - startDate.getDay() - 7);
-        startDate.setHours(0, 0, 0, 0);
-        endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 7);
+        // Last week - include current and last month
+        const lastWeekDate = new Date(now);
+        lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+        monthsToInclude.add(getMonthKey(now));
+        monthsToInclude.add(getMonthKey(lastWeekDate));
         break;
 
       case 'month':
-        // This month (1st to today)
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        endDate = new Date(now);
-        endDate.setDate(endDate.getDate() + 1);
+        // This month + current day
+        includeCurrentDay = true;
+        monthsToInclude.add(getMonthKey(now));
         break;
 
       case 'lastMonth':
-        // Last month (full month)
-        startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        endDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        // Last month only
+        const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        monthsToInclude.add(getMonthKey(lastMonthDate));
         break;
 
       case 'custom':
-        startDate = new Date(state.dateRange.startDate);
-        endDate = new Date(state.dateRange.endDate);
-        endDate.setDate(endDate.getDate() + 1); // Include end date
+        // Include all months in the custom range
+        const startDate = new Date(state.dateRange.startDate);
+        const endDate = new Date(state.dateRange.endDate);
+        let current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+        while (current <= endDate) {
+          monthsToInclude.add(getMonthKey(current));
+          current.setMonth(current.getMonth() + 1);
+        }
+        // If end date is today or future, include current day
+        if (endDate >= new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+          includeCurrentDay = true;
+        }
         break;
 
       default:
         // Show all data
-        startDate = new Date(0);
-        endDate = new Date(now.getFullYear() + 1, 0, 1);
+        state.allCachedData.forEach(record => {
+          if (record.month) monthsToInclude.add(record.month);
+        });
+        includeCurrentDay = true;
     }
 
-    console.log(`[Dashboard] Filtering data for ${period}: ${startDate.toDateString()} to ${endDate.toDateString()}`);
-
-    // Filter cached data by date range
-    // Note: Cached data has 'month' field like '2026-01'
-    const filteredData = state.allCachedData.filter(record => {
-      if (record.month) {
-        const [year, month] = record.month.split('-').map(Number);
-        const recordDate = new Date(year, month - 1, 15); // Mid-month approximation
-        return recordDate >= startDate && recordDate < endDate;
-      }
-      // Current day records
-      if (record.isCurrentDay) {
-        return period === 'today' || period === 'week' || period === 'month';
-      }
-      return true;
+    console.log(`[Dashboard] Filtering for period '${period}':`, {
+      monthsToInclude: Array.from(monthsToInclude),
+      includeCurrentDay
     });
 
-    console.log(`[Dashboard] Filtered to ${filteredData.length} records`);
+    // Filter cached data
+    const filteredData = state.allCachedData.filter(record => {
+      // Current day records
+      if (record.isCurrentDay) {
+        return includeCurrentDay;
+      }
+      // Historical records - filter by month
+      if (record.month) {
+        return monthsToInclude.has(record.month);
+      }
+      return false;
+    });
+
+    console.log(`[Dashboard] Filtered to ${filteredData.length} records from ${state.allCachedData.length} total`);
 
     // Process the filtered data
     if (filteredData.length > 0) {
@@ -364,7 +406,11 @@
     } else {
       state.performanceData = [];
       renderAll();
-      showToast('No data found for selected date range', 'warning');
+      if (state.allCachedData.length === 0) {
+        showToast('No cached data available. Wait for cache to load or click Refresh.', 'warning');
+      } else {
+        showToast(`No data found for ${period}. Available months: ${state.cacheStatus.months.join(', ')}`, 'warning');
+      }
     }
   }
 
