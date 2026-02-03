@@ -102,6 +102,22 @@ body {
   min-width: 160px;
 }
 
+.shift-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--surface);
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.shift-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
 .custom-date-range {
   display: flex;
   align-items: center;

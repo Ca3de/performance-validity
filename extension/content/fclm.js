@@ -1171,9 +1171,13 @@
   /**
    * Fetch performance data for a specific date range (called from dashboard)
    * Uses cache for historical data, fresh fetch for current day
+   * @param {string} period - Period identifier
+   * @param {string} customStart - Custom start date (YYYY-MM-DD or YYYY/MM/DD)
+   * @param {string} customEnd - Custom end date (YYYY-MM-DD or YYYY/MM/DD)
+   * @param {string} shiftFilter - Optional shift filter ('all', 'day', 'night')
    */
-  async function fetchPerformanceDataForRange(period, customStart = null, customEnd = null) {
-    log(`Fetching performance data for period: ${period}`);
+  async function fetchPerformanceDataForRange(period, customStart = null, customEnd = null, shiftFilter = 'all') {
+    log(`Fetching performance data for period: ${period}, shift: ${shiftFilter}`);
     log(`Custom dates: start=${customStart}, end=${customEnd}`);
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
@@ -1206,14 +1210,16 @@
     let performanceData = [];
     const allEmployees = new Map();
     let fromCache = false;
+    let datesQueried = [];
 
     // Try to get data from cache first (except for 'today' which needs fresh data)
     if (period !== 'today' && window.FCLMDataCache) {
       try {
-        const cachedResult = await getDataFromCache(period, customStart, customEnd);
+        const cachedResult = await getDataFromCache(period, customStart, customEnd, shiftFilter);
         if (cachedResult && cachedResult.records && cachedResult.records.length > 0) {
           log(`[Cache] Using ${cachedResult.records.length} cached records for ${period}`);
           performanceData = cachedResult.records;
+          datesQueried = cachedResult.datesQueried || [];
           fromCache = true;
 
           // Extract unique employees from cached data
@@ -1234,6 +1240,8 @@
     // If no cached data or 'today', fetch live data
     if (performanceData.length === 0) {
       log(`Fetching live data for ${period}...`);
+      const today = window.FCLMDataCache ? window.FCLMDataCache.formatDate(new Date()) : null;
+      const currentShift = getCurrentShift();
 
       for (const path of ENABLED_PATHS) {
         try {
@@ -1259,7 +1267,10 @@
                 jobs: emp.jobs,
                 jph: emp.jph,
                 units: emp.units,
-                uph: emp.uph
+                uph: emp.uph,
+                date: today,
+                shift: currentShift,
+                isCurrentDay: period === 'today'
               });
             });
           }
@@ -1282,6 +1293,8 @@
         endDate: formatDateForURL(dateRange.endDate),
         spanType: dateRange.spanType
       },
+      datesQueried,
+      shiftFilter,
       fetchedAt: new Date().toISOString(),
       fromCache
     };
@@ -1373,8 +1386,8 @@
         return true;
 
       case 'fetchPerformanceData':
-        // Fetch performance data for a specific date range
-        fetchPerformanceDataForRange(message.period, message.customStart, message.customEnd)
+        // Fetch performance data for a specific date range with optional shift filter
+        fetchPerformanceDataForRange(message.period, message.customStart, message.customEnd, message.shiftFilter || 'all')
           .then(sendResponse)
           .catch(err => sendResponse({ success: false, error: err.message }));
         return true;
@@ -1415,35 +1428,75 @@
   });
 
   // ============================================
-  // DATA CACHING SYSTEM
+  // DATA CACHING SYSTEM - DAILY DATA
   // ============================================
 
   let cacheInitialized = false;
   let currentDayRefreshInterval = null;
+  let fetchInProgress = false;
 
   /**
-   * Fetch and cache a full month's data for all paths
-   * Uses Month span to get complete data for historical months
+   * Determine shift based on hour
+   * Day shift: 6:00 - 18:00
+   * Night shift: 18:00 - 6:00
    */
-  async function fetchAndCacheMonth(yearMonth) {
-    const warehouseId = CONFIG.warehouseId || getWarehouseId();
-    const [year, month] = yearMonth.split('-').map(Number);
+  function getShiftForHour(hour) {
+    if (hour >= 6 && hour < 18) {
+      return 'day';
+    }
+    return 'night';
+  }
 
-    // Create date range for the full month
-    const startDate = new Date(year, month - 1, 1);
-    startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(year, month, 1);
-    endDate.setHours(0, 0, 0, 0);
+  /**
+   * Get current shift name
+   */
+  function getCurrentShift() {
+    const hour = new Date().getHours();
+    return getShiftForHour(hour);
+  }
+
+  /**
+   * Fetch and cache a single day's data for all paths
+   * @param {string} dateStr - Date in YYYY-MM-DD format
+   * @param {string} shift - 'all', 'day', or 'night'
+   */
+  async function fetchAndCacheDay(dateStr, shift = 'all') {
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+    const date = new Date(dateStr);
+
+    // Create date range for the day
+    let startHour = 0;
+    let endHour = 23;
+
+    // For shift-specific queries, adjust hours
+    if (shift === 'day') {
+      startHour = 6;
+      endHour = 18;
+    } else if (shift === 'night') {
+      // Night shift spans two days, but for caching we store by the start date
+      startHour = 18;
+      endHour = 6;
+    }
+
+    const startDate = new Date(date);
+    startDate.setHours(startHour, 0, 0, 0);
+
+    // For night shift or full day, end date might be next day
+    const endDate = new Date(date);
+    if (shift === 'night' || shift === 'all') {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    endDate.setHours(endHour, 0, 0, 0);
 
     const dateRange = {
       startDate,
       endDate,
-      spanType: 'Month',
-      startHour: 0,
-      endHour: 23
+      spanType: 'Intraday',
+      startHour,
+      endHour
     };
 
-    log(`[Cache] Fetching month ${yearMonth}...`);
+    log(`[Cache] Fetching day ${dateStr} (shift: ${shift})...`);
 
     const allRecords = [];
 
@@ -1467,35 +1520,39 @@
               jph: emp.jph,
               units: emp.units,
               uph: emp.uph,
-              month: yearMonth
+              date: dateStr,
+              shift: shift
             });
           });
         }
       } catch (err) {
-        log(`[Cache] Error fetching ${path.name} for ${yearMonth}:`, err);
+        log(`[Cache] Error fetching ${path.name} for ${dateStr}:`, err);
       }
     }
 
     // Store in cache
     if (window.FCLMDataCache && allRecords.length > 0) {
-      await window.FCLMDataCache.storeMonthData(warehouseId, 'all', yearMonth, allRecords);
-      log(`[Cache] Cached ${allRecords.length} records for ${yearMonth}`);
+      await window.FCLMDataCache.storeDailyData(warehouseId, dateStr, shift, allRecords);
+      log(`[Cache] Cached ${allRecords.length} records for ${dateStr} (${shift})`);
     }
 
     return allRecords;
   }
 
   /**
-   * Fetch and cache current day data (real-time)
+   * Fetch and cache current day/shift data (real-time)
    * Uses Intraday span for fresh data
    */
   async function fetchAndCacheCurrentDay() {
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
-    const dateRange = getShiftDateRange();
+    const today = window.FCLMDataCache.formatDate(new Date());
+    const currentShift = getCurrentShift();
 
-    log(`[Cache] Refreshing current day data...`);
+    log(`[Cache] Refreshing current day data (${today}, ${currentShift} shift)...`);
 
+    // For current day, always fetch fresh data with intraday span
     const allRecords = [];
+    const dateRange = getShiftDateRange();
 
     for (const path of ENABLED_PATHS) {
       try {
@@ -1517,6 +1574,8 @@
               jph: emp.jph,
               units: emp.units,
               uph: emp.uph,
+              date: today,
+              shift: currentShift,
               isCurrentDay: true
             });
           });
@@ -1526,9 +1585,9 @@
       }
     }
 
-    // Store current day data
+    // Store current day data with current shift
     if (window.FCLMDataCache && allRecords.length > 0) {
-      await window.FCLMDataCache.storeCurrentDayData(warehouseId, 'all', allRecords);
+      await window.FCLMDataCache.storeDailyData(warehouseId, today, currentShift, allRecords);
       log(`[Cache] Cached ${allRecords.length} current day records`);
     }
 
@@ -1536,7 +1595,46 @@
   }
 
   /**
-   * Initialize cache and pre-fetch historical data
+   * Fetch multiple days in parallel
+   * @param {Array<string>} dates - Array of dates in YYYY-MM-DD format
+   * @param {Function} progressCallback - Optional callback for progress updates
+   */
+  async function fetchDaysInParallel(dates, progressCallback = null) {
+    const parallelFetches = window.FCLMDataCache?.CONFIG?.parallelFetches || 3;
+    const results = [];
+
+    for (let i = 0; i < dates.length; i += parallelFetches) {
+      const batch = dates.slice(i, i + parallelFetches);
+
+      if (progressCallback) {
+        progressCallback({
+          current: i,
+          total: dates.length,
+          batch: batch
+        });
+      }
+
+      const batchPromises = batch.map(dateStr =>
+        fetchAndCacheDay(dateStr, 'all').catch(err => {
+          log(`[Cache] Error fetching ${dateStr}:`, err);
+          return [];
+        })
+      );
+
+      const batchResults = await Promise.all(batchPromises);
+      results.push(...batchResults.flat());
+
+      // Small delay between batches to avoid overwhelming the server
+      if (i + parallelFetches < dates.length) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Initialize cache and pre-fetch historical daily data
    */
   async function initializeCache() {
     if (cacheInitialized || !window.FCLMDataCache) {
@@ -1550,27 +1648,54 @@
       return;
     }
 
-    log('[Cache] Initializing data cache...');
+    if (fetchInProgress) {
+      log('[Cache] Fetch already in progress, skipping');
+      return;
+    }
+
+    log('[Cache] Initializing daily data cache...');
     cacheInitialized = true;
+    fetchInProgress = true;
 
     try {
       await window.FCLMDataCache.init();
 
-      // Get list of months to cache
-      const monthsToCache = window.FCLMDataCache.getMonthsToCache(3);
-      log('[Cache] Months to cache:', monthsToCache);
+      // Get list of dates to cache (last N days)
+      const datesToCache = window.FCLMDataCache.getDatesToCache();
+      log(`[Cache] Days to cache: ${datesToCache.length} days`);
 
-      // Check which months need fetching
-      for (const yearMonth of monthsToCache) {
-        const needsFetch = await window.FCLMDataCache.needsFetch(warehouseId, 'all', yearMonth);
+      // Track progress
+      await window.FCLMDataCache.setFetchProgress(warehouseId, {
+        status: 'fetching',
+        totalDays: datesToCache.length,
+        fetchedDays: 0,
+        startedAt: new Date().toISOString()
+      });
+      updateCacheStatus('loading', `Loading 0/${datesToCache.length} days...`);
+
+      // Check which days need fetching
+      const daysToFetch = [];
+      for (const dateStr of datesToCache) {
+        const needsFetch = await window.FCLMDataCache.needsFetch(warehouseId, dateStr, 'all');
         if (needsFetch) {
-          log(`[Cache] Fetching missing month: ${yearMonth}`);
-          await fetchAndCacheMonth(yearMonth);
-          // Small delay between month fetches to avoid overwhelming the server
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        } else {
-          log(`[Cache] Month ${yearMonth} already cached`);
+          daysToFetch.push(dateStr);
         }
+      }
+
+      log(`[Cache] ${daysToFetch.length} days need fetching`);
+
+      if (daysToFetch.length > 0) {
+        // Fetch in parallel with progress updates
+        await fetchDaysInParallel(daysToFetch, (progress) => {
+          const percent = Math.round((progress.current / progress.total) * 100);
+          updateCacheStatus('loading', `Loading ${progress.current}/${progress.total} days (${percent}%)...`);
+          window.FCLMDataCache.setFetchProgress(warehouseId, {
+            status: 'fetching',
+            totalDays: progress.total,
+            fetchedDays: progress.current,
+            currentBatch: progress.batch
+          });
+        });
       }
 
       // Fetch current day data
@@ -1583,17 +1708,26 @@
       currentDayRefreshInterval = setInterval(async () => {
         log('[Cache] Auto-refreshing current day data...');
         await fetchAndCacheCurrentDay();
-      }, 60000);
+      }, window.FCLMDataCache.CONFIG.currentDayRefreshMs);
 
       // Log cache stats
       const stats = await window.FCLMDataCache.getCacheStats();
       log('[Cache] Cache stats:', stats);
 
-      updateCacheStatus('ready', `${stats.totalRecords} records cached`);
+      await window.FCLMDataCache.setFetchProgress(warehouseId, {
+        status: 'complete',
+        totalDays: datesToCache.length,
+        fetchedDays: datesToCache.length,
+        completedAt: new Date().toISOString()
+      });
+
+      updateCacheStatus('ready', `${stats.totalRecords} records (${stats.totalDays} days)`);
 
     } catch (error) {
       log('[Cache] Error initializing cache:', error);
       updateCacheStatus('error', 'Cache error');
+    } finally {
+      fetchInProgress = false;
     }
   }
 
@@ -1621,7 +1755,7 @@
 
   /**
    * Get ALL cached data for dashboard
-   * Returns all historical months + current day data
+   * Returns all historical daily data
    */
   async function getAllCachedData() {
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
@@ -1635,47 +1769,44 @@
       const allRecords = [];
       const allEmployees = new Map();
 
-      // Get all cached months
-      const cachedMonths = await window.FCLMDataCache.getCachedMonths(warehouseId, 'all');
-      log(`[Cache] Found ${cachedMonths.length} cached months`);
+      // Get all cached dates
+      const cachedDates = await window.FCLMDataCache.getCachedDates(warehouseId);
+      log(`[Cache] Found ${cachedDates.length} cached dates`);
 
-      for (const monthInfo of cachedMonths) {
-        const monthData = await window.FCLMDataCache.getMonthData(warehouseId, 'all', monthInfo.month);
-        if (monthData && monthData.records) {
-          monthData.records.forEach(record => {
-            allRecords.push(record);
-            if (!allEmployees.has(record.employeeId)) {
-              allEmployees.set(record.employeeId, {
-                id: record.employeeId,
-                name: record.employeeName
+      // Get data for each date
+      for (const dateInfo of cachedDates) {
+        for (const shift of dateInfo.shifts) {
+          const dailyData = await window.FCLMDataCache.getDailyData(warehouseId, dateInfo.date, shift);
+          if (dailyData && dailyData.records) {
+            dailyData.records.forEach(record => {
+              allRecords.push({
+                ...record,
+                date: dateInfo.date,
+                shift: shift
               });
-            }
-          });
+              if (!allEmployees.has(record.employeeId)) {
+                allEmployees.set(record.employeeId, {
+                  id: record.employeeId,
+                  name: record.employeeName
+                });
+              }
+            });
+          }
         }
       }
 
-      // Get current day data
-      const currentDayData = await window.FCLMDataCache.getCurrentDayData(warehouseId, 'all');
-      if (currentDayData && currentDayData.records) {
-        currentDayData.records.forEach(record => {
-          allRecords.push({ ...record, isCurrentDay: true });
-          if (!allEmployees.has(record.employeeId)) {
-            allEmployees.set(record.employeeId, {
-              id: record.employeeId,
-              name: record.employeeName
-            });
-          }
-        });
-      }
-
       log(`[Cache] Returning ${allRecords.length} total records, ${allEmployees.size} unique employees`);
+
+      // Get stats for response
+      const stats = await window.FCLMDataCache.getCacheStats();
 
       return {
         success: true,
         warehouseId,
         employees: Array.from(allEmployees.values()),
         performanceData: allRecords,
-        cachedMonths: cachedMonths.map(m => m.month),
+        cachedDates: cachedDates.map(d => d.date),
+        dateRange: stats.dateRange,
         totalRecords: allRecords.length,
         fetchedAt: new Date().toISOString()
       };
@@ -1697,15 +1828,20 @@
 
     try {
       const stats = await window.FCLMDataCache.getCacheStats();
-      const cachedMonths = await window.FCLMDataCache.getCachedMonths(warehouseId, 'all');
+      const cachedDates = await window.FCLMDataCache.getCachedDates(warehouseId);
+      const fetchProgress = await window.FCLMDataCache.getFetchProgress(warehouseId);
 
       return {
         success: true,
         initialized: cacheInitialized,
         warehouseId,
-        months: cachedMonths,
+        dates: cachedDates,
+        totalDays: stats.totalDays,
         totalRecords: stats.totalRecords,
-        lastUpdate: stats.months.length > 0 ? stats.months[stats.months.length - 1].fetchedAt : null
+        dateRange: stats.dateRange,
+        byShift: stats.byShift,
+        fetchProgress: fetchProgress,
+        lastUpdate: cachedDates.length > 0 ? cachedDates[0].fetchedAt : null
       };
     } catch (error) {
       return { success: false, error: error.message };
@@ -1714,9 +1850,13 @@
 
   /**
    * Get data from cache for a date range
-   * Combines historical cached data with current day data
+   * Uses daily cache with optional shift filtering
+   * @param {string} period - Period identifier
+   * @param {string} customStart - Custom start date (YYYY-MM-DD)
+   * @param {string} customEnd - Custom end date (YYYY-MM-DD)
+   * @param {string} shiftFilter - Optional shift filter ('all', 'day', 'night')
    */
-  async function getDataFromCache(period, customStart = null, customEnd = null) {
+  async function getDataFromCache(period, customStart = null, customEnd = null, shiftFilter = 'all') {
     if (!window.FCLMDataCache) {
       log('[Cache] Cache not available, falling back to direct fetch');
       return null;
@@ -1728,18 +1868,20 @@
       : getDateRangeForPeriod(period);
 
     try {
-      const result = await window.FCLMDataCache.queryDataForRange(
+      const result = await window.FCLMDataCache.queryDateRange(
         warehouseId,
-        'all',
         dateRange.startDate,
-        dateRange.endDate
+        dateRange.endDate,
+        shiftFilter
       );
 
       if (result.records.length > 0) {
-        log(`[Cache] Found ${result.records.length} cached records for ${period}`);
+        log(`[Cache] Found ${result.records.length} cached records for ${period} (${result.datesQueried.length} days, shift: ${shiftFilter})`);
         return {
           records: result.records,
           dateRange,
+          datesQueried: result.datesQueried,
+          shiftFilter: result.shiftFilter,
           fromCache: true
         };
       }
