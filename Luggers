@@ -1,0 +1,1604 @@
+[Performance Validity 4:02:42 AM] [Cache] Fetching batch: 2026-02-02 (3%) fclm.js:13:15
+[Performance Validity 4:02:42 AM] [Cache] Fetching day 2026-02-02 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:42 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:42 AM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:42 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:42 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:42 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:42 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:42 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:42 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:42 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:42 AM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:42 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:42 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:42 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:42 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:42 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:42 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:42 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:42 AM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+This page is in Almost Standards Mode. Page layout may be impacted. For Standards Mode use “<!DOCTYPE html>”. functionRollup
+Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. node.js:417:1
+Empty string passed to getElementById(). 7 functionRollup
+[DataCache] Storage-based cache module loaded dataCache.js:38:15
+[Performance Validity 4:02:43 AM] Initializing FCLM content script fclm.js:13:15
+[Performance Validity 4:02:43 AM] Warehouse ID: IND8 fclm.js:13:15
+[Performance Validity 4:02:43 AM] Floating action button created fclm.js:13:15
+[Performance Validity 4:02:43 AM] Status indicator created fclm.js:13:15
+[Performance Validity 4:02:43 AM] FCLM content script initialized fclm.js:13:15
+localeID: en-US common.controlPanel.min.js:1:208
+Empty string passed to getElementById(). 2 LoginManager.shared.sys.mjs:43:23
+unreachable code after return statement pendo.js:10:513681
+[FC Labor Tracking] FCLM content script loaded fclm.js:7:11
+[FC Labor Tracking FCLM] [4:02:44 AM] ================================================== fclm.js:29:13
+[FC Labor Tracking FCLM] [4:02:44 AM] FCLM Ready for employee lookups! fclm.js:29:13
+[FC Labor Tracking FCLM] [4:02:44 AM] Warehouse: IND8 fclm.js:29:13
+[FC Labor Tracking FCLM] [4:02:44 AM] Current URL: https://fclm-portal.amazon.com/reports/functionRollup?reportFormat=HTML&warehouseId=IND8&processId=1003055&maxIntradayDays=1&spanType=Intraday&startDateIntraday=2026%2F02%2F02&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=6&endMinuteIntraday=0 fclm.js:29:13
+[FC Labor Tracking FCLM] [4:02:44 AM] ================================================== fclm.js:29:13
+[FC Labor Tracking FCLM] [4:02:44 AM] Registered with background script fclm.js:29:13
+[Performance Validity 4:02:44 AM] [Cache] Initializing daily data cache... fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 1: Opening IndexedDB... fclm.js:13:15
+[DataCache] Initializing browser.storage.local cache... dataCache.js:38:15
+[DataCache] Cache ready dataCache.js:38:15
+[Performance Validity 4:02:44 AM] [Cache] Step 1: IndexedDB opened fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 2: Getting dates to cache... fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 2: Will cache 30 days: 2026-02-03, 2026-02-02, 2026-02-01... fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 3: Setting fetch progress... fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 4: Checking which days need fetching... fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 4: 30 of 30 days need fetching fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Step 5: Starting parallel fetch... fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Fetching batch: 2026-02-03 (0%) fclm.js:13:15
+[Performance Validity 4:02:44 AM] [Cache] Fetching day 2026-02-03 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:44 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F02&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:44 AM]   Date range: Mon Feb 02 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:45 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:45 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:45 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:45 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:45 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:45 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:45 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F02&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:45 AM]   Date range: Mon Feb 02 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:46 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:46 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:46 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:46 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:46 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:46 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:46 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F02&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:46 AM]   Date range: Mon Feb 02 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:46 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:46 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:46 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:46 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:46 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:46 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:48 AM] [Cache] Fetching batch: 2026-02-02 (3%) fclm.js:13:15
+[Performance Validity 4:02:48 AM] [Cache] Fetching day 2026-02-02 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:48 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:48 AM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:48 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:48 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:48 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:48 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:48 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:48 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:48 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:48 AM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:48 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:48 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:48 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:48 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:48 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:48 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:48 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:48 AM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:48 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:48 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:48 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:48 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:48 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:48 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:50 AM] [Cache] Fetching batch: 2026-02-01 (7%) fclm.js:13:15
+[Performance Validity 4:02:50 AM] [Cache] Fetching day 2026-02-01 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:50 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F31&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F01&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:50 AM]   Date range: Sat Jan 31 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 01 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:50 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:50 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:50 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:50 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:50 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:50 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:50 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F31&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F01&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:50 AM]   Date range: Sat Jan 31 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 01 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:51 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:51 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:51 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:51 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:51 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:51 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:51 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F31&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F01&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:51 AM]   Date range: Sat Jan 31 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 01 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:51 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:51 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:51 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:51 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:51 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:51 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:53 AM] [Cache] Fetching batch: 2026-01-31 (10%) fclm.js:13:15
+[Performance Validity 4:02:53 AM] [Cache] Fetching day 2026-01-31 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:53 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F30&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F31&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:53 AM]   Date range: Fri Jan 30 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 31 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:53 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:53 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:53 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:53 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:53 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:53 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:53 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F30&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F31&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:53 AM]   Date range: Fri Jan 30 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 31 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:53 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:53 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:53 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:53 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:53 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:53 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:53 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F30&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F31&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:53 AM]   Date range: Fri Jan 30 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 31 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:53 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:53 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:53 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:53 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:53 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:53 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:55 AM] [Cache] Fetching batch: 2026-01-30 (13%) fclm.js:13:15
+[Performance Validity 4:02:55 AM] [Cache] Fetching day 2026-01-30 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:55 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F29&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F30&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:55 AM]   Date range: Thu Jan 29 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 30 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:55 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:55 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:55 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:55 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:55 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:55 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:55 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F29&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F30&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:55 AM]   Date range: Thu Jan 29 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 30 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:56 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:56 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:56 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:56 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:56 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:56 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:56 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F29&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F30&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:56 AM]   Date range: Thu Jan 29 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 30 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:56 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:56 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:56 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:56 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:56 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:56 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:58 AM] [Cache] Fetching batch: 2026-01-29 (17%) fclm.js:13:15
+[Performance Validity 4:02:58 AM] [Cache] Fetching day 2026-01-29 (shift: all)... fclm.js:13:15
+[Performance Validity 4:02:58 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F28&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F29&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:58 AM]   Date range: Wed Jan 28 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 29 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:58 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:58 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:58 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:58 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:58 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:58 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:58 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F28&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F29&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:58 AM]   Date range: Wed Jan 28 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 29 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:58 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:58 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:58 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:58 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:58 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:58 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:02:58 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F28&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F29&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:02:58 AM]   Date range: Wed Jan 28 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 29 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:02:58 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:02:58 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:02:58 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:02:58 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:02:58 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:02:58 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:00 AM] [Cache] Fetching batch: 2026-01-28 (20%) fclm.js:13:15
+[Performance Validity 4:03:00 AM] [Cache] Fetching day 2026-01-28 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:00 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F27&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F28&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:00 AM]   Date range: Tue Jan 27 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 28 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:00 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:00 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:00 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:00 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:00 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:00 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:00 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F27&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F28&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:00 AM]   Date range: Tue Jan 27 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 28 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:00 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:00 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:00 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:00 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:00 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:00 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:00 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F27&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F28&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:00 AM]   Date range: Tue Jan 27 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 28 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:01 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:01 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:01 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:01 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:01 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:01 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:03 AM] [Cache] Fetching batch: 2026-01-27 (23%) fclm.js:13:15
+[Performance Validity 4:03:03 AM] [Cache] Fetching day 2026-01-27 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:03 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F26&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F27&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:03 AM]   Date range: Mon Jan 26 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 27 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:03 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:03 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:03 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:03 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:03 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:03 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:03 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F26&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F27&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:03 AM]   Date range: Mon Jan 26 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 27 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:03 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:03 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:03 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:03 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:03 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:03 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:03 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F26&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F27&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:03 AM]   Date range: Mon Jan 26 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 27 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:03 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:03 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:03 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:03 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:03 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:03 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:05 AM] [Cache] Fetching batch: 2026-01-26 (27%) fclm.js:13:15
+[Performance Validity 4:03:05 AM] [Cache] Fetching day 2026-01-26 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:05 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F25&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F26&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:05 AM]   Date range: Sun Jan 25 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 26 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:05 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:05 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:05 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:05 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:05 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:05 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:05 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F25&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F26&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:05 AM]   Date range: Sun Jan 25 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 26 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:05 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:05 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:05 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:05 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:05 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:05 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:05 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F25&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F26&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:05 AM]   Date range: Sun Jan 25 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 26 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:06 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:06 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:06 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:06 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:06 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:06 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:08 AM] [Cache] Fetching batch: 2026-01-25 (30%) fclm.js:13:15
+[Performance Validity 4:03:08 AM] [Cache] Fetching day 2026-01-25 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:08 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F24&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F25&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:08 AM]   Date range: Sat Jan 24 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 25 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:08 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:08 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:08 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:08 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:08 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:08 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:08 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F24&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F25&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:08 AM]   Date range: Sat Jan 24 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 25 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:08 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:08 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:08 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:08 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:08 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:08 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:08 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F24&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F25&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:08 AM]   Date range: Sat Jan 24 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 25 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:08 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:08 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:08 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:08 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:08 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:08 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:10 AM] [Cache] Fetching batch: 2026-01-24 (33%) fclm.js:13:15
+[Performance Validity 4:03:10 AM] [Cache] Fetching day 2026-01-24 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:10 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F23&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F24&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:10 AM]   Date range: Fri Jan 23 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 24 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:10 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:10 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:10 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:10 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:10 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:10 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:10 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F23&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F24&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:10 AM]   Date range: Fri Jan 23 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 24 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:11 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:11 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:11 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:11 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:11 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:11 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:11 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F23&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F24&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:11 AM]   Date range: Fri Jan 23 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 24 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:11 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:11 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:11 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:11 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:11 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:11 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:13 AM] [Cache] Fetching batch: 2026-01-23 (37%) fclm.js:13:15
+[Performance Validity 4:03:13 AM] [Cache] Fetching day 2026-01-23 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:13 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F22&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F23&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:13 AM]   Date range: Thu Jan 22 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 23 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:13 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:13 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:13 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:13 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:13 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:13 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:13 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F22&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F23&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:13 AM]   Date range: Thu Jan 22 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 23 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:13 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:13 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:13 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:13 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:13 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:13 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:13 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F22&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F23&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:13 AM]   Date range: Thu Jan 22 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 23 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:13 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:13 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:13 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:13 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:13 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:13 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[FC Labor Tracking FCLM] [4:03:14 AM] Registered with background script fclm.js:29:13
+[Performance Validity 4:03:15 AM] [Cache] Fetching batch: 2026-01-22 (40%) fclm.js:13:15
+[Performance Validity 4:03:15 AM] [Cache] Fetching day 2026-01-22 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:15 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F21&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F22&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:15 AM]   Date range: Wed Jan 21 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 22 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:15 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:15 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:15 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:15 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:15 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:15 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:15 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F21&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F22&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:15 AM]   Date range: Wed Jan 21 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 22 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:16 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:16 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:16 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:16 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:16 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:16 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:16 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F21&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F22&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:16 AM]   Date range: Wed Jan 21 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 22 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:16 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:16 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:16 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:16 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:16 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:16 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:18 AM] [Cache] Fetching batch: 2026-01-21 (43%) fclm.js:13:15
+[Performance Validity 4:03:18 AM] [Cache] Fetching day 2026-01-21 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:18 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F20&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F21&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:18 AM]   Date range: Tue Jan 20 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 21 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:18 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:18 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:18 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:18 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:18 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:18 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:18 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F20&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F21&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:18 AM]   Date range: Tue Jan 20 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 21 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:18 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:18 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:18 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:18 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:18 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:18 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:18 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F20&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F21&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:18 AM]   Date range: Tue Jan 20 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 21 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:18 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:18 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:18 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:18 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:18 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:18 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:20 AM] [Cache] Fetching batch: 2026-01-20 (47%) fclm.js:13:15
+[Performance Validity 4:03:20 AM] [Cache] Fetching day 2026-01-20 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:20 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F19&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F20&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:20 AM]   Date range: Mon Jan 19 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 20 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:20 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:20 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:20 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:20 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:20 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:20 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:20 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F19&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F20&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:20 AM]   Date range: Mon Jan 19 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 20 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:20 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:20 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:20 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:20 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:20 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:20 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:20 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F19&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F20&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:20 AM]   Date range: Mon Jan 19 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 20 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:21 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:21 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:21 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:21 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:21 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:21 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:23 AM] [Cache] Fetching batch: 2026-01-19 (50%) fclm.js:13:15
+[Performance Validity 4:03:23 AM] [Cache] Fetching day 2026-01-19 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:23 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F18&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F19&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:23 AM]   Date range: Sun Jan 18 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 19 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:23 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:23 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:23 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:23 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:23 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:23 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:23 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F18&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F19&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:23 AM]   Date range: Sun Jan 18 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 19 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:23 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:23 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:23 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:23 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:23 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:23 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:23 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F18&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F19&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:23 AM]   Date range: Sun Jan 18 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 19 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:23 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:23 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:23 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:23 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:23 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:23 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:25 AM] [Cache] Fetching batch: 2026-01-18 (53%) fclm.js:13:15
+[Performance Validity 4:03:25 AM] [Cache] Fetching day 2026-01-18 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:25 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F17&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F18&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:25 AM]   Date range: Sat Jan 17 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 18 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:25 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:25 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:25 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:25 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:25 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:25 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:25 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F17&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F18&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:25 AM]   Date range: Sat Jan 17 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 18 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:25 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:25 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:25 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:25 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:25 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:25 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:25 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F17&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F18&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:25 AM]   Date range: Sat Jan 17 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 18 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:26 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:26 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:26 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:26 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:26 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:26 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:28 AM] [Cache] Fetching batch: 2026-01-17 (57%) fclm.js:13:15
+[Performance Validity 4:03:28 AM] [Cache] Fetching day 2026-01-17 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:28 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F16&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F17&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:28 AM]   Date range: Fri Jan 16 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 17 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:28 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:28 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:28 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:28 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:28 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:28 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:28 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F16&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F17&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:28 AM]   Date range: Fri Jan 16 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 17 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:28 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:28 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:28 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:28 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:28 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:28 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:28 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F16&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F17&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:28 AM]   Date range: Fri Jan 16 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 17 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:28 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:28 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:28 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:28 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:28 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:28 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:30 AM] [Cache] Fetching batch: 2026-01-16 (60%) fclm.js:13:15
+[Performance Validity 4:03:30 AM] [Cache] Fetching day 2026-01-16 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:30 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F15&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F16&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:30 AM]   Date range: Thu Jan 15 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 16 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:30 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:30 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:30 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:30 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:30 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:30 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:30 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F15&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F16&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:30 AM]   Date range: Thu Jan 15 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 16 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:30 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:30 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:30 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:30 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:30 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:30 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:30 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F15&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F16&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:30 AM]   Date range: Thu Jan 15 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 16 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:31 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:31 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:31 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:31 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:31 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:31 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:33 AM] [Cache] Fetching batch: 2026-01-15 (63%) fclm.js:13:15
+[Performance Validity 4:03:33 AM] [Cache] Fetching day 2026-01-15 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:33 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F14&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F15&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:33 AM]   Date range: Wed Jan 14 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 15 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:33 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:33 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:33 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:33 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:33 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:33 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:33 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F14&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F15&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:33 AM]   Date range: Wed Jan 14 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 15 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:33 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:33 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:33 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:33 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:33 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:33 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:33 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F14&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F15&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:33 AM]   Date range: Wed Jan 14 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 15 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:33 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:33 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:33 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:33 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:33 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:33 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:35 AM] [Cache] Fetching batch: 2026-01-14 (67%) fclm.js:13:15
+[Performance Validity 4:03:35 AM] [Cache] Fetching day 2026-01-14 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:35 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F13&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F14&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:35 AM]   Date range: Tue Jan 13 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 14 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:35 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:35 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:35 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:35 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:35 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:35 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:35 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F13&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F14&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:35 AM]   Date range: Tue Jan 13 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 14 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:35 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:35 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:35 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:35 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:35 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:35 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:35 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F13&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F14&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:35 AM]   Date range: Tue Jan 13 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 14 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:36 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:36 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:36 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:36 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:36 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:36 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:38 AM] [Cache] Fetching batch: 2026-01-13 (70%) fclm.js:13:15
+[Performance Validity 4:03:38 AM] [Cache] Fetching day 2026-01-13 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:38 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F12&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F13&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:38 AM]   Date range: Mon Jan 12 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 13 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:38 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:38 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:38 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:38 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:38 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:38 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:38 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F12&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F13&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:38 AM]   Date range: Mon Jan 12 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 13 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:38 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:38 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:38 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:38 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:38 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:38 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:38 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F12&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F13&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:38 AM]   Date range: Mon Jan 12 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 13 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:38 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:38 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:38 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:38 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:38 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:38 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:40 AM] [Cache] Fetching batch: 2026-01-12 (73%) fclm.js:13:15
+[Performance Validity 4:03:40 AM] [Cache] Fetching day 2026-01-12 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:40 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F11&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F12&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:40 AM]   Date range: Sun Jan 11 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 12 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:40 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:40 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:40 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:40 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:40 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:40 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:40 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F11&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F12&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:40 AM]   Date range: Sun Jan 11 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 12 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:40 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:40 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:40 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:40 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:40 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:40 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:40 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F11&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F12&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:40 AM]   Date range: Sun Jan 11 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 12 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:40 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:40 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:40 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:40 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:40 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:40 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:42 AM] [Cache] Fetching batch: 2026-01-11 (77%) fclm.js:13:15
+[Performance Validity 4:03:42 AM] [Cache] Fetching day 2026-01-11 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:42 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F10&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F11&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:42 AM]   Date range: Sat Jan 10 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 11 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:43 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:43 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:43 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:43 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:43 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:43 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:43 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F10&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F11&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:43 AM]   Date range: Sat Jan 10 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 11 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:43 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:43 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:43 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:43 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:43 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:43 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:43 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F10&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F11&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:43 AM]   Date range: Sat Jan 10 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 11 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:43 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:43 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:43 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:43 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:43 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:43 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[FC Labor Tracking FCLM] [4:03:44 AM] Registered with background script fclm.js:29:13
+[Performance Validity 4:03:45 AM] [Cache] Fetching batch: 2026-01-10 (80%) fclm.js:13:15
+[Performance Validity 4:03:45 AM] [Cache] Fetching day 2026-01-10 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:45 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F09&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F10&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:45 AM]   Date range: Fri Jan 09 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 10 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:45 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:45 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:45 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:45 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:45 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:45 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:45 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F09&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F10&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:45 AM]   Date range: Fri Jan 09 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 10 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:45 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:45 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:45 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:45 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:45 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:45 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:45 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F09&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F10&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:45 AM]   Date range: Fri Jan 09 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 10 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:45 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:45 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:45 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:45 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:45 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:45 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:47 AM] [Cache] Fetching batch: 2026-01-09 (83%) fclm.js:13:15
+[Performance Validity 4:03:47 AM] [Cache] Fetching day 2026-01-09 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:47 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F08&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F09&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:47 AM]   Date range: Thu Jan 08 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 09 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:48 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:48 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:48 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:48 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:48 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:48 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:48 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F08&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F09&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:48 AM]   Date range: Thu Jan 08 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 09 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:48 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:48 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:48 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:48 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:48 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:48 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:48 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F08&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F09&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:48 AM]   Date range: Thu Jan 08 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 09 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:48 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:48 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:48 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:48 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:48 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:48 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:50 AM] [Cache] Fetching batch: 2026-01-08 (87%) fclm.js:13:15
+[Performance Validity 4:03:50 AM] [Cache] Fetching day 2026-01-08 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:50 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F07&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F08&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:50 AM]   Date range: Wed Jan 07 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 08 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:50 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:50 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:50 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:50 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:50 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:50 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:50 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F07&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F08&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:50 AM]   Date range: Wed Jan 07 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 08 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:50 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:50 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:50 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:50 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:50 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:50 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:50 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F07&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F08&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:50 AM]   Date range: Wed Jan 07 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 08 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:50 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:50 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:50 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:50 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:50 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:50 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:52 AM] [Cache] Fetching batch: 2026-01-07 (90%) fclm.js:13:15
+[Performance Validity 4:03:52 AM] [Cache] Fetching day 2026-01-07 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:52 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F06&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F07&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:52 AM]   Date range: Tue Jan 06 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 07 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:53 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:53 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:53 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:53 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:53 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:53 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:53 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F06&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F07&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:53 AM]   Date range: Tue Jan 06 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 07 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:53 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:53 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:53 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:53 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:53 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:53 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:53 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F06&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F07&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:53 AM]   Date range: Tue Jan 06 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 07 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:53 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:53 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:53 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:53 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:53 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:53 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:55 AM] [Cache] Fetching batch: 2026-01-06 (93%) fclm.js:13:15
+[Performance Validity 4:03:55 AM] [Cache] Fetching day 2026-01-06 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:55 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F05&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F06&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:55 AM]   Date range: Mon Jan 05 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 06 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:56 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:56 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:56 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:56 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:56 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:56 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:56 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F05&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F06&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:56 AM]   Date range: Mon Jan 05 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 06 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:57 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:57 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:57 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:57 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:57 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:57 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:57 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F05&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F06&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:57 AM]   Date range: Mon Jan 05 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 06 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:57 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:57 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:57 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:57 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:57 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:57 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:59 AM] [Cache] Fetching batch: 2026-01-05 (97%) fclm.js:13:15
+[Performance Validity 4:03:59 AM] [Cache] Fetching day 2026-01-05 (shift: all)... fclm.js:13:15
+[Performance Validity 4:03:59 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F04&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F05&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:59 AM]   Date range: Sun Jan 04 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 05 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:59 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:59 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:59 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:59 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:59 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:59 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:59 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F04&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F05&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:59 AM]   Date range: Sun Jan 04 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 05 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:59 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:59 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:59 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:59 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:59 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:59 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:59 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F04&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F05&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:59 AM]   Date range: Sun Jan 04 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 05 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:03:59 AM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:03:59 AM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 4:03:59 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 4:03:59 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:03:59 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:03:59 AM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 4:03:59 AM] [Cache] Step 5: Parallel fetch complete fclm.js:13:15
+[Performance Validity 4:03:59 AM] [Cache] Step 6: Fetching current day data... fclm.js:13:15
+[Performance Validity 4:03:59 AM] [Cache] Refreshing current day data (2026-02-03, night shift)... fclm.js:13:15
+[Performance Validity 4:03:59 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=2&startDateIntraday=2026%2F02%2F02&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=6&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:03:59 AM]   Date range: Mon Feb 02 2026 04:03:59 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 04:03:59 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Found 8 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:04:00 AM] Document headings: 2026-02-03 04:01 EST fclm.js:13:15
+[Performance Validity 4:04:00 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] | FRACS LTL Pick | FRACS Multis Pick | FRACS Singles Pick fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 1 sub-function: "" | prev: "
+    
+    Data last checked at
+        
+            2026-02-03 04:01 EST
+        
+        
+         " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 1: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 2 sub-function: "FRACS LTL Pick" | prev: "
+[-]Display Preferences
+
+
+    Color Scheme
+    
+
+Screen
+Printable
+
+
+
+    Employment Type
+    
+
+All
+A" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 2: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 sub-function: "FRACS LTL Pick" | prev: "
+
+Summary
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Function
+    Size
+    Total Paid Hours
+ItemPic" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "102168971" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "HTIKE,WIN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "Krienke,Jonothan" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "0.89" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "2.82" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "3.71" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "233" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "62.73" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "62" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "69.45" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "171" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "60.61" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "233" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "62.73" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="233" parsed=233, JPH col=10 raw="62.73" parsed=62.73 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First employee parsed: 
+Object { type: "AMZN", id: "102168971", badgeId: "102168971", name: "HTIKE,WIN", totalHours: 3.71, jobs: 233, jph: 62.73, units: 0, uph: 0, processId: "1003034", … }
+fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="245" parsed=245, JPH col=10 raw="60.65" parsed=60.65 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 sub-function: "FRACS LTL Pick" | prev: "
+
+Destroy Autocomplete [4300035094]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Nam" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "101180859" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Ling,Dawt" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "6.59" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "1.80" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "8.39" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "1071" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "127.60" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "920" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "139.61" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "151" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "83.72" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "1071" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "127.60" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="1071" parsed=1071, JPH col=10 raw="127.60" parsed=127.6 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="583" parsed=583, JPH col=10 raw="95.68" parsed=95.68 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="946" parsed=946, JPH col=10 raw="138.23" parsed=138.23 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 sub-function: "FRACS Multis Pick" | prev: "
+
+FRACS LTL Pick [4300016820]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+    " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "101180859" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Ling,Dawt" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "0.06" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "0.15" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "0.21" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "16" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "75.49" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "5" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "79.65" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "11" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "73.88" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "16" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "75.49" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="16" parsed=16, JPH col=10 raw="75.49" parsed=75.49 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="358" parsed=358, JPH col=10 raw="76.13" parsed=76.13 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="351" parsed=351, JPH col=10 raw="81.53" parsed=81.53 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 sub-function: "FRACS Singles Pick" | prev: "
+
+FRACS Multis Pick [4300016819]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+ " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "111865806" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Kim,Van" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "1.00" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "2.50" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "0.02" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "3.52" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "265" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "75.31" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "86" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "86.38" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "177" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "70.86" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "2" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "80.90" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "265" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "75.31" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="265" parsed=265, JPH col=10 raw="75.31" parsed=75.31 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="554" parsed=554, JPH col=10 raw="68.25" parsed=68.25 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 sub-function: "Liquidations Pick" | prev: "
+
+FRACS Singles Pick [4300016818]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "102168971" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "HTIKE,WIN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "Krienke,Jonothan" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "0.42" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "0.44" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "0.86" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "65" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "75.63" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "34" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "81.55" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "31" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "70.10" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "65" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "75.63" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="65" parsed=65, JPH col=10 raw="75.63" parsed=75.63 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="110" parsed=110, JPH col=10 raw="36.40" parsed=36.4 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="139" parsed=139, JPH col=10 raw="47.03" parsed=47.03 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Parsed 38 employees from function rollup fclm.js:13:15
+[Performance Validity 4:04:00 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=2&startDateIntraday=2026%2F02%2F02&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=6&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Date range: Mon Feb 02 2026 04:03:59 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 04:03:59 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Found 8 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:04:00 AM] Document headings: 2026-02-03 04:01 EST fclm.js:13:15
+[Performance Validity 4:04:00 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] | FRACSPnH | FracsLTL | Singles fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 1 sub-function: "" | prev: "
+    
+    Data last checked at
+        
+            2026-02-03 04:01 EST
+        
+        
+         " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 1: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 2 sub-function: "Pack FracsLTL" | prev: "
+[-]Display Preferences
+
+
+    Color Scheme
+    
+
+Screen
+Printable
+
+
+
+    Employment Type
+    
+
+All
+A" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 2: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 sub-function: "Pack FracsLTL" | prev: "
+
+Summary
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Function
+    Size
+    Total Paid Hours
+ItemPac" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | Package fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "104908490" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Pi,Aung" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "0.19" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "0.19" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "5.17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "5.17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "5.17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [21] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [22] = "5.17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="1" parsed=1, JPH col=10 raw="5.17" parsed=5.17 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First employee parsed: 
+Object { type: "AMZN", id: "104908490", badgeId: "104908490", name: "Pi,Aung", totalHours: 0.19, jobs: 1, jph: 5.17, units: 0, uph: 0, processId: "1003056", … }
+fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="214" parsed=214, JPH col=10 raw="644.69" parsed=644.69 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="79" parsed=79, JPH col=10 raw="297.49" parsed=297.49 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 sub-function: "Pack FracsLTL" | prev: "
+
+Pack FRACSPnH [1695309731180]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+  " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | package fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 4 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "109660280" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Kahlenbeck,Cameron" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "Cruz,Luca" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "3.88" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "3.83" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "0.07" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "7.79" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "1815" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "233.10" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "1227" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "316.06" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "577" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "150.63" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "11" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "150.00" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "1815" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "233.10" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [21] = "36" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [22] = "4.62" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="1815" parsed=1815, JPH col=10 raw="233.10" parsed=233.1 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="729" parsed=729, JPH col=10 raw="398.18" parsed=398.18 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 sub-function: "Singles [4300006717]" | prev: "
+
+Pack FracsLTL [4300016814]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+    M" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | package fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 5 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "100100631" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Pops,Alicia Renee" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "0.14" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "0.17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "0.31" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "2" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "6.37" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "7.17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "5.73" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "2" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "6.37" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [21] = "4" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [22] = "12.73" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="2" parsed=2, JPH col=10 raw="6.37" parsed=6.37 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="97" parsed=97, JPH col=10 raw="73.89" parsed=73.89 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="290" parsed=290, JPH col=10 raw="58.17" parsed=58.17 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 sub-function: "Packing" | prev: "
+
+Pack Singles [4300006717]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+    Ma" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | package fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 6 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "100100631" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Pops,Alicia Renee" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "4.30" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "3.97" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "0.01" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "8.29" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "2095" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "252.80" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "1181" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "274.54" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "911" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "229.21" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "3" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "276.92" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "2095" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "252.80" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [21] = "142" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [22] = "17.13" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="2095" parsed=2095, JPH col=10 raw="252.80" parsed=252.8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="405" parsed=405, JPH col=10 raw="135.58" parsed=135.58 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="855" parsed=855, JPH col=10 raw="260.94" parsed=260.94 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 sub-function: "PacknHold" | prev: "
+
+Packing [4300000130]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+    Manager" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | Package fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 7 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "100605881" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Biak,Josef" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "burns,justin" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "1.55" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "3.41" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "0.10" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "5.07" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "1866" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "368.29" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "744" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "478.46" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "1141" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "334.66" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "17" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "166.76" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "1902" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "375.39" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [21] = "295" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [22] = "58.22" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="1866" parsed=1866, JPH col=10 raw="368.29" parsed=368.29 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="3181" parsed=3181, JPH col=10 raw="378.15" parsed=378.15 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="1187" parsed=1187, JPH col=10 raw="392.76" parsed=392.76 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Parsed 32 employees from function rollup fclm.js:13:15
+[Performance Validity 4:04:00 AM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=2&startDateIntraday=2026%2F02%2F02&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=6&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Date range: Mon Feb 02 2026 04:03:59 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 04:03:59 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Found 4 tables in function rollup response fclm.js:13:15
+[Performance Validity 4:04:00 AM] Document headings: 2026-02-03 04:01 EST fclm.js:13:15
+[Performance Validity 4:04:00 AM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] | Stow C Returns | Stow C Returns | Stow C Returns fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 0 sub-function: "" | prev: "(none)" | parent: id=(no id) class=cp-form fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 0: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 1 sub-function: "" | prev: "
+    
+    Data last checked at
+        
+            2026-02-03 04:01 EST
+        
+        
+         " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 1: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 2 sub-function: "Stow C Returns" | prev: "
+[-]Display Preferences
+
+
+    Color Scheme
+    
+
+Screen
+Printable
+
+
+
+    Employment Type
+    
+
+All
+A" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 2: No main header row found (no 'Type' column) fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 sub-function: "Stow C Returns" | prev: "
+
+Summary
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Function
+    Size
+    Total Paid Hours
+EachSto" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 main header: Type | ID | Name | Manager | Paid Hours | EachStowed fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"eachstowed","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Found job action group "eachstowed" at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 4:04:00 AM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 4:04:00 AM] Table 3 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [0] = "AMZN" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [1] = "104199585" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [2] = "Diallo,M'Mah" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [3] = "Cruz,Luca" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [4] = "2.38" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [5] = "3.20" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [6] = "0.01" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [7] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [8] = "5.58" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [9] = "796" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [10] = "142.61" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [11] = "359" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [12] = "151.16" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [13] = "436" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [14] = "136.37" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [15] = "1" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [16] = "112.50" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [17] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [18] = "" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [19] = "796" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   [20] = "142.61" fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 1: Jobs col=9 raw="796" parsed=796, JPH col=10 raw="142.61" parsed=142.61 fclm.js:13:15
+[Performance Validity 4:04:00 AM] First employee parsed: 
+Object { type: "AMZN", id: "104199585", badgeId: "104199585", name: "Diallo,M'Mah", totalHours: 5.58, jobs: 796, jph: 142.61, units: 0, uph: 0, processId: "1003055", … }
+fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 2: Jobs col=9 raw="1582" parsed=1582, JPH col=10 raw="189.30" parsed=189.3 fclm.js:13:15
+[Performance Validity 4:04:00 AM]   Row 3: Jobs col=9 raw="1278" parsed=1278, JPH col=10 raw="175.30" parsed=175.3 fclm.js:13:15
+[Performance Validity 4:04:00 AM] Parsed 10 employees from function rollup fclm.js:13:15
+[DataCache] Stored 80 records for cache_IND8_2026-02-03_night dataCache.js:38:15
+[Performance Validity 4:04:00 AM] [Cache] Cached 80 current day records fclm.js:13:15
+[Performance Validity 4:04:00 AM] [Cache] Step 6: Current day data fetched fclm.js:13:15
+[Performance Validity 4:04:00 AM] [Cache] Step 7: Getting cache stats... fclm.js:13:15
+[Performance Validity 4:04:00 AM] [Cache] Step 7: Cache stats: 
+Object { totalDays: 1, totalRecords: 80, dateRange: {…}, byShift: {…} }
+fclm.js:13:15
+[Performance Validity 4:04:00 AM] [Cache] Initialization complete! fclm.js:13:15
+[FC Labor Tracking FCLM] [4:04:14 AM] Registered with background script fclm.js:29:13
