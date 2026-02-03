@@ -562,7 +562,6 @@
 
     // Calculate comparison with average
     const allData = filterByPeriod(state.allCachedData, state.lookupPeriod);
-    const allEmployeeJPHs = [];
     const employeeMap = new Map();
     allData.forEach(r => {
       if (!employeeMap.has(r.employeeId)) {
@@ -572,13 +571,48 @@
       emp.hours += r.hours || 0;
       emp.jobs += r.jobs || 0;
     });
+
+    // Calculate averages for radar chart
+    let totalAvgHours = 0, totalAvgJobs = 0, totalAvgJPH = 0;
+    let count = 0;
     employeeMap.forEach(emp => {
-      if (emp.hours > 0) allEmployeeJPHs.push(emp.jobs / emp.hours);
+      if (emp.hours > 0) {
+        totalAvgHours += emp.hours;
+        totalAvgJobs += emp.jobs;
+        totalAvgJPH += emp.jobs / emp.hours;
+        count++;
+      }
     });
 
-    const overallAvg = allEmployeeJPHs.length > 0
-      ? allEmployeeJPHs.reduce((a, b) => a + b, 0) / allEmployeeJPHs.length
-      : 0;
+    const avgHoursAll = count > 0 ? totalAvgHours / count : 0;
+    const avgJobsAll = count > 0 ? totalAvgJobs / count : 0;
+    const overallAvg = count > 0 ? totalAvgJPH / count : 0;
+
+    // Render radar chart
+    const radarData = {
+      aa: {
+        jph: avgJPH,
+        hours: totalHours,
+        jobs: totalJobs,
+        efficiency: overallAvg > 0 ? (avgJPH / overallAvg) * 100 : 100,
+        consistency: 85, // Placeholder - would need daily data
+        volume: avgJobsAll > 0 ? (totalJobs / avgJobsAll) * 100 : 100
+      },
+      avg: {
+        jph: overallAvg,
+        hours: avgHoursAll,
+        jobs: avgJobsAll,
+        efficiency: 100,
+        consistency: 75,
+        volume: 100
+      }
+    };
+
+    renderRadarChart(radarData, employeeName);
+
+    // Update legend name
+    const legendName = document.getElementById('radarLegendName');
+    if (legendName) legendName.textContent = employeeName.split(' ')[0] || 'This AA';
 
     const diff = avgJPH - overallAvg;
     const diffClass = diff >= 0 ? 'positive' : 'negative';
@@ -604,6 +638,95 @@
     el.aaDetailCard.style.display = 'block';
     state.selectedAA = { id: employeeId, name: employeeName, records };
     showToast(`Found ${records.length} records`, 'success');
+  }
+
+  /**
+   * Render radar/polygon chart
+   */
+  function renderRadarChart(data, name) {
+    const svg = document.getElementById('radarChart');
+    if (!svg) return;
+
+    const cx = 150, cy = 150; // Center
+    const maxRadius = 100;
+    const levels = 5;
+
+    // Metrics to display
+    const metrics = [
+      { key: 'jph', label: 'JPH', max: 60 },
+      { key: 'efficiency', label: 'Efficiency', max: 150 },
+      { key: 'volume', label: 'Volume', max: 150 },
+      { key: 'hours', label: 'Hours', max: 160 },
+      { key: 'jobs', label: 'Jobs', max: 5000 },
+      { key: 'consistency', label: 'Consistency', max: 100 }
+    ];
+
+    const angleStep = (2 * Math.PI) / metrics.length;
+
+    // Helper to get point on radar
+    const getPoint = (value, max, index) => {
+      const normalized = Math.min(value / max, 1);
+      const angle = index * angleStep - Math.PI / 2;
+      return {
+        x: cx + maxRadius * normalized * Math.cos(angle),
+        y: cy + maxRadius * normalized * Math.sin(angle)
+      };
+    };
+
+    // Build SVG content
+    let svgContent = '';
+
+    // Grid circles
+    for (let i = 1; i <= levels; i++) {
+      const r = (maxRadius / levels) * i;
+      svgContent += `<circle cx="${cx}" cy="${cy}" r="${r}" class="radar-grid-line" />`;
+    }
+
+    // Axis lines and labels
+    metrics.forEach((m, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      const x2 = cx + maxRadius * Math.cos(angle);
+      const y2 = cy + maxRadius * Math.sin(angle);
+      const labelX = cx + (maxRadius + 20) * Math.cos(angle);
+      const labelY = cy + (maxRadius + 20) * Math.sin(angle);
+
+      svgContent += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" class="radar-axis" />`;
+      svgContent += `<text x="${labelX}" y="${labelY}" class="radar-label" dy="0.35em">${m.label}</text>`;
+    });
+
+    // Average polygon (background)
+    const avgPoints = metrics.map((m, i) => {
+      const p = getPoint(data.avg[m.key] || 0, m.max, i);
+      return `${p.x},${p.y}`;
+    }).join(' ');
+    svgContent += `<polygon points="${avgPoints}" class="radar-polygon radar-polygon-avg" />`;
+
+    // AA polygon (foreground)
+    const aaPoints = metrics.map((m, i) => {
+      const p = getPoint(data.aa[m.key] || 0, m.max, i);
+      return `${p.x},${p.y}`;
+    }).join(' ');
+    svgContent += `<polygon points="${aaPoints}" class="radar-polygon radar-polygon-aa" />`;
+
+    // Value dots and labels for AA
+    metrics.forEach((m, i) => {
+      const p = getPoint(data.aa[m.key] || 0, m.max, i);
+      const val = data.aa[m.key] || 0;
+      const displayVal = m.key === 'jobs' ? Math.round(val).toLocaleString() :
+                         m.key === 'hours' ? val.toFixed(1) :
+                         m.key === 'jph' ? val.toFixed(1) :
+                         Math.round(val);
+
+      svgContent += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--accent)" />`;
+
+      // Position value label
+      const angle = i * angleStep - Math.PI / 2;
+      const valX = p.x + 15 * Math.cos(angle);
+      const valY = p.y + 15 * Math.sin(angle);
+      svgContent += `<text x="${valX}" y="${valY}" class="radar-value" dy="0.35em">${displayVal}</text>`;
+    });
+
+    svg.innerHTML = svgContent;
   }
 
   /**

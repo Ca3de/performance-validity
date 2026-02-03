@@ -213,34 +213,57 @@
               <button class="btn-close" id="closeDetail">&times;</button>
             </div>
 
-            <div class="aa-stats-grid">
-              <div class="aa-stat">
-                <div class="aa-stat-value" id="aaJPH">0</div>
-                <div class="aa-stat-label">JPH</div>
-                <div class="aa-stat-bar">
-                  <div class="aa-stat-fill" id="aaJPHBar" style="width: 0%"></div>
+            <div class="aa-detail-grid">
+              <!-- Radar Chart -->
+              <div class="aa-radar-section">
+                <h3 class="section-title">Performance Analysis</h3>
+                <div class="radar-container">
+                  <svg id="radarChart" viewBox="0 0 300 300" class="radar-chart"></svg>
+                </div>
+                <div class="radar-legend">
+                  <div class="legend-item">
+                    <span class="legend-color legend-aa"></span>
+                    <span id="radarLegendName">This AA</span>
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color legend-avg"></span>
+                    <span>Path Average</span>
+                  </div>
                 </div>
               </div>
-              <div class="aa-stat">
-                <div class="aa-stat-value" id="aaJobs">0</div>
-                <div class="aa-stat-label">Jobs</div>
-                <div class="aa-stat-bar">
-                  <div class="aa-stat-fill" id="aaJobsBar" style="width: 0%"></div>
-                </div>
-              </div>
-              <div class="aa-stat">
-                <div class="aa-stat-value" id="aaHours">0</div>
-                <div class="aa-stat-label">Hours</div>
-                <div class="aa-stat-bar">
-                  <div class="aa-stat-fill" id="aaHoursBar" style="width: 0%"></div>
-                </div>
-              </div>
-            </div>
 
-            <div class="aa-paths-section">
-              <h3 class="section-title">Path Breakdown</h3>
-              <div class="aa-paths-list" id="aaPathsList">
-                <!-- Path breakdown injected here -->
+              <!-- Stats Panel -->
+              <div class="aa-stats-panel">
+                <div class="aa-stats-grid">
+                  <div class="aa-stat">
+                    <div class="aa-stat-value" id="aaJPH">0</div>
+                    <div class="aa-stat-label">JPH</div>
+                    <div class="aa-stat-bar">
+                      <div class="aa-stat-fill" id="aaJPHBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="aa-stat">
+                    <div class="aa-stat-value" id="aaJobs">0</div>
+                    <div class="aa-stat-label">Jobs</div>
+                    <div class="aa-stat-bar">
+                      <div class="aa-stat-fill" id="aaJobsBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <div class="aa-stat">
+                    <div class="aa-stat-value" id="aaHours">0</div>
+                    <div class="aa-stat-label">Hours</div>
+                    <div class="aa-stat-bar">
+                      <div class="aa-stat-fill" id="aaHoursBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="aa-paths-section">
+                  <h3 class="section-title">Path Breakdown</h3>
+                  <div class="aa-paths-list" id="aaPathsList">
+                    <!-- Path breakdown injected here -->
+                  </div>
+                </div>
               </div>
             </div>
 
