@@ -620,8 +620,11 @@
       tableStructures: []
     };
 
-    // Find all tables with employee data
-    const tables = doc.querySelectorAll('table');
+    // Find all tables with employee data - prioritize result-table class
+    let tables = doc.querySelectorAll('table.result-table');
+    if (tables.length === 0) {
+      tables = doc.querySelectorAll('table');
+    }
     debugInfo.tableCount = tables.length;
     log(`Found ${tables.length} tables in function rollup response`);
 
@@ -662,25 +665,24 @@
       let unitColumnIndex = -1;
       let uphColumnIndex = -1;
 
-      // First check if this table has employee data rows (empl-amzn class)
-      const employeeRows = table.querySelectorAll('tr.empl-amzn, tr.empl-all');
-      if (employeeRows.length === 0) {
-        // No employee rows in this table, check for AMZN cells
-        const amznCells = table.querySelectorAll('td');
-        let hasAmznRows = false;
-        for (const cell of amznCells) {
-          if (cell.textContent.trim() === 'AMZN') {
-            hasAmznRows = true;
-            break;
-          }
-        }
-        if (!hasAmznRows) {
-          log(`Table ${tableIndex}: Skipping - no employee rows found`);
-          return; // Skip tables without employee data
+      // Check if this table has any AMZN cells (employee data)
+      // More permissive check - look for any td containing just "AMZN"
+      let hasEmployeeData = false;
+      const allTds = table.querySelectorAll('td');
+      for (const td of allTds) {
+        const text = td.textContent.trim();
+        if (text === 'AMZN') {
+          hasEmployeeData = true;
+          break;
         }
       }
 
-      log(`Table ${tableIndex}: Found ${employeeRows.length} employee rows (empl-amzn/empl-all)`);
+      if (!hasEmployeeData) {
+        log(`Table ${tableIndex}: Skipping - no AMZN cells found (${allTds.length} total tds)`);
+        return; // Skip tables without employee data
+      }
+
+      log(`Table ${tableIndex}: Found AMZN cells, processing...`);
 
       // Try to find the sub-function name for this table
       let subFunctionName = '';
@@ -1013,7 +1015,7 @@
       }
       } // End of if (mainHeaderRow)
 
-      log(`Table ${tableIndex} final indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Total: ${totalColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}`)
+      log(`Table ${tableIndex} final indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Total: ${totalColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}`);
 
       // If we still don't have Jobs/JPH indices, try to detect from first AMZN row
       // FCLM typical layout: Type(0), ID(1), Name(2), Manager(3), Hours(4-8), Jobs(9), JPH(10), Units...
@@ -1037,42 +1039,78 @@
           log(`First AMZN row has ${cells.length} cells:`);
           Array.from(cells).forEach((c, idx) => {
             const val = c.textContent.trim().substring(0, 25);
-            log(`  [${idx}] = "${val}"`);
+            const cls = c.className || '';
+            log(`  [${idx}] = "${val}" (class: ${cls})`);
           });
 
-          // Try to auto-detect Jobs/JPH columns if not found
-          if (jobsColumnIndex === -1 || jphColumnIndex === -1) {
-            // FCLM typical layout after Name/Manager:
-            // Look for numeric columns that could be Jobs (integer) and JPH (decimal)
-            for (let i = 4; i < cells.length - 1; i++) {
-              const val = cells[i]?.textContent?.trim() || '';
-              const nextVal = cells[i + 1]?.textContent?.trim() || '';
-              // Jobs is usually an integer, JPH is a decimal
-              if (/^\d+$/.test(val) && /^\d+\.?\d*$/.test(nextVal) && parseFloat(nextVal) < 200) {
-                // Could be Jobs/JPH pair
-                const potentialJobs = parseInt(val);
-                const potentialJPH = parseFloat(nextVal);
-                // JPH is typically between 0-100 for most paths
-                if (potentialJobs > 0 && potentialJPH > 0 && potentialJPH < 200) {
-                  if (jobsColumnIndex === -1) jobsColumnIndex = i;
-                  if (jphColumnIndex === -1) jphColumnIndex = i + 1;
-                  detectedFromData = true;
-                  log(`  Auto-detected Jobs at col ${i}, JPH at col ${i + 1}`);
-                  break;
-                }
+          // Try to find Total Hours by looking for size-total class first
+          if (totalColumnIndex === -1) {
+            for (let i = 3; i < cells.length; i++) {
+              const cls = cells[i]?.className || '';
+              if (cls.includes('size-total') || cls.includes('highlighted')) {
+                totalColumnIndex = i;
+                log(`  Auto-detected Total Hours at col ${i} via class`);
+                break;
               }
             }
           }
 
-          // Also try to find Total Hours if not found
+          // If still not found, look for a column with hours value (decimal between 0-24)
           if (totalColumnIndex === -1) {
-            // Look for a column with hours value (decimal between 0-24)
             for (let i = 3; i < Math.min(10, cells.length); i++) {
               const val = parseFloat(cells[i]?.textContent?.trim() || '');
               if (!isNaN(val) && val > 0 && val < 24) {
                 totalColumnIndex = i;
-                log(`  Auto-detected Total Hours at col ${i}`);
+                log(`  Auto-detected Total Hours at col ${i} via value`);
                 break;
+              }
+            }
+          }
+
+          // Try to auto-detect Jobs/JPH columns - first look for numeric class cells after Total
+          if (jobsColumnIndex === -1 || jphColumnIndex === -1) {
+            const startIdx = totalColumnIndex !== -1 ? totalColumnIndex + 1 : 8;
+
+            // Look for cells with 'numeric' class or 'jph' class
+            for (let i = startIdx; i < cells.length - 1; i++) {
+              const cls = cells[i]?.className || '';
+              const nextCls = cells[i + 1]?.className || '';
+
+              // Check if both have numeric class
+              if ((cls.includes('numeric') || cls.includes('jph')) &&
+                  (nextCls.includes('numeric') || nextCls.includes('jph'))) {
+                const val = cells[i]?.textContent?.trim() || '';
+                const nextVal = cells[i + 1]?.textContent?.trim() || '';
+
+                // Verify they look like Jobs (integer) and JPH (decimal)
+                if (/^\d+$/.test(val) || /^\d+\.?\d*$/.test(nextVal)) {
+                  if (jobsColumnIndex === -1) jobsColumnIndex = i;
+                  if (jphColumnIndex === -1) jphColumnIndex = i + 1;
+                  detectedFromData = true;
+                  log(`  Auto-detected Jobs at col ${i}, JPH at col ${i + 1} via class`);
+                  break;
+                }
+              }
+            }
+
+            // Fallback: look for numeric pattern without class check
+            if (jobsColumnIndex === -1 || jphColumnIndex === -1) {
+              for (let i = startIdx; i < cells.length - 1; i++) {
+                const val = cells[i]?.textContent?.trim() || '';
+                const nextVal = cells[i + 1]?.textContent?.trim() || '';
+                // Jobs is usually an integer, JPH is a decimal
+                if (/^\d+$/.test(val) && /^\d+\.?\d*$/.test(nextVal) && parseFloat(nextVal) < 200) {
+                  const potentialJobs = parseInt(val);
+                  const potentialJPH = parseFloat(nextVal);
+                  // JPH is typically between 0-100 for most paths
+                  if (potentialJobs > 0 && potentialJPH > 0 && potentialJPH < 200) {
+                    if (jobsColumnIndex === -1) jobsColumnIndex = i;
+                    if (jphColumnIndex === -1) jphColumnIndex = i + 1;
+                    detectedFromData = true;
+                    log(`  Auto-detected Jobs at col ${i}, JPH at col ${i + 1} via pattern`);
+                    break;
+                  }
+                }
               }
             }
           }
