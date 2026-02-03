@@ -3,47 +3,282 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AA Performance Validity</title>
+  <title>AA Performance Hub</title>
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
   <div class="app-container">
-    <!-- Header with Tab Navigation -->
-    <header class="app-header">
-      <div class="header-left">
-        <h1 class="app-title">AA Performance</h1>
-        <span class="warehouse-badge" id="warehouseBadge">---</span>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">AA</span>
+          <span class="logo-text">Performance</span>
+        </div>
       </div>
-      <nav class="tab-nav">
-        <button class="tab-btn active" data-tab="scan">Scan AA</button>
-        <button class="tab-btn" data-tab="data">All Data</button>
-      </nav>
-    </header>
 
-    <!-- Tab Content -->
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-view="overview">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+          </svg>
+          <span>Overview</span>
+        </a>
+        <a href="#" class="nav-item" data-view="lookup">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <span>AA Lookup</span>
+        </a>
+        <a href="#" class="nav-item" data-view="data">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+          </svg>
+          <span>Data Hub</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="warehouse-info">
+          <span class="warehouse-label">Warehouse</span>
+          <span class="warehouse-id" id="warehouseId">---</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
     <main class="main-content">
-      <!-- Tab 1: Scan AA -->
-      <div class="tab-content active" id="tab-scan">
-        <div class="scan-section">
-          <div class="scan-input-group">
-            <input type="text" id="scanInput" placeholder="Scan badge or enter login/ID..." autofocus />
-            <button class="btn btn-primary" id="scanBtn">Lookup</button>
+      <!-- Header -->
+      <header class="main-header">
+        <div class="header-left">
+          <button class="nav-toggle" id="navToggle">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </button>
+          <h1 class="page-title" id="pageTitle">Overview</h1>
+        </div>
+        <div class="header-right">
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <input type="text" placeholder="Search AA..." id="globalSearch">
+          </div>
+          <div class="header-date" id="headerDate"></div>
+        </div>
+      </header>
+
+      <!-- Overview View -->
+      <div class="view active" id="view-overview">
+        <!-- Summary Cards Row -->
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-icon summary-icon-primary">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            </div>
+            <div class="summary-content">
+              <div class="summary-value" id="totalAAs">0</div>
+              <div class="summary-label">Total AAs Today</div>
+            </div>
           </div>
 
-          <div class="scan-filters">
-            <div class="filter-group">
-              <label>Date Range</label>
-              <select id="scanPeriod">
-                <option value="today">Today</option>
-                <option value="week">This Week</option>
-                <option value="lastWeek">Last Week</option>
-                <option value="month" selected>This Month</option>
-                <option value="lastMonth">Last Month</option>
-              </select>
+          <div class="summary-card">
+            <div class="summary-icon summary-icon-success">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
             </div>
-            <div class="filter-group">
-              <label>Path</label>
-              <select id="scanPath">
+            <div class="summary-content">
+              <div class="summary-value" id="aboveGoal">0</div>
+              <div class="summary-label">Above Goal</div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon summary-icon-warning">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            </div>
+            <div class="summary-content">
+              <div class="summary-value" id="belowGoal">0</div>
+              <div class="summary-label">Below Goal</div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon summary-icon-info">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            </div>
+            <div class="summary-content">
+              <div class="summary-value" id="avgJPH">0</div>
+              <div class="summary-label">Avg JPH</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="content-grid">
+          <!-- Path Performance -->
+          <div class="panel panel-wide">
+            <div class="panel-header">
+              <h2 class="panel-title">Path Performance</h2>
+              <div class="panel-actions">
+                <select id="overviewPeriod" class="period-select">
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="lastWeek">Last Week</option>
+                  <option value="month" selected>This Month</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="path-grid" id="pathGrid">
+                <!-- Path cards injected here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Performers -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Top Performers</h2>
+              <span class="panel-subtitle">by JPH</span>
+            </div>
+            <div class="panel-body">
+              <div class="performer-list" id="topPerformers">
+                <!-- Top performers injected here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Needs Attention -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Needs Attention</h2>
+              <span class="panel-badge badge-warning" id="attentionCount">0</span>
+            </div>
+            <div class="panel-body">
+              <div class="performer-list" id="needsAttention">
+                <!-- AAs needing attention injected here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AA Lookup View -->
+      <div class="view" id="view-lookup">
+        <div class="lookup-container">
+          <div class="panel lookup-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">AA Lookup</h2>
+            </div>
+            <div class="panel-body">
+              <div class="lookup-input-group">
+                <input type="text" id="lookupInput" placeholder="Scan badge or enter login/ID..." autofocus>
+                <button class="btn btn-primary" id="lookupBtn">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                  Search
+                </button>
+              </div>
+              <div class="lookup-filters">
+                <div class="filter-group">
+                  <label>Period</label>
+                  <select id="lookupPeriod">
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="lastWeek">Last Week</option>
+                    <option value="month" selected>This Month</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label>Path</label>
+                  <select id="lookupPath">
+                    <option value="all">All Paths</option>
+                    <option value="pick">Pick</option>
+                    <option value="pack">Pack</option>
+                    <option value="stow">Stow</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AA Detail Card (hidden by default) -->
+          <div class="aa-detail-card" id="aaDetailCard" style="display: none;">
+            <div class="aa-detail-header">
+              <div class="aa-avatar">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </div>
+              <div class="aa-info">
+                <h2 class="aa-name" id="aaName">---</h2>
+                <span class="aa-badge" id="aaBadge">Badge: ---</span>
+              </div>
+              <button class="btn-close" id="closeDetail">&times;</button>
+            </div>
+
+            <div class="aa-stats-grid">
+              <div class="aa-stat">
+                <div class="aa-stat-value" id="aaJPH">0</div>
+                <div class="aa-stat-label">JPH</div>
+                <div class="aa-stat-bar">
+                  <div class="aa-stat-fill" id="aaJPHBar" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="aa-stat">
+                <div class="aa-stat-value" id="aaJobs">0</div>
+                <div class="aa-stat-label">Jobs</div>
+                <div class="aa-stat-bar">
+                  <div class="aa-stat-fill" id="aaJobsBar" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="aa-stat">
+                <div class="aa-stat-value" id="aaHours">0</div>
+                <div class="aa-stat-label">Hours</div>
+                <div class="aa-stat-bar">
+                  <div class="aa-stat-fill" id="aaHoursBar" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="aa-paths-section">
+              <h3 class="section-title">Path Breakdown</h3>
+              <div class="aa-paths-list" id="aaPathsList">
+                <!-- Path breakdown injected here -->
+              </div>
+            </div>
+
+            <div class="aa-performance-section">
+              <h3 class="section-title">Performance vs Average</h3>
+              <div class="vs-comparison" id="vsComparison">
+                <!-- Comparison injected here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Hub View -->
+      <div class="view" id="view-data">
+        <div class="panel panel-full">
+          <div class="panel-header">
+            <h2 class="panel-title">Performance Data</h2>
+            <div class="panel-actions">
+              <div class="period-tabs">
+                <button class="period-tab active" data-period="today">Today</button>
+                <button class="period-tab" data-period="week">This Week</button>
+                <button class="period-tab" data-period="lastWeek">Last Week</button>
+                <button class="period-tab" data-period="month">This Month</button>
+              </div>
+              <button class="btn btn-secondary" id="exportBtn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Export
+              </button>
+            </div>
+          </div>
+          <div class="panel-toolbar">
+            <div class="toolbar-left">
+              <span class="data-count" id="dataCount">0 records</span>
+            </div>
+            <div class="toolbar-right">
+              <input type="text" class="toolbar-search" id="dataSearch" placeholder="Filter by name or ID...">
+              <select class="toolbar-select" id="pathFilter">
                 <option value="all">All Paths</option>
                 <option value="pick">Pick</option>
                 <option value="pack">Pack</option>
@@ -51,77 +286,29 @@
               </select>
             </div>
           </div>
-
-          <!-- Scan Result -->
-          <div class="scan-result" id="scanResult" style="display: none;">
-            <div class="result-header">
-              <h2 id="resultName">Employee Name</h2>
-              <span class="result-badge" id="resultBadge">Badge: --------</span>
-              <button class="btn-close" id="closeResult">&times;</button>
-            </div>
-            <div class="result-stats">
-              <div class="stat-card">
-                <div class="stat-value" id="resultJPH">--</div>
-                <div class="stat-label">JPH</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value" id="resultJobs">--</div>
-                <div class="stat-label">Jobs</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value" id="resultHours">--</div>
-                <div class="stat-label">Hours</div>
-              </div>
-            </div>
-            <div class="result-paths" id="resultPaths">
-              <!-- Path breakdown will be generated by JS -->
-            </div>
+          <div class="panel-body panel-body-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Path</th>
+                  <th>Hours</th>
+                  <th>Jobs</th>
+                  <th>JPH</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dataTableBody">
+                <!-- Data rows injected here -->
+              </tbody>
+            </table>
           </div>
-        </div>
-      </div>
-
-      <!-- Tab 2: All Data -->
-      <div class="tab-content" id="tab-data">
-        <div class="data-controls">
-          <div class="period-filters">
-            <button class="period-btn active" data-period="today">Today</button>
-            <button class="period-btn" data-period="week">This Week</button>
-            <button class="period-btn" data-period="lastWeek">Last Week</button>
-            <button class="period-btn" data-period="month">This Month</button>
-          </div>
-          <div class="data-actions">
-            <input type="text" id="dataSearch" placeholder="Search..." />
-            <button class="btn btn-secondary" id="exportBtn">Export CSV</button>
-          </div>
-        </div>
-
-        <div class="data-summary">
-          <span id="dataSummary">0 records</span>
-        </div>
-
-        <div class="data-table-wrapper">
-          <table class="data-table" id="dataTable">
-            <thead>
-              <tr>
-                <th>Employee</th>
-                <th>Path</th>
-                <th>Hours</th>
-                <th>Jobs</th>
-                <th>JPH</th>
-              </tr>
-            </thead>
-            <tbody id="dataBody">
-              <tr class="empty-row">
-                <td colspan="5">Loading data...</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Toast -->
+  <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="dashboard.js"></script>
