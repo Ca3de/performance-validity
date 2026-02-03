@@ -176,6 +176,7 @@ body {
   background: var(--background);
   border-radius: var(--radius);
   flex: 0 0 300px;
+  position: relative;
 }
 
 .search-box input {
@@ -189,6 +190,68 @@ body {
 .search-box svg {
   color: var(--text-secondary);
   flex-shrink: 0;
+}
+
+/* Search Suggestions Dropdown */
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  margin-top: 4px;
+}
+
+.suggestion-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: var(--primary-light);
+}
+
+.suggestion-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.suggestion-id {
+  font-weight: 600;
+  color: var(--primary);
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.suggestion-name {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.suggestion-paths {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.suggestion-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .filter-pills {
