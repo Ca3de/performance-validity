@@ -142,7 +142,7 @@
       endHour = 6;
     }
 
-    return { startDate, endDate, startHour, endHour, spanType: 'Week' };  // Week span has parseable HTML
+    return { startDate, endDate, startHour, endHour, spanType: 'Intraday' };  // Intraday for daily granularity
   }
 
   /**
@@ -166,8 +166,7 @@
         startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(now);
-        // Use Week span - Intraday has different HTML structure that parser can't handle
-        spanType = 'Week';
+        spanType = 'Intraday';  // Intraday for daily granularity
         break;
 
       case 'lastWeek':
@@ -186,8 +185,7 @@
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(now);
-        // Use Week span - Intraday has different HTML structure that parser can't handle
-        spanType = 'Week';
+        spanType = 'Intraday';  // Intraday for daily granularity
         break;
 
       case 'lastMonth':
@@ -1422,7 +1420,7 @@
     const dateRange = {
       startDate,
       endDate,
-      spanType: 'Week',  // Use Week span - Intraday has different HTML structure that parser can't handle
+      spanType: 'Intraday',  // Intraday for daily granularity
       startHour,
       endHour
     };
