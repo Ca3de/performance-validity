@@ -320,10 +320,9 @@
 
     switch (period) {
       case 'today':
-        // Only current day data
+        // ONLY current day data - cached month data is aggregated totals, not daily
         includeCurrentDay = true;
-        // Also include current month for any daily records
-        monthsToInclude.add(getMonthKey(now));
+        // Don't add any months - we only want isCurrentDay records for today
         break;
 
       case 'week':
