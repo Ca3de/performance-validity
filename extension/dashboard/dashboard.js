@@ -11,7 +11,8 @@
     employees: [],
     allCachedData: [],        // ALL data from cache (unfiltered)
     performanceData: [],       // Filtered data for display
-    period: 'lastMonth',       // Default to last month (cached data)
+    period: 'month',           // Default to this month (current + cached data)
+    shiftFilter: 'all',        // Shift filter: 'all', 'day', 'night'
     dateRange: {
       startDate: null,
       endDate: null
@@ -23,8 +24,9 @@
     fclmTabId: null,
     cacheStatus: {
       initialized: false,
-      months: [],
-      totalRecords: 0
+      dates: [],
+      totalRecords: 0,
+      dateRange: { earliest: null, latest: null }
     },
     // AA Lookup state
     selectedAA: null,
@@ -49,6 +51,7 @@
   const elements = {
     warehouseBadge: document.getElementById('warehouseBadge'),
     periodSelect: document.getElementById('periodSelect'),
+    shiftSelect: document.getElementById('shiftSelect'),
     customDateRange: document.getElementById('customDateRange'),
     startDate: document.getElementById('startDate'),
     endDate: document.getElementById('endDate'),
@@ -150,10 +153,16 @@
     elements.startDate.value = state.dateRange.startDate;
     elements.endDate.value = state.dateRange.endDate;
 
-    // Default period is "lastMonth" (most complete cached data)
-    state.period = 'lastMonth';
-    elements.periodSelect.value = 'lastMonth';
+    // Default period is "month" (this month with current day data)
+    state.period = 'month';
+    elements.periodSelect.value = 'month';
     elements.customDateRange.style.display = 'none';
+
+    // Default shift filter to 'all'
+    state.shiftFilter = 'all';
+    if (elements.shiftSelect) {
+      elements.shiftSelect.value = 'all';
+    }
   }
 
   function formatDate(date) {
@@ -275,18 +284,23 @@
         state.allCachedData = response.performanceData || [];
         state.cacheStatus = {
           initialized: true,
-          months: response.cachedMonths || [],
-          totalRecords: response.totalRecords || 0
+          dates: response.cachedDates || [],
+          totalRecords: response.totalRecords || 0,
+          dateRange: response.dateRange || { earliest: null, latest: null }
         };
 
         elements.warehouseBadge.textContent = state.warehouseId;
 
-        console.log('[Dashboard] Cached months available:', state.cacheStatus.months);
+        console.log('[Dashboard] Cached dates available:', state.cacheStatus.dates?.length || 0, 'days');
+        console.log('[Dashboard] Date range:', state.cacheStatus.dateRange);
 
-        // Apply default filter (last month)
+        // Apply default filter (this month)
         applyDateFilter();
 
-        showToast(`Loaded ${response.totalRecords} records from months: ${response.cachedMonths?.join(', ') || 'none'}`, 'success');
+        const dateRangeStr = state.cacheStatus.dateRange.earliest && state.cacheStatus.dateRange.latest
+          ? `${state.cacheStatus.dateRange.earliest} to ${state.cacheStatus.dateRange.latest}`
+          : 'none';
+        showToast(`Loaded ${response.totalRecords} records (${state.cacheStatus.dates?.length || 0} days: ${dateRangeStr})`, 'success');
       } else {
         console.log('[Dashboard] No cached data, falling back to FCLM fetch');
         // Fall back to fetching from FCLM
@@ -304,97 +318,102 @@
 
   /**
    * Apply date filter to cached data (client-side filtering)
-   * Filters by month and includes current day data where appropriate
+   * Filters by date range and shift using daily cached data
    */
   function applyDateFilter() {
     const period = state.period;
+    const shiftFilter = state.shiftFilter || 'all';
     const now = new Date();
 
-    // Determine which months to include based on period
-    const getMonthKey = (date) => {
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    // Helper to format date as YYYY-MM-DD
+    const formatDateKey = (date) => {
+      const d = new Date(date);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     };
 
-    let monthsToInclude = new Set();
-    let includeCurrentDay = false;
+    // Determine date range based on period
+    let startDate, endDate;
 
     switch (period) {
       case 'today':
-        // ONLY current day data - cached month data is aggregated totals, not daily
-        includeCurrentDay = true;
-        // Don't add any months - we only want isCurrentDay records for today
+        // Today only
+        startDate = formatDateKey(now);
+        endDate = formatDateKey(now);
         break;
 
       case 'week':
-        // This week - include current month and possibly last month if week spans
-        includeCurrentDay = true;
-        monthsToInclude.add(getMonthKey(now));
-        // If we're in the first week of the month, also include last month
-        if (now.getDate() <= 7) {
-          const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-          monthsToInclude.add(getMonthKey(lastMonth));
-        }
+        // This week (Sunday to today)
+        const weekStart = new Date(now);
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        startDate = formatDateKey(weekStart);
+        endDate = formatDateKey(now);
         break;
 
       case 'lastWeek':
-        // Last week - include current and last month
-        const lastWeekDate = new Date(now);
-        lastWeekDate.setDate(lastWeekDate.getDate() - 7);
-        monthsToInclude.add(getMonthKey(now));
-        monthsToInclude.add(getMonthKey(lastWeekDate));
+        // Last week (Sunday to Saturday)
+        const lastWeekEnd = new Date(now);
+        lastWeekEnd.setDate(lastWeekEnd.getDate() - lastWeekEnd.getDay() - 1);
+        const lastWeekStart = new Date(lastWeekEnd);
+        lastWeekStart.setDate(lastWeekStart.getDate() - 6);
+        startDate = formatDateKey(lastWeekStart);
+        endDate = formatDateKey(lastWeekEnd);
         break;
 
       case 'month':
-        // This month + current day
-        includeCurrentDay = true;
-        monthsToInclude.add(getMonthKey(now));
+        // This month (1st to today)
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        startDate = formatDateKey(monthStart);
+        endDate = formatDateKey(now);
         break;
 
       case 'lastMonth':
-        // Last month only
-        const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        monthsToInclude.add(getMonthKey(lastMonthDate));
+        // Last month (1st to last day)
+        const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+        startDate = formatDateKey(lastMonthStart);
+        endDate = formatDateKey(lastMonthEnd);
         break;
 
       case 'custom':
-        // Include all months in the custom range
-        const startDate = new Date(state.dateRange.startDate);
-        const endDate = new Date(state.dateRange.endDate);
-        let current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-        while (current <= endDate) {
-          monthsToInclude.add(getMonthKey(current));
-          current.setMonth(current.getMonth() + 1);
-        }
-        // If end date is today or future, include current day
-        if (endDate >= new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
-          includeCurrentDay = true;
-        }
+        // Custom range from inputs
+        startDate = state.dateRange.startDate;
+        endDate = state.dateRange.endDate;
         break;
 
       default:
         // Show all data
-        state.allCachedData.forEach(record => {
-          if (record.month) monthsToInclude.add(record.month);
-        });
-        includeCurrentDay = true;
+        startDate = null;
+        endDate = null;
     }
 
-    console.log(`[Dashboard] Filtering for period '${period}':`, {
-      monthsToInclude: Array.from(monthsToInclude),
-      includeCurrentDay
+    console.log(`[Dashboard] Filtering for period '${period}', shift '${shiftFilter}':`, {
+      startDate,
+      endDate
     });
 
-    // Filter cached data
+    // Filter cached data by date range and shift
     const filteredData = state.allCachedData.filter(record => {
-      // Current day records
-      if (record.isCurrentDay) {
-        return includeCurrentDay;
+      // Filter by shift
+      if (shiftFilter !== 'all') {
+        const recordShift = record.shift || 'all';
+        // 'all' shift records match any shift filter
+        if (recordShift !== 'all' && recordShift !== shiftFilter) {
+          return false;
+        }
       }
-      // Historical records - filter by month
-      if (record.month) {
-        return monthsToInclude.has(record.month);
+
+      // Filter by date range
+      if (startDate && endDate) {
+        const recordDate = record.date;
+        if (!recordDate) {
+          // Records without date (shouldn't happen with new cache)
+          return record.isCurrentDay && period === 'today';
+        }
+        return recordDate >= startDate && recordDate <= endDate;
       }
-      return false;
+
+      // No date filter - include all
+      return true;
     });
 
     console.log(`[Dashboard] Filtered to ${filteredData.length} records from ${state.allCachedData.length} total`);
@@ -408,7 +427,10 @@
       if (state.allCachedData.length === 0) {
         showToast('No cached data available. Wait for cache to load or click Refresh.', 'warning');
       } else {
-        showToast(`No data found for ${period}. Available months: ${state.cacheStatus.months.join(', ')}`, 'warning');
+        const dateInfo = state.cacheStatus.dateRange
+          ? `Available: ${state.cacheStatus.dateRange.earliest} to ${state.cacheStatus.dateRange.latest}`
+          : '';
+        showToast(`No data found for ${period} (${shiftFilter} shift). ${dateInfo}`, 'warning');
       }
     }
   }
@@ -471,6 +493,9 @@
    */
   function attachEventListeners() {
     elements.periodSelect.addEventListener('change', handlePeriodChange);
+    if (elements.shiftSelect) {
+      elements.shiftSelect.addEventListener('change', handleShiftChange);
+    }
     elements.applyDateRange.addEventListener('click', handleApplyDateRange);
     elements.refreshBtn.addEventListener('click', handleRefresh);
     elements.employeeSearch.addEventListener('input', handleSearch);
@@ -524,8 +549,33 @@
       elements.customDateRange.style.display = 'flex';
     } else {
       elements.customDateRange.style.display = 'none';
-      // Auto-apply filter for non-custom periods
+
+      // With daily caching, we can filter all periods client-side
+      // Only fetch from FCLM if cache is empty or user explicitly requests refresh
+      if (state.allCachedData.length > 0) {
+        applyDateFilter();
+      } else {
+        showToast('Loading data from FCLM...', 'info');
+        fetchDataFromFCLM();
+      }
+    }
+  }
+
+  /**
+   * Handle shift selector change
+   */
+  function handleShiftChange(e) {
+    const shift = e.target.value;
+    state.shiftFilter = shift;
+
+    console.log(`[Dashboard] Shift filter changed to: ${shift}`);
+
+    // Re-apply filter with new shift
+    if (state.allCachedData.length > 0) {
       applyDateFilter();
+    } else {
+      // Fetch data if not cached
+      fetchDataFromFCLM();
     }
   }
 
@@ -546,11 +596,13 @@
       }
     }
 
-    // For 'today' period, we need fresh data from FCLM
-    if (period === 'today') {
+    // Periods that need fresh FCLM fetch (can't use cached monthly data)
+    const needsFreshFetch = ['today', 'week', 'lastWeek', 'custom'];
+
+    if (needsFreshFetch.includes(period)) {
       await fetchDataFromFCLM();
     } else {
-      // For other periods, filter cached data
+      // Month-based periods can use cached data
       applyDateFilter();
     }
   }
@@ -585,7 +637,8 @@
       // Build the message
       const message = {
         action: 'fetchPerformanceData',
-        period: state.period
+        period: state.period,
+        shiftFilter: state.shiftFilter || 'all'
       };
 
       // Add custom dates if custom period

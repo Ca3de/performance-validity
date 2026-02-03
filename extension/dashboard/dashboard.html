@@ -25,9 +25,14 @@
             <option value="today">Today / Current Shift</option>
             <option value="week">This Week</option>
             <option value="lastWeek">Last Week</option>
-            <option value="month">This Month</option>
+            <option value="month" selected>This Month</option>
             <option value="lastMonth">Last Month</option>
             <option value="custom">Custom Range</option>
+          </select>
+          <select id="shiftSelect" class="shift-select" title="Filter by shift">
+            <option value="all">All Shifts</option>
+            <option value="day">Day Shift (6AM-6PM)</option>
+            <option value="night">Night Shift (6PM-6AM)</option>
           </select>
           <div id="customDateRange" class="custom-date-range" style="display: none;">
             <input type="date" id="startDate" />
