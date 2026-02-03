@@ -18,7 +18,7 @@
 
   // Cache configuration
   const CONFIG = {
-    daysToCache: 60,            // Cache last 60 days
+    daysToCache: 30,            // Cache last 30 days (FCLM only keeps 31 days of Intraday data)
     currentDayRefreshMs: 60000, // Refresh current day every 60 seconds
     parallelFetches: 1,         // Sequential fetches to avoid rate limiting
     batchDelayMs: 2000,         // 2 second delay between batches
