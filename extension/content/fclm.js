@@ -142,7 +142,7 @@
       endHour = 6;
     }
 
-    return { startDate, endDate, startHour, endHour, spanType: 'Intraday' };
+    return { startDate, endDate, startHour, endHour, spanType: 'Week' };  // Week span has parseable HTML
   }
 
   /**
@@ -161,13 +161,13 @@
         return getShiftDateRange();
 
       case 'week':
-        // This week (Sunday to now) - use Intraday for real-time data
+        // This week (Sunday to now)
         startDate = new Date(now);
         startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(now);
-        // Use Intraday span to get real-time data for current week
-        spanType = 'Intraday';
+        // Use Week span - Intraday has different HTML structure that parser can't handle
+        spanType = 'Week';
         break;
 
       case 'lastWeek':
@@ -182,12 +182,12 @@
         break;
 
       case 'month':
-        // This month (1st of month to now) - use Intraday for real-time data
+        // This month (1st of month to now)
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(now);
-        // Use Intraday span to get real-time data for current month
-        spanType = 'Intraday';
+        // Use Week span - Intraday has different HTML structure that parser can't handle
+        spanType = 'Week';
         break;
 
       case 'lastMonth':
@@ -1422,7 +1422,7 @@
     const dateRange = {
       startDate,
       endDate,
-      spanType: 'Intraday',
+      spanType: 'Week',  // Use Week span - Intraday has different HTML structure that parser can't handle
       startHour,
       endHour
     };
