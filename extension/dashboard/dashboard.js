@@ -1,6 +1,6 @@
 /**
- * AA Performance Validity - Dashboard Script
- * Simplified two-tab interface: Scan AA and All Data
+ * AA Performance Hub - Dashboard Script
+ * Football Manager style interface
  */
 
 (function() {
@@ -10,26 +10,29 @@
   const state = {
     warehouseId: 'UNKNOWN',
     allCachedData: [],
-    filteredData: [],
-    currentTab: 'scan',
-    // Scan tab state
-    scanPeriod: 'month',
-    scanPath: 'all',
-    // Data tab state
+    currentView: 'overview',
+    // Overview state
+    overviewPeriod: 'month',
+    // Lookup state
+    lookupPeriod: 'month',
+    lookupPath: 'all',
+    selectedAA: null,
+    // Data hub state
     dataPeriod: 'today',
-    searchQuery: '',
+    dataSearch: '',
+    dataPathFilter: 'all',
     fclmTabId: null
   };
 
   // Path configuration
   const PATH_CONFIG = {
-    'pick': { name: 'Pick', color: '#4CAF50' },
-    'pack': { name: 'Pack', color: '#2196F3' },
-    'stow': { name: 'Stow', color: '#9C27B0' }
+    'pick': { name: 'Pick', color: '#4CAF50', goal: 30 },
+    'pack': { name: 'Pack', color: '#2196F3', goal: 35 },
+    'stow': { name: 'Stow', color: '#9C27B0', goal: 45 }
   };
 
-  // DOM Elements
-  const elements = {};
+  // DOM Elements cache
+  const el = {};
 
   /**
    * Initialize dashboard
@@ -37,13 +40,9 @@
   async function init() {
     console.log('[Dashboard] Initializing...');
 
-    // Cache DOM elements
     cacheElements();
-
-    // Attach event listeners
     attachEventListeners();
-
-    // Load data
+    updateHeaderDate();
     await loadInitialData();
 
     console.log('[Dashboard] Initialized');
@@ -53,122 +52,195 @@
    * Cache DOM elements
    */
   function cacheElements() {
-    elements.warehouseBadge = document.getElementById('warehouseBadge');
-    elements.toastContainer = document.getElementById('toastContainer');
+    // Sidebar
+    el.navItems = document.querySelectorAll('.nav-item');
+    el.warehouseId = document.getElementById('warehouseId');
 
-    // Tab elements
-    elements.tabBtns = document.querySelectorAll('.tab-btn');
-    elements.tabContents = document.querySelectorAll('.tab-content');
+    // Header
+    el.navToggle = document.getElementById('navToggle');
+    el.pageTitle = document.getElementById('pageTitle');
+    el.globalSearch = document.getElementById('globalSearch');
+    el.headerDate = document.getElementById('headerDate');
 
-    // Scan tab elements
-    elements.scanInput = document.getElementById('scanInput');
-    elements.scanBtn = document.getElementById('scanBtn');
-    elements.scanPeriod = document.getElementById('scanPeriod');
-    elements.scanPath = document.getElementById('scanPath');
-    elements.scanResult = document.getElementById('scanResult');
-    elements.resultName = document.getElementById('resultName');
-    elements.resultBadge = document.getElementById('resultBadge');
-    elements.resultJPH = document.getElementById('resultJPH');
-    elements.resultJobs = document.getElementById('resultJobs');
-    elements.resultHours = document.getElementById('resultHours');
-    elements.resultPaths = document.getElementById('resultPaths');
-    elements.closeResult = document.getElementById('closeResult');
+    // Views
+    el.views = document.querySelectorAll('.view');
 
-    // Data tab elements
-    elements.periodBtns = document.querySelectorAll('.period-btn');
-    elements.dataSearch = document.getElementById('dataSearch');
-    elements.exportBtn = document.getElementById('exportBtn');
-    elements.dataSummary = document.getElementById('dataSummary');
-    elements.dataBody = document.getElementById('dataBody');
+    // Overview
+    el.totalAAs = document.getElementById('totalAAs');
+    el.aboveGoal = document.getElementById('aboveGoal');
+    el.belowGoal = document.getElementById('belowGoal');
+    el.avgJPH = document.getElementById('avgJPH');
+    el.overviewPeriod = document.getElementById('overviewPeriod');
+    el.pathGrid = document.getElementById('pathGrid');
+    el.topPerformers = document.getElementById('topPerformers');
+    el.needsAttention = document.getElementById('needsAttention');
+    el.attentionCount = document.getElementById('attentionCount');
+
+    // Lookup
+    el.lookupInput = document.getElementById('lookupInput');
+    el.lookupBtn = document.getElementById('lookupBtn');
+    el.lookupPeriod = document.getElementById('lookupPeriod');
+    el.lookupPath = document.getElementById('lookupPath');
+    el.aaDetailCard = document.getElementById('aaDetailCard');
+    el.closeDetail = document.getElementById('closeDetail');
+    el.aaName = document.getElementById('aaName');
+    el.aaBadge = document.getElementById('aaBadge');
+    el.aaJPH = document.getElementById('aaJPH');
+    el.aaJobs = document.getElementById('aaJobs');
+    el.aaHours = document.getElementById('aaHours');
+    el.aaJPHBar = document.getElementById('aaJPHBar');
+    el.aaJobsBar = document.getElementById('aaJobsBar');
+    el.aaHoursBar = document.getElementById('aaHoursBar');
+    el.aaPathsList = document.getElementById('aaPathsList');
+    el.vsComparison = document.getElementById('vsComparison');
+
+    // Data Hub
+    el.periodTabs = document.querySelectorAll('.period-tab');
+    el.exportBtn = document.getElementById('exportBtn');
+    el.dataCount = document.getElementById('dataCount');
+    el.dataSearch = document.getElementById('dataSearch');
+    el.pathFilter = document.getElementById('pathFilter');
+    el.dataTableBody = document.getElementById('dataTableBody');
+
+    // Toast
+    el.toastContainer = document.getElementById('toastContainer');
   }
 
   /**
    * Attach event listeners
    */
   function attachEventListeners() {
-    // Tab navigation
-    elements.tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    // Sidebar navigation
+    el.navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView(item.dataset.view);
+      });
     });
 
-    // Scan tab
-    elements.scanBtn.addEventListener('click', handleScan);
-    elements.scanInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleScan();
-    });
-    elements.scanPeriod.addEventListener('change', (e) => {
-      state.scanPeriod = e.target.value;
-    });
-    elements.scanPath.addEventListener('change', (e) => {
-      state.scanPath = e.target.value;
-    });
-    elements.closeResult.addEventListener('click', () => {
-      elements.scanResult.style.display = 'none';
-      elements.scanInput.value = '';
-      elements.scanInput.focus();
+    // Mobile nav toggle
+    el.navToggle?.addEventListener('click', () => {
+      document.querySelector('.sidebar').classList.toggle('open');
     });
 
-    // Data tab
-    elements.periodBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        elements.periodBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.dataPeriod = btn.dataset.period;
+    // Global search
+    el.globalSearch?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const query = el.globalSearch.value.trim();
+        if (query) {
+          switchView('lookup');
+          el.lookupInput.value = query;
+          handleLookup();
+        }
+      }
+    });
+
+    // Overview period
+    el.overviewPeriod?.addEventListener('change', (e) => {
+      state.overviewPeriod = e.target.value;
+      renderOverview();
+    });
+
+    // Lookup
+    el.lookupBtn?.addEventListener('click', handleLookup);
+    el.lookupInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLookup();
+    });
+    el.lookupPeriod?.addEventListener('change', (e) => {
+      state.lookupPeriod = e.target.value;
+    });
+    el.lookupPath?.addEventListener('change', (e) => {
+      state.lookupPath = e.target.value;
+    });
+    el.closeDetail?.addEventListener('click', () => {
+      el.aaDetailCard.style.display = 'none';
+      state.selectedAA = null;
+    });
+
+    // Data Hub period tabs
+    el.periodTabs?.forEach(tab => {
+      tab.addEventListener('click', () => {
+        el.periodTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        state.dataPeriod = tab.dataset.period;
         renderDataTable();
       });
     });
-    elements.dataSearch.addEventListener('input', (e) => {
-      state.searchQuery = e.target.value.toLowerCase();
+
+    // Data Hub filters
+    el.dataSearch?.addEventListener('input', (e) => {
+      state.dataSearch = e.target.value.toLowerCase();
       renderDataTable();
     });
-    elements.exportBtn.addEventListener('click', handleExport);
+
+    el.pathFilter?.addEventListener('change', (e) => {
+      state.dataPathFilter = e.target.value;
+      renderDataTable();
+    });
+
+    // Export
+    el.exportBtn?.addEventListener('click', handleExport);
   }
 
   /**
-   * Switch between tabs
+   * Switch view
    */
-  function switchTab(tabId) {
-    state.currentTab = tabId;
+  function switchView(viewId) {
+    state.currentView = viewId;
 
-    elements.tabBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tab === tabId);
+    // Update nav
+    el.navItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.view === viewId);
     });
 
-    elements.tabContents.forEach(content => {
-      content.classList.toggle('active', content.id === `tab-${tabId}`);
+    // Update views
+    el.views.forEach(view => {
+      view.classList.toggle('active', view.id === `view-${viewId}`);
     });
 
-    // Render data table when switching to data tab
-    if (tabId === 'data') {
-      renderDataTable();
-    }
+    // Update page title
+    const titles = { overview: 'Overview', lookup: 'AA Lookup', data: 'Data Hub' };
+    el.pageTitle.textContent = titles[viewId] || 'Dashboard';
+
+    // Render view-specific content
+    if (viewId === 'overview') renderOverview();
+    if (viewId === 'data') renderDataTable();
+
+    // Close mobile sidebar
+    document.querySelector('.sidebar')?.classList.remove('open');
   }
 
   /**
-   * Load initial data from cache
+   * Update header date
+   */
+  function updateHeaderDate() {
+    const now = new Date();
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    el.headerDate.textContent = now.toLocaleDateString('en-US', options);
+  }
+
+  /**
+   * Load initial data
    */
   async function loadInitialData() {
     try {
-      // Check for passed data from FCLM
       const storage = await browser.storage.local.get('dashboardData');
       const passedData = storage.dashboardData;
 
       if (passedData) {
-        console.log('[Dashboard] Loaded passed data');
         state.warehouseId = passedData.warehouseId || 'UNKNOWN';
-        elements.warehouseBadge.textContent = state.warehouseId;
+        el.warehouseId.textContent = state.warehouseId;
         await browser.storage.local.remove('dashboardData');
 
-        if (passedData.performanceData && passedData.performanceData.length > 0) {
+        if (passedData.performanceData?.length > 0) {
           state.allCachedData = passedData.performanceData;
+          renderOverview();
           showToast(`Loaded ${state.allCachedData.length} records`, 'success');
           return;
         }
       }
 
-      // Load from FCLM tab cache
       await loadFromFCLM();
-
     } catch (error) {
       console.error('[Dashboard] Error loading data:', error);
       showToast('Error loading data', 'error');
@@ -190,7 +262,6 @@
       const fclmTab = tabs[0];
       state.fclmTabId = fclmTab.id;
 
-      // Check cache status
       const statusResponse = await browser.tabs.sendMessage(fclmTab.id, { action: 'getCacheStatus' });
 
       if (!statusResponse?.initialized) {
@@ -199,72 +270,21 @@
         return;
       }
 
-      // Get all cached data
       const response = await browser.tabs.sendMessage(fclmTab.id, { action: 'getAllCachedData' });
 
       if (response?.success && response.totalRecords > 0) {
         state.warehouseId = response.warehouseId || state.warehouseId;
         state.allCachedData = response.performanceData || [];
-        elements.warehouseBadge.textContent = state.warehouseId;
+        el.warehouseId.textContent = state.warehouseId;
+        renderOverview();
         showToast(`Loaded ${response.totalRecords} records`, 'success');
       } else {
         showToast('No cached data available', 'warning');
       }
-
     } catch (error) {
       console.error('[Dashboard] Error loading from FCLM:', error);
-      showToast('Error loading from FCLM', 'error');
+      showToast('Error connecting to FCLM', 'error');
     }
-  }
-
-  /**
-   * Handle scan/lookup
-   */
-  function handleScan() {
-    const input = elements.scanInput.value.trim();
-
-    if (!input) {
-      showToast('Enter badge ID or login', 'warning');
-      return;
-    }
-
-    if (state.allCachedData.length === 0) {
-      showToast('No data loaded', 'warning');
-      return;
-    }
-
-    const searchTerm = input.toLowerCase();
-
-    // Find matching records
-    let matches = state.allCachedData.filter(r => {
-      const id = String(r.employeeId || '').toLowerCase();
-      const name = String(r.employeeName || '').toLowerCase();
-      return id.includes(searchTerm) || name.includes(searchTerm);
-    });
-
-    if (matches.length === 0) {
-      showToast(`No AA found: "${input}"`, 'error');
-      return;
-    }
-
-    // Filter by date range
-    matches = filterByPeriod(matches, state.scanPeriod);
-
-    // Filter by path
-    if (state.scanPath !== 'all') {
-      matches = matches.filter(r => {
-        const pathId = (r.pathId || '').toLowerCase();
-        return pathId.includes(state.scanPath);
-      });
-    }
-
-    if (matches.length === 0) {
-      showToast('No data for selected filters', 'warning');
-      return;
-    }
-
-    // Display result
-    displayScanResult(matches);
   }
 
   /**
@@ -280,7 +300,6 @@
       case 'today':
         startDate = endDate = formatDate(now);
         break;
-
       case 'week': {
         const weekStart = new Date(now);
         weekStart.setDate(weekStart.getDate() - weekStart.getDay());
@@ -288,7 +307,6 @@
         endDate = formatDate(now);
         break;
       }
-
       case 'lastWeek': {
         const lastWeekEnd = new Date(now);
         lastWeekEnd.setDate(lastWeekEnd.getDate() - lastWeekEnd.getDay() - 1);
@@ -298,37 +316,205 @@
         endDate = formatDate(lastWeekEnd);
         break;
       }
-
       case 'month': {
         const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate = formatDate(monthStart);
         endDate = formatDate(now);
         break;
       }
-
-      case 'lastMonth': {
-        const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
-        startDate = formatDate(lastMonthStart);
-        endDate = formatDate(lastMonthEnd);
-        break;
-      }
-
       default:
         return data;
     }
 
-    return data.filter(r => {
-      const date = r.date;
-      if (!date) return false;
-      return date >= startDate && date <= endDate;
-    });
+    return data.filter(r => r.date && r.date >= startDate && r.date <= endDate);
   }
 
   /**
-   * Display scan result
+   * Render overview
    */
-  function displayScanResult(records) {
+  function renderOverview() {
+    const data = filterByPeriod(state.allCachedData, state.overviewPeriod);
+
+    // Aggregate by employee
+    const employeeMap = new Map();
+    data.forEach(r => {
+      const id = r.employeeId;
+      if (!employeeMap.has(id)) {
+        employeeMap.set(id, { id, name: r.employeeName, hours: 0, jobs: 0, paths: new Set() });
+      }
+      const emp = employeeMap.get(id);
+      emp.hours += r.hours || 0;
+      emp.jobs += r.jobs || 0;
+      emp.paths.add(r.pathId);
+    });
+
+    const employees = Array.from(employeeMap.values()).map(e => ({
+      ...e,
+      jph: e.hours > 0 ? e.jobs / e.hours : 0
+    }));
+
+    // Summary stats
+    const totalAAs = employees.length;
+    const avgJPH = employees.length > 0
+      ? (employees.reduce((sum, e) => sum + e.jph, 0) / employees.length).toFixed(1)
+      : 0;
+
+    // Calculate above/below goal (using average goal of 35)
+    const avgGoal = 35;
+    const aboveGoal = employees.filter(e => e.jph >= avgGoal).length;
+    const belowGoal = employees.filter(e => e.jph < avgGoal && e.jph > 0).length;
+
+    el.totalAAs.textContent = totalAAs;
+    el.aboveGoal.textContent = aboveGoal;
+    el.belowGoal.textContent = belowGoal;
+    el.avgJPH.textContent = avgJPH;
+
+    // Path cards
+    renderPathCards(data);
+
+    // Top performers (top 5 by JPH)
+    const topPerformers = employees
+      .filter(e => e.jph > 0)
+      .sort((a, b) => b.jph - a.jph)
+      .slice(0, 5);
+
+    el.topPerformers.innerHTML = topPerformers.length > 0
+      ? topPerformers.map((e, i) => renderPerformerItem(e, i + 1, false)).join('')
+      : '<div class="empty-state">No data available</div>';
+
+    // Needs attention (bottom 5 with hours > 0)
+    const needsAttention = employees
+      .filter(e => e.hours >= 1 && e.jph < avgGoal)
+      .sort((a, b) => a.jph - b.jph)
+      .slice(0, 5);
+
+    el.attentionCount.textContent = needsAttention.length;
+    el.needsAttention.innerHTML = needsAttention.length > 0
+      ? needsAttention.map((e, i) => renderPerformerItem(e, i + 1, true)).join('')
+      : '<div class="empty-state">Everyone is performing well!</div>';
+  }
+
+  /**
+   * Render path cards
+   */
+  function renderPathCards(data) {
+    const pathStats = {};
+
+    Object.keys(PATH_CONFIG).forEach(pathId => {
+      pathStats[pathId] = { id: pathId, employees: new Set(), hours: 0, jobs: 0 };
+    });
+
+    data.forEach(r => {
+      const pathId = (r.pathId || '').toLowerCase();
+      if (pathStats[pathId]) {
+        pathStats[pathId].employees.add(r.employeeId);
+        pathStats[pathId].hours += r.hours || 0;
+        pathStats[pathId].jobs += r.jobs || 0;
+      }
+    });
+
+    el.pathGrid.innerHTML = Object.entries(PATH_CONFIG).map(([pathId, config]) => {
+      const stats = pathStats[pathId];
+      const avgJPH = stats.hours > 0 ? (stats.jobs / stats.hours).toFixed(1) : 0;
+
+      return `
+        <div class="path-card ${pathId}">
+          <div class="path-card-header">
+            <span class="path-card-name">${config.name}</span>
+            <span class="path-card-count">${stats.employees.size} AAs</span>
+          </div>
+          <div class="path-card-stats">
+            <div class="path-stat">
+              <div class="path-stat-value">${avgJPH}</div>
+              <div class="path-stat-label">Avg JPH</div>
+            </div>
+            <div class="path-stat">
+              <div class="path-stat-value">${stats.hours.toFixed(0)}</div>
+              <div class="path-stat-label">Hours</div>
+            </div>
+            <div class="path-stat">
+              <div class="path-stat-value">${stats.jobs.toLocaleString()}</div>
+              <div class="path-stat-label">Jobs</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /**
+   * Render performer item
+   */
+  function renderPerformerItem(employee, rank, isWarning) {
+    const pathNames = Array.from(employee.paths).map(p => PATH_CONFIG[p]?.name || p).join(', ');
+
+    return `
+      <div class="performer-item">
+        <div class="performer-rank ${isWarning ? 'warning' : ''}">${rank}</div>
+        <div class="performer-avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <div class="performer-info">
+          <div class="performer-name">${employee.name || employee.id}</div>
+          <div class="performer-path">${pathNames || 'Unknown'}</div>
+        </div>
+        <div class="performer-stat">
+          <div class="performer-stat-value ${isWarning ? 'warning' : ''}">${employee.jph.toFixed(1)}</div>
+          <div class="performer-stat-label">JPH</div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Handle lookup
+   */
+  function handleLookup() {
+    const input = el.lookupInput.value.trim();
+
+    if (!input) {
+      showToast('Enter badge ID or login', 'warning');
+      return;
+    }
+
+    if (state.allCachedData.length === 0) {
+      showToast('No data loaded', 'warning');
+      return;
+    }
+
+    const searchTerm = input.toLowerCase();
+
+    // Find matches
+    let matches = state.allCachedData.filter(r => {
+      const id = String(r.employeeId || '').toLowerCase();
+      const name = String(r.employeeName || '').toLowerCase();
+      return id.includes(searchTerm) || name.includes(searchTerm);
+    });
+
+    if (matches.length === 0) {
+      showToast(`No AA found: "${input}"`, 'error');
+      return;
+    }
+
+    // Filter by period and path
+    matches = filterByPeriod(matches, state.lookupPeriod);
+
+    if (state.lookupPath !== 'all') {
+      matches = matches.filter(r => (r.pathId || '').toLowerCase().includes(state.lookupPath));
+    }
+
+    if (matches.length === 0) {
+      showToast('No data for selected filters', 'warning');
+      return;
+    }
+
+    displayAADetail(matches);
+  }
+
+  /**
+   * Display AA detail card
+   */
+  function displayAADetail(records) {
     const first = records[0];
     const employeeId = first.employeeId;
     const employeeName = first.employeeName || employeeId;
@@ -336,94 +522,279 @@
     // Calculate totals
     const totalHours = records.reduce((sum, r) => sum + (r.hours || 0), 0);
     const totalJobs = records.reduce((sum, r) => sum + (r.jobs || 0), 0);
-    const avgJPH = totalHours > 0 ? (totalJobs / totalHours).toFixed(1) : 0;
+    const avgJPH = totalHours > 0 ? totalJobs / totalHours : 0;
 
     // Update display
-    elements.resultName.textContent = employeeName;
-    elements.resultBadge.textContent = `Badge: ${employeeId}`;
-    elements.resultJPH.textContent = avgJPH;
-    elements.resultJobs.textContent = totalJobs.toLocaleString();
-    elements.resultHours.textContent = totalHours.toFixed(1);
+    el.aaName.textContent = employeeName;
+    el.aaBadge.textContent = `Badge: ${employeeId}`;
+    el.aaJPH.textContent = avgJPH.toFixed(1);
+    el.aaJobs.textContent = totalJobs.toLocaleString();
+    el.aaHours.textContent = totalHours.toFixed(1);
+
+    // Stat bars (normalize to max of 100 JPH, 10000 jobs, 160 hours)
+    el.aaJPHBar.style.width = `${Math.min(avgJPH / 60 * 100, 100)}%`;
+    el.aaJobsBar.style.width = `${Math.min(totalJobs / 5000 * 100, 100)}%`;
+    el.aaHoursBar.style.width = `${Math.min(totalHours / 160 * 100, 100)}%`;
 
     // Group by path
     const pathGroups = {};
     records.forEach(r => {
       const pathId = r.pathId || 'other';
       if (!pathGroups[pathId]) {
-        pathGroups[pathId] = {
-          name: r.pathName || pathId,
-          color: r.pathColor || '#666',
-          hours: 0,
-          jobs: 0
-        };
+        pathGroups[pathId] = { name: r.pathName || pathId, hours: 0, jobs: 0 };
       }
       pathGroups[pathId].hours += r.hours || 0;
       pathGroups[pathId].jobs += r.jobs || 0;
     });
 
     // Render path breakdown
-    elements.resultPaths.innerHTML = Object.entries(pathGroups).map(([id, p]) => {
+    el.aaPathsList.innerHTML = Object.entries(pathGroups).map(([id, p]) => {
       const jph = p.hours > 0 ? (p.jobs / p.hours).toFixed(1) : 0;
       return `
-        <div class="path-breakdown">
-          <span class="path-name" style="color: ${p.color}">${p.name}</span>
-          <span class="path-stats">${p.hours.toFixed(1)}h | ${p.jobs} jobs | ${jph} JPH</span>
+        <div class="aa-path-item ${id}">
+          <span class="aa-path-name">${p.name}</span>
+          <span class="aa-path-stats">
+            <strong>${jph}</strong> JPH | ${p.hours.toFixed(1)}h | ${p.jobs.toLocaleString()} jobs
+          </span>
         </div>
       `;
     }).join('');
 
-    elements.scanResult.style.display = 'block';
+    // Calculate comparison with average
+    const allData = filterByPeriod(state.allCachedData, state.lookupPeriod);
+    const employeeMap = new Map();
+    allData.forEach(r => {
+      if (!employeeMap.has(r.employeeId)) {
+        employeeMap.set(r.employeeId, { hours: 0, jobs: 0 });
+      }
+      const emp = employeeMap.get(r.employeeId);
+      emp.hours += r.hours || 0;
+      emp.jobs += r.jobs || 0;
+    });
+
+    // Calculate averages for radar chart
+    let totalAvgHours = 0, totalAvgJobs = 0, totalAvgJPH = 0;
+    let count = 0;
+    employeeMap.forEach(emp => {
+      if (emp.hours > 0) {
+        totalAvgHours += emp.hours;
+        totalAvgJobs += emp.jobs;
+        totalAvgJPH += emp.jobs / emp.hours;
+        count++;
+      }
+    });
+
+    const avgHoursAll = count > 0 ? totalAvgHours / count : 0;
+    const avgJobsAll = count > 0 ? totalAvgJobs / count : 0;
+    const overallAvg = count > 0 ? totalAvgJPH / count : 0;
+
+    // Render radar chart
+    const radarData = {
+      aa: {
+        jph: avgJPH,
+        hours: totalHours,
+        jobs: totalJobs,
+        efficiency: overallAvg > 0 ? (avgJPH / overallAvg) * 100 : 100,
+        consistency: 85, // Placeholder - would need daily data
+        volume: avgJobsAll > 0 ? (totalJobs / avgJobsAll) * 100 : 100
+      },
+      avg: {
+        jph: overallAvg,
+        hours: avgHoursAll,
+        jobs: avgJobsAll,
+        efficiency: 100,
+        consistency: 75,
+        volume: 100
+      }
+    };
+
+    renderRadarChart(radarData, employeeName);
+
+    // Update legend name
+    const legendName = document.getElementById('radarLegendName');
+    if (legendName) legendName.textContent = employeeName.split(' ')[0] || 'This AA';
+
+    const diff = avgJPH - overallAvg;
+    const diffClass = diff >= 0 ? 'positive' : 'negative';
+    const diffSign = diff >= 0 ? '+' : '';
+
+    el.vsComparison.innerHTML = `
+      <div class="vs-item">
+        <div class="vs-value">${avgJPH.toFixed(1)}</div>
+        <div class="vs-label">Your JPH</div>
+      </div>
+      <div class="vs-divider"></div>
+      <div class="vs-item">
+        <div class="vs-value">${overallAvg.toFixed(1)}</div>
+        <div class="vs-label">Avg JPH</div>
+      </div>
+      <div class="vs-divider"></div>
+      <div class="vs-item">
+        <div class="vs-result ${diffClass}">${diffSign}${diff.toFixed(1)}</div>
+        <div class="vs-label">${diff >= 0 ? 'Above' : 'Below'} Avg</div>
+      </div>
+    `;
+
+    el.aaDetailCard.style.display = 'block';
+    state.selectedAA = { id: employeeId, name: employeeName, records };
     showToast(`Found ${records.length} records`, 'success');
+  }
+
+  /**
+   * Render radar/polygon chart
+   */
+  function renderRadarChart(data, name) {
+    const svg = document.getElementById('radarChart');
+    if (!svg) return;
+
+    const cx = 150, cy = 150; // Center
+    const maxRadius = 100;
+    const levels = 5;
+
+    // Metrics to display
+    const metrics = [
+      { key: 'jph', label: 'JPH', max: 60 },
+      { key: 'efficiency', label: 'Efficiency', max: 150 },
+      { key: 'volume', label: 'Volume', max: 150 },
+      { key: 'hours', label: 'Hours', max: 160 },
+      { key: 'jobs', label: 'Jobs', max: 5000 },
+      { key: 'consistency', label: 'Consistency', max: 100 }
+    ];
+
+    const angleStep = (2 * Math.PI) / metrics.length;
+
+    // Helper to get point on radar
+    const getPoint = (value, max, index) => {
+      const normalized = Math.min(value / max, 1);
+      const angle = index * angleStep - Math.PI / 2;
+      return {
+        x: cx + maxRadius * normalized * Math.cos(angle),
+        y: cy + maxRadius * normalized * Math.sin(angle)
+      };
+    };
+
+    // Build SVG content
+    let svgContent = '';
+
+    // Grid circles
+    for (let i = 1; i <= levels; i++) {
+      const r = (maxRadius / levels) * i;
+      svgContent += `<circle cx="${cx}" cy="${cy}" r="${r}" class="radar-grid-line" />`;
+    }
+
+    // Axis lines and labels
+    metrics.forEach((m, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      const x2 = cx + maxRadius * Math.cos(angle);
+      const y2 = cy + maxRadius * Math.sin(angle);
+      const labelX = cx + (maxRadius + 20) * Math.cos(angle);
+      const labelY = cy + (maxRadius + 20) * Math.sin(angle);
+
+      svgContent += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" class="radar-axis" />`;
+      svgContent += `<text x="${labelX}" y="${labelY}" class="radar-label" dy="0.35em">${m.label}</text>`;
+    });
+
+    // Average polygon (background)
+    const avgPoints = metrics.map((m, i) => {
+      const p = getPoint(data.avg[m.key] || 0, m.max, i);
+      return `${p.x},${p.y}`;
+    }).join(' ');
+    svgContent += `<polygon points="${avgPoints}" class="radar-polygon radar-polygon-avg" />`;
+
+    // AA polygon (foreground)
+    const aaPoints = metrics.map((m, i) => {
+      const p = getPoint(data.aa[m.key] || 0, m.max, i);
+      return `${p.x},${p.y}`;
+    }).join(' ');
+    svgContent += `<polygon points="${aaPoints}" class="radar-polygon radar-polygon-aa" />`;
+
+    // Value dots and labels for AA
+    metrics.forEach((m, i) => {
+      const p = getPoint(data.aa[m.key] || 0, m.max, i);
+      const val = data.aa[m.key] || 0;
+      const displayVal = m.key === 'jobs' ? Math.round(val).toLocaleString() :
+                         m.key === 'hours' ? val.toFixed(1) :
+                         m.key === 'jph' ? val.toFixed(1) :
+                         Math.round(val);
+
+      svgContent += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--accent)" />`;
+
+      // Position value label
+      const angle = i * angleStep - Math.PI / 2;
+      const valX = p.x + 15 * Math.cos(angle);
+      const valY = p.y + 15 * Math.sin(angle);
+      svgContent += `<text x="${valX}" y="${valY}" class="radar-value" dy="0.35em">${displayVal}</text>`;
+    });
+
+    svg.innerHTML = svgContent;
   }
 
   /**
    * Render data table
    */
   function renderDataTable() {
-    // Filter by period
     let data = filterByPeriod(state.allCachedData, state.dataPeriod);
 
     // Filter by search
-    if (state.searchQuery) {
+    if (state.dataSearch) {
       data = data.filter(r => {
         const id = String(r.employeeId || '').toLowerCase();
         const name = String(r.employeeName || '').toLowerCase();
-        return id.includes(state.searchQuery) || name.includes(state.searchQuery);
+        return id.includes(state.dataSearch) || name.includes(state.dataSearch);
       });
+    }
+
+    // Filter by path
+    if (state.dataPathFilter !== 'all') {
+      data = data.filter(r => (r.pathId || '').toLowerCase().includes(state.dataPathFilter));
     }
 
     // Sort by JPH descending
     data.sort((a, b) => (b.jph || 0) - (a.jph || 0));
 
-    // Update summary
-    elements.dataSummary.textContent = `${data.length} records`;
+    el.dataCount.textContent = `${data.length} records`;
 
-    // Render table
     if (data.length === 0) {
-      elements.dataBody.innerHTML = `
-        <tr class="empty-row">
-          <td colspan="5">No data for selected period</td>
+      el.dataTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-state">No data for selected filters</td>
         </tr>
       `;
       return;
     }
 
-    elements.dataBody.innerHTML = data.map(r => `
-      <tr>
-        <td>
-          <strong>${r.employeeId}</strong>
-          ${r.employeeName && r.employeeName !== r.employeeId ? `<br><small>${r.employeeName}</small>` : ''}
-        </td>
-        <td style="color: ${r.pathColor || '#666'}">${r.pathName || r.pathId || '-'}</td>
-        <td>${(r.hours || 0).toFixed(1)}</td>
-        <td>${(r.jobs || 0).toLocaleString()}</td>
-        <td><strong>${r.jph || '-'}</strong></td>
-      </tr>
-    `).join('');
+    el.dataTableBody.innerHTML = data.map(r => {
+      const pathId = (r.pathId || '').toLowerCase();
+      const pathClass = PATH_CONFIG[pathId] ? pathId : '';
+      const jph = r.jph || (r.hours > 0 ? (r.jobs / r.hours).toFixed(1) : 0);
+      const goal = PATH_CONFIG[pathId]?.goal || 35;
+      const status = jph >= goal ? 'good' : jph >= goal * 0.85 ? 'warning' : 'poor';
+
+      return `
+        <tr>
+          <td>
+            <div class="employee-cell">
+              <div class="employee-avatar">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </div>
+              <div>
+                <div class="employee-name">${r.employeeName || r.employeeId}</div>
+                <div class="employee-id">${r.employeeId}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="path-badge ${pathClass}">${r.pathName || r.pathId || '-'}</span></td>
+          <td>${(r.hours || 0).toFixed(1)}</td>
+          <td>${(r.jobs || 0).toLocaleString()}</td>
+          <td><span class="jph-value">${jph}</span></td>
+          <td><span class="status-badge ${status}">${status === 'good' ? 'On Track' : status === 'warning' ? 'Near' : 'Below'}</span></td>
+        </tr>
+      `;
+    }).join('');
   }
 
   /**
-   * Handle CSV export
+   * Handle export
    */
   function handleExport() {
     let data = filterByPeriod(state.allCachedData, state.dataPeriod);
@@ -464,9 +835,7 @@
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
-
-    elements.toastContainer.appendChild(toast);
-
+    el.toastContainer.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
   }
 
