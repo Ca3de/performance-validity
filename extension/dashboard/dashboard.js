@@ -224,9 +224,30 @@
         state.warehouseId = passedData.warehouseId || 'UNKNOWN';
         elements.warehouseBadge.textContent = state.warehouseId;
         browser.storage.local.remove('dashboardData');
+
+        // Use the passed data if it has records
+        if (passedData.performanceData && passedData.performanceData.length > 0) {
+          console.log('[Dashboard] Using passed data:', passedData.performanceData.length, 'records');
+          state.employees = passedData.employees || [];
+          state.allCachedData = passedData.performanceData;
+          state.performanceData = passedData.performanceData;
+
+          // Set cache status from passed data
+          state.cacheStatus = {
+            initialized: true,
+            dates: [],
+            totalRecords: passedData.performanceData.length,
+            dateRange: passedData.dateRange || { earliest: null, latest: null }
+          };
+
+          // Apply filter and render
+          applyDateFilter();
+          showToast(`Loaded ${passedData.performanceData.length} records`, 'success');
+          return;
+        }
       }
 
-      // Now load ALL cached data from content script
+      // No passed data or empty - load from cache
       await loadAllCachedData();
 
     } catch (error) {
