@@ -24,7 +24,7 @@
         "*://fclm-portal.amazon.com/*",
         "*://fcmenu-iad-regionalized.corp.amazon.com/*"
       ],
-      "js": ["content/fclm.js"],
+      "js": ["content/dataCache.js", "content/fclm.js"],
       "css": ["content/fclm.css"],
       "run_at": "document_end"
     }

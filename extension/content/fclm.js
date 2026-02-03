@@ -1031,8 +1031,9 @@
    * @param {string} period - Date period: 'today', 'week', 'lastWeek', 'month', 'lastMonth', 'custom'
    * @param {string} customStart - Custom start date (YYYY-MM-DD format)
    * @param {string} customEnd - Custom end date (YYYY-MM-DD format)
+   * @param {boolean} forceRefresh - Force live fetch even if cache available
    */
-  async function handleFabClick(period = 'today', customStart = null, customEnd = null) {
+  async function handleFabClick(period = 'today', customStart = null, customEnd = null, forceRefresh = false) {
     log(`FAB clicked, fetching data for period: ${period}...`);
 
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
@@ -1055,57 +1056,77 @@
     }
 
     try {
-      // Fetch function rollup for each path - this gives us hours and JPH directly
-      const performanceData = [];
-      const allEmployees = new Map(); // Track unique employees
+      let performanceData = [];
+      const allEmployees = new Map();
+      let fromCache = false;
 
-      log(`=== FETCHING ${ENABLED_PATHS.length} ENABLED PATHS ===`);
-      log('Enabled paths:', ENABLED_PATHS.map(p => `${p.name} (${p.processId})`));
+      // Try to get data from cache first (except for 'today' which needs fresh data)
+      if (!forceRefresh && period !== 'today' && window.FCLMDataCache) {
+        const cachedResult = await getDataFromCache(period, customStart, customEnd);
+        if (cachedResult && cachedResult.records.length > 0) {
+          log(`[Cache] Using ${cachedResult.records.length} cached records`);
+          performanceData = cachedResult.records;
+          fromCache = true;
 
-      for (const path of ENABLED_PATHS) {
-        log(`\n--- Fetching: ${path.name} ---`);
-        log(`  Process ID: ${path.processId}`);
-        log(`  Category: ${path.category}`);
-
-        try {
-          const rollupData = await fetchFunctionRollup(path.processId, dateRange);
-
-          if (rollupData.success && rollupData.employees && rollupData.employees.length > 0) {
-            rollupData.employees.forEach(emp => {
-              // Track unique employees
-              if (!allEmployees.has(emp.badgeId)) {
-                allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
-              }
-
-              // Add performance record with hours and JPH from rollup
-              // Use subFunction name if available, otherwise use parent path name
-              const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
-              performanceData.push({
-                employeeId: emp.badgeId,
-                employeeName: emp.name,
-                pathId: path.id,
-                pathName: subFunctionName,
-                pathColor: path.color,
-                category: path.category,
-                parentPath: path.name,
-                hours: emp.totalHours,
-                jobs: emp.jobs,
-                jph: emp.jph,
-                units: emp.units,
-                uph: emp.uph
+          // Extract unique employees from cached data
+          performanceData.forEach(record => {
+            if (!allEmployees.has(record.employeeId)) {
+              allEmployees.set(record.employeeId, {
+                id: record.employeeId,
+                name: record.employeeName
               });
-            });
-
-            log(`  ✓ Found ${rollupData.employees.length} employees`);
-          } else {
-            log(`  ✗ No employees found (success: ${rollupData.success}, error: ${rollupData.error || 'none'})`);
-          }
-        } catch (err) {
-          log(`  ✗ Error: ${err.message}`);
+            }
+          });
         }
       }
 
-      log(`Collected ${performanceData.length} performance records for ${allEmployees.size} unique employees`);
+      // If no cached data or 'today', fetch live data
+      if (performanceData.length === 0) {
+        log(`=== FETCHING ${ENABLED_PATHS.length} ENABLED PATHS ===`);
+        log('Enabled paths:', ENABLED_PATHS.map(p => `${p.name} (${p.processId})`));
+
+        for (const path of ENABLED_PATHS) {
+          log(`\n--- Fetching: ${path.name} ---`);
+          log(`  Process ID: ${path.processId}`);
+          log(`  Category: ${path.category}`);
+
+          try {
+            const rollupData = await fetchFunctionRollup(path.processId, dateRange);
+
+            if (rollupData.success && rollupData.employees && rollupData.employees.length > 0) {
+              rollupData.employees.forEach(emp => {
+                if (!allEmployees.has(emp.badgeId)) {
+                  allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
+                }
+
+                const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
+                performanceData.push({
+                  employeeId: emp.badgeId,
+                  employeeName: emp.name,
+                  pathId: path.id,
+                  pathName: subFunctionName,
+                  pathColor: path.color,
+                  category: path.category,
+                  parentPath: path.name,
+                  hours: emp.totalHours,
+                  jobs: emp.jobs,
+                  jph: emp.jph,
+                  units: emp.units,
+                  uph: emp.uph
+                });
+              });
+
+              log(`  ✓ Found ${rollupData.employees.length} employees`);
+            } else {
+              log(`  ✗ No employees found (success: ${rollupData.success}, error: ${rollupData.error || 'none'})`);
+            }
+          } catch (err) {
+            log(`  ✗ Error: ${err.message}`);
+          }
+        }
+      }
+
+      log(`Collected ${performanceData.length} performance records for ${allEmployees.size} unique employees${fromCache ? ' (from cache)' : ''}`);
 
       // Store data for dashboard
       const dashboardData = {
@@ -1121,7 +1142,8 @@
         paths: PATHS,
         processIds: PROCESS_IDS,
         sourceUrl: window.location.href,
-        fetchedAt: new Date().toISOString()
+        fetchedAt: new Date().toISOString(),
+        fromCache
       };
 
       await browser.storage.local.set({ dashboardData });
@@ -1345,6 +1367,249 @@
     }
   });
 
+  // ============================================
+  // DATA CACHING SYSTEM
+  // ============================================
+
+  let cacheInitialized = false;
+  let currentDayRefreshInterval = null;
+
+  /**
+   * Fetch and cache a full month's data for all paths
+   * Uses Month span to get complete data for historical months
+   */
+  async function fetchAndCacheMonth(yearMonth) {
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+    const [year, month] = yearMonth.split('-').map(Number);
+
+    // Create date range for the full month
+    const startDate = new Date(year, month - 1, 1);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(year, month, 1);
+    endDate.setHours(0, 0, 0, 0);
+
+    const dateRange = {
+      startDate,
+      endDate,
+      spanType: 'Month',
+      startHour: 0,
+      endHour: 23
+    };
+
+    log(`[Cache] Fetching month ${yearMonth}...`);
+
+    const allRecords = [];
+
+    for (const path of ENABLED_PATHS) {
+      try {
+        const rollupData = await fetchFunctionRollup(path.processId, dateRange);
+
+        if (rollupData.success && rollupData.employees) {
+          rollupData.employees.forEach(emp => {
+            const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
+            allRecords.push({
+              employeeId: emp.badgeId,
+              employeeName: emp.name,
+              pathId: path.id,
+              pathName: subFunctionName,
+              pathColor: path.color,
+              category: path.category,
+              parentPath: path.name,
+              hours: emp.totalHours,
+              jobs: emp.jobs,
+              jph: emp.jph,
+              units: emp.units,
+              uph: emp.uph,
+              month: yearMonth
+            });
+          });
+        }
+      } catch (err) {
+        log(`[Cache] Error fetching ${path.name} for ${yearMonth}:`, err);
+      }
+    }
+
+    // Store in cache
+    if (window.FCLMDataCache && allRecords.length > 0) {
+      await window.FCLMDataCache.storeMonthData(warehouseId, 'all', yearMonth, allRecords);
+      log(`[Cache] Cached ${allRecords.length} records for ${yearMonth}`);
+    }
+
+    return allRecords;
+  }
+
+  /**
+   * Fetch and cache current day data (real-time)
+   * Uses Intraday span for fresh data
+   */
+  async function fetchAndCacheCurrentDay() {
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+    const dateRange = getShiftDateRange();
+
+    log(`[Cache] Refreshing current day data...`);
+
+    const allRecords = [];
+
+    for (const path of ENABLED_PATHS) {
+      try {
+        const rollupData = await fetchFunctionRollup(path.processId, dateRange);
+
+        if (rollupData.success && rollupData.employees) {
+          rollupData.employees.forEach(emp => {
+            const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
+            allRecords.push({
+              employeeId: emp.badgeId,
+              employeeName: emp.name,
+              pathId: path.id,
+              pathName: subFunctionName,
+              pathColor: path.color,
+              category: path.category,
+              parentPath: path.name,
+              hours: emp.totalHours,
+              jobs: emp.jobs,
+              jph: emp.jph,
+              units: emp.units,
+              uph: emp.uph,
+              isCurrentDay: true
+            });
+          });
+        }
+      } catch (err) {
+        log(`[Cache] Error fetching ${path.name} for current day:`, err);
+      }
+    }
+
+    // Store current day data
+    if (window.FCLMDataCache && allRecords.length > 0) {
+      await window.FCLMDataCache.storeCurrentDayData(warehouseId, 'all', allRecords);
+      log(`[Cache] Cached ${allRecords.length} current day records`);
+    }
+
+    return allRecords;
+  }
+
+  /**
+   * Initialize cache and pre-fetch historical data
+   */
+  async function initializeCache() {
+    if (cacheInitialized || !window.FCLMDataCache) {
+      log('[Cache] Cache not available or already initialized');
+      return;
+    }
+
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+    if (!warehouseId) {
+      log('[Cache] No warehouse ID, skipping cache initialization');
+      return;
+    }
+
+    log('[Cache] Initializing data cache...');
+    cacheInitialized = true;
+
+    try {
+      await window.FCLMDataCache.init();
+
+      // Get list of months to cache
+      const monthsToCache = window.FCLMDataCache.getMonthsToCache(3);
+      log('[Cache] Months to cache:', monthsToCache);
+
+      // Check which months need fetching
+      for (const yearMonth of monthsToCache) {
+        const needsFetch = await window.FCLMDataCache.needsFetch(warehouseId, 'all', yearMonth);
+        if (needsFetch) {
+          log(`[Cache] Fetching missing month: ${yearMonth}`);
+          await fetchAndCacheMonth(yearMonth);
+          // Small delay between month fetches to avoid overwhelming the server
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        } else {
+          log(`[Cache] Month ${yearMonth} already cached`);
+        }
+      }
+
+      // Fetch current day data
+      await fetchAndCacheCurrentDay();
+
+      // Set up periodic refresh for current day (every 60 seconds)
+      if (currentDayRefreshInterval) {
+        clearInterval(currentDayRefreshInterval);
+      }
+      currentDayRefreshInterval = setInterval(async () => {
+        log('[Cache] Auto-refreshing current day data...');
+        await fetchAndCacheCurrentDay();
+      }, 60000);
+
+      // Log cache stats
+      const stats = await window.FCLMDataCache.getCacheStats();
+      log('[Cache] Cache stats:', stats);
+
+      updateCacheStatus('ready', `${stats.totalRecords} records cached`);
+
+    } catch (error) {
+      log('[Cache] Error initializing cache:', error);
+      updateCacheStatus('error', 'Cache error');
+    }
+  }
+
+  /**
+   * Update cache status indicator
+   */
+  function updateCacheStatus(state, message) {
+    const status = document.getElementById('perf-validity-status');
+    if (status) {
+      const dot = status.querySelector('.status-dot');
+      const text = status.querySelector('.status-text');
+
+      if (dot) {
+        dot.className = 'status-dot';
+        if (state === 'ready') dot.classList.add('ready');
+        else if (state === 'loading') dot.classList.add('loading');
+        else if (state === 'error') dot.classList.add('error');
+      }
+
+      if (text) {
+        text.textContent = message || 'Performance Ready';
+      }
+    }
+  }
+
+  /**
+   * Get data from cache for a date range
+   * Combines historical cached data with current day data
+   */
+  async function getDataFromCache(period, customStart = null, customEnd = null) {
+    if (!window.FCLMDataCache) {
+      log('[Cache] Cache not available, falling back to direct fetch');
+      return null;
+    }
+
+    const warehouseId = CONFIG.warehouseId || getWarehouseId();
+    const dateRange = period === 'custom' && customStart && customEnd
+      ? getDateRangeForPeriod('custom', new Date(customStart), new Date(customEnd))
+      : getDateRangeForPeriod(period);
+
+    try {
+      const result = await window.FCLMDataCache.queryDataForRange(
+        warehouseId,
+        'all',
+        dateRange.startDate,
+        dateRange.endDate
+      );
+
+      if (result.records.length > 0) {
+        log(`[Cache] Found ${result.records.length} cached records for ${period}`);
+        return {
+          records: result.records,
+          dateRange,
+          fromCache: true
+        };
+      }
+    } catch (error) {
+      log('[Cache] Error querying cache:', error);
+    }
+
+    return null;
+  }
+
   /**
    * Initialize the content script
    */
@@ -1358,6 +1623,14 @@
     createStatusIndicator();
 
     browser.runtime.sendMessage({ action: 'contentScriptReady' });
+
+    // Initialize cache in background (don't block UI)
+    updateCacheStatus('loading', 'Loading data...');
+    setTimeout(() => {
+      initializeCache().catch(err => {
+        log('[Cache] Background initialization error:', err);
+      });
+    }, 1000);
 
     log('FCLM content script initialized');
   }
