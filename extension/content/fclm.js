@@ -1161,9 +1161,9 @@
 
       await browser.storage.local.set({ dashboardData });
 
-      // Open dashboard
+      // Open popup
       browser.runtime.sendMessage({
-        action: 'openDashboard',
+        action: 'openPopup',
         data: { warehouseId }
       });
 

@@ -64,6 +64,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   log('Received message:', message.action);
 
   switch (message.action) {
+    case 'openPopup':
+      openPopup(message.data);
+      return true;
+
     case 'openDashboard':
       openDashboard(message.data);
       return true;
@@ -103,6 +107,38 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true;
   }
 });
+
+/**
+ * Opens the popup - tries browserAction.openPopup first, falls back to tab
+ */
+async function openPopup(data = {}) {
+  // Store data for the popup to retrieve
+  if (data && Object.keys(data).length > 0) {
+    await browser.storage.local.set({ dashboardData: data });
+  }
+
+  try {
+    // Try to open the popup directly (Firefox 57+)
+    if (browser.browserAction && browser.browserAction.openPopup) {
+      await browser.browserAction.openPopup();
+      log('Popup opened via browserAction.openPopup');
+      return;
+    }
+  } catch (err) {
+    log('browserAction.openPopup failed:', err.message);
+  }
+
+  // Fallback: open popup.html as a new tab
+  const popupUrl = browser.runtime.getURL('popup/popup.html');
+  browser.tabs.create({
+    url: popupUrl,
+    active: true
+  }).then(tab => {
+    log('Popup opened in tab:', tab.id);
+  }).catch(err => {
+    log('Error opening popup:', err);
+  });
+}
 
 /**
  * Opens the performance dashboard in a new tab
