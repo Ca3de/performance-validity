@@ -39,53 +39,123 @@
 
   /**
    * Initialize IndexedDB with daily data schema
+   * Includes timeout and blocked handling for robustness
    */
   function initDB() {
     return new Promise((resolve, reject) => {
       if (db) {
+        log('Database already open, reusing connection');
         resolve(db);
         return;
       }
 
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      log('Opening IndexedDB:', DB_NAME, 'version', DB_VERSION);
+
+      // Timeout to prevent indefinite hanging
+      const timeoutId = setTimeout(() => {
+        log('IndexedDB open timeout - database may be locked');
+        reject(new Error('IndexedDB open timeout after 10 seconds'));
+      }, 10000);
+
+      let request;
+      try {
+        request = indexedDB.open(DB_NAME, DB_VERSION);
+      } catch (e) {
+        clearTimeout(timeoutId);
+        log('IndexedDB.open threw error:', e);
+        reject(e);
+        return;
+      }
 
       request.onerror = () => {
+        clearTimeout(timeoutId);
         log('Error opening database:', request.error);
         reject(request.error);
       };
 
+      request.onblocked = () => {
+        clearTimeout(timeoutId);
+        log('Database blocked - close other tabs with FCLM');
+        reject(new Error('Database blocked by another connection'));
+      };
+
       request.onsuccess = () => {
+        clearTimeout(timeoutId);
         db = request.result;
-        log('Database opened successfully (v' + DB_VERSION + ')');
+        log('Database opened successfully (v' + db.version + ')');
+
+        // Handle connection close
+        db.onversionchange = () => {
+          log('Database version change - closing connection');
+          db.close();
+          db = null;
+        };
+
         resolve(db);
       };
 
       request.onupgradeneeded = (event) => {
+        log('Upgrade needed: v' + event.oldVersion + ' -> v' + event.newVersion);
         const database = event.target.result;
-        log('Upgrading database to version', DB_VERSION);
 
-        // Delete old stores if they exist
-        if (database.objectStoreNames.contains('performanceData')) {
-          database.deleteObjectStore('performanceData');
-          log('Deleted old performanceData store');
-        }
+        try {
+          // Delete old stores if they exist
+          if (database.objectStoreNames.contains('performanceData')) {
+            database.deleteObjectStore('performanceData');
+            log('Deleted old performanceData store');
+          }
 
-        // Store for DAILY performance data
-        // Key: {warehouseId}_{date}_{shift}
-        if (!database.objectStoreNames.contains(DAILY_STORE)) {
-          const store = database.createObjectStore(DAILY_STORE, { keyPath: 'cacheKey' });
-          store.createIndex('warehouseId', 'warehouseId', { unique: false });
-          store.createIndex('date', 'date', { unique: false });
-          store.createIndex('shift', 'shift', { unique: false });
-          store.createIndex('fetchedAt', 'fetchedAt', { unique: false });
-          log('Created daily data store');
-        }
+          // Store for DAILY performance data
+          if (!database.objectStoreNames.contains(DAILY_STORE)) {
+            const store = database.createObjectStore(DAILY_STORE, { keyPath: 'cacheKey' });
+            store.createIndex('warehouseId', 'warehouseId', { unique: false });
+            store.createIndex('date', 'date', { unique: false });
+            store.createIndex('shift', 'shift', { unique: false });
+            store.createIndex('fetchedAt', 'fetchedAt', { unique: false });
+            log('Created daily data store');
+          }
 
-        // Store for cache metadata
-        if (!database.objectStoreNames.contains(META_STORE)) {
-          database.createObjectStore(META_STORE, { keyPath: 'key' });
-          log('Created meta store');
+          // Store for cache metadata
+          if (!database.objectStoreNames.contains(META_STORE)) {
+            database.createObjectStore(META_STORE, { keyPath: 'key' });
+            log('Created meta store');
+          }
+
+          log('Database upgrade complete');
+        } catch (upgradeError) {
+          log('Error during upgrade:', upgradeError);
+          // The transaction will abort automatically
         }
+      };
+    });
+  }
+
+  /**
+   * Delete and recreate the database (for recovery)
+   */
+  function resetDatabase() {
+    return new Promise((resolve, reject) => {
+      log('Resetting database...');
+      if (db) {
+        db.close();
+        db = null;
+      }
+
+      const request = indexedDB.deleteDatabase(DB_NAME);
+
+      request.onsuccess = () => {
+        log('Database deleted, will recreate on next init');
+        resolve();
+      };
+
+      request.onerror = () => {
+        log('Error deleting database:', request.error);
+        reject(request.error);
+      };
+
+      request.onblocked = () => {
+        log('Database delete blocked');
+        reject(new Error('Cannot delete - close other tabs'));
       };
     });
   }
@@ -390,6 +460,7 @@
   // Expose to global scope for use by fclm.js
   window.FCLMDataCache = {
     init: initDB,
+    reset: resetDatabase,
     storeDailyData,
     getDailyData,
     getCachedDates,
