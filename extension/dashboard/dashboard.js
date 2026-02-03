@@ -12,9 +12,9 @@
     allCachedData: [],
     currentView: 'overview',
     // Overview state
-    overviewPeriod: 'month',
+    overviewPeriod: 'last30',
     // Lookup state
-    lookupPeriod: 'month',
+    lookupPeriod: 'last30',
     lookupPath: 'all',
     selectedAA: null,
     // Data hub state
@@ -291,42 +291,85 @@
    * Filter data by period
    */
   function filterByPeriod(data, period) {
+    if (!data || data.length === 0) return [];
+
     const now = new Date();
-    const formatDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // Reset to start of day to avoid time comparison issues
+    now.setHours(0, 0, 0, 0);
+
+    const formatDate = (d) => {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
 
     let startDate, endDate;
+    const todayStr = formatDate(now);
 
     switch (period) {
       case 'today':
-        startDate = endDate = formatDate(now);
+        startDate = endDate = todayStr;
         break;
+
       case 'week': {
+        // This week: Sunday to today
         const weekStart = new Date(now);
-        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        weekStart.setDate(now.getDate() - now.getDay());
         startDate = formatDate(weekStart);
-        endDate = formatDate(now);
+        endDate = todayStr;
         break;
       }
+
       case 'lastWeek': {
-        const lastWeekEnd = new Date(now);
-        lastWeekEnd.setDate(lastWeekEnd.getDate() - lastWeekEnd.getDay() - 1);
-        const lastWeekStart = new Date(lastWeekEnd);
-        lastWeekStart.setDate(lastWeekStart.getDate() - 6);
-        startDate = formatDate(lastWeekStart);
-        endDate = formatDate(lastWeekEnd);
+        // Last week: Previous Sunday to Saturday
+        const thisWeekSunday = new Date(now);
+        thisWeekSunday.setDate(now.getDate() - now.getDay());
+
+        const lastWeekSaturday = new Date(thisWeekSunday);
+        lastWeekSaturday.setDate(thisWeekSunday.getDate() - 1);
+
+        const lastWeekSunday = new Date(lastWeekSaturday);
+        lastWeekSunday.setDate(lastWeekSaturday.getDate() - 6);
+
+        startDate = formatDate(lastWeekSunday);
+        endDate = formatDate(lastWeekSaturday);
         break;
       }
+
+      case 'last30':
       case 'month': {
-        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-        startDate = formatDate(monthStart);
-        endDate = formatDate(now);
+        // Last 30 days (not calendar month)
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 29); // 30 days including today
+        startDate = formatDate(thirtyDaysAgo);
+        endDate = todayStr;
         break;
       }
+
       default:
+        console.log('[Dashboard] Unknown period, returning all data:', period);
         return data;
     }
 
-    return data.filter(r => r.date && r.date >= startDate && r.date <= endDate);
+    console.log(`[Dashboard] Filtering period '${period}': ${startDate} to ${endDate}`);
+
+    const filtered = data.filter(r => {
+      if (!r.date) return false;
+      // Ensure date is string in YYYY-MM-DD format
+      const recordDate = String(r.date).substring(0, 10);
+      return recordDate >= startDate && recordDate <= endDate;
+    });
+
+    console.log(`[Dashboard] Filtered: ${filtered.length} of ${data.length} records`);
+
+    // Debug: show sample dates if no results
+    if (filtered.length === 0 && data.length > 0) {
+      const sampleDates = [...new Set(data.slice(0, 20).map(r => r.date))];
+      console.log('[Dashboard] Sample dates in data:', sampleDates);
+    }
+
+    return filtered;
   }
 
   /**
