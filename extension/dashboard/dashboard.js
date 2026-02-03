@@ -326,22 +326,11 @@
         break;
 
       case 'week':
-        // This week - include current month and possibly last month if week spans
-        includeCurrentDay = true;
-        monthsToInclude.add(getMonthKey(now));
-        // If we're in the first week of the month, also include last month
-        if (now.getDate() <= 7) {
-          const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-          monthsToInclude.add(getMonthKey(lastMonth));
-        }
-        break;
-
       case 'lastWeek':
-        // Last week - include current and last month
-        const lastWeekDate = new Date(now);
-        lastWeekDate.setDate(lastWeekDate.getDate() - 7);
-        monthsToInclude.add(getMonthKey(now));
-        monthsToInclude.add(getMonthKey(lastWeekDate));
+        // Week-based filters should be fetched from FCLM directly
+        // This is a fallback - show current day data only
+        console.log('[Dashboard] Week filter should use FCLM fetch, falling back to current day');
+        includeCurrentDay = true;
         break;
 
       case 'month':
@@ -524,8 +513,15 @@
       elements.customDateRange.style.display = 'flex';
     } else {
       elements.customDateRange.style.display = 'none';
-      // Auto-apply filter for non-custom periods
-      applyDateFilter();
+
+      // Week-based filters need fresh FCLM data (cached monthly data can't be split by week)
+      // Month-based filters can use cached data
+      if (period === 'week' || period === 'lastWeek') {
+        showToast('Fetching weekly data from FCLM...', 'info');
+        fetchDataFromFCLM();
+      } else {
+        applyDateFilter();
+      }
     }
   }
 
@@ -546,11 +542,13 @@
       }
     }
 
-    // For 'today' period, we need fresh data from FCLM
-    if (period === 'today') {
+    // Periods that need fresh FCLM fetch (can't use cached monthly data)
+    const needsFreshFetch = ['today', 'week', 'lastWeek', 'custom'];
+
+    if (needsFreshFetch.includes(period)) {
       await fetchDataFromFCLM();
     } else {
-      // For other periods, filter cached data
+      // Month-based periods can use cached data
       applyDateFilter();
     }
   }
