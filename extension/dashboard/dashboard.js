@@ -337,9 +337,16 @@
         break;
       }
 
-      case 'last30':
       case 'month': {
-        // Last 30 days (not calendar month)
+        // This Month: 1st of current month to today (calendar month)
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        startDate = formatDate(monthStart);
+        endDate = todayStr;
+        break;
+      }
+
+      case 'last30': {
+        // Last 30 days (rolling, not calendar month)
         const thirtyDaysAgo = new Date(now);
         thirtyDaysAgo.setDate(now.getDate() - 29); // 30 days including today
         startDate = formatDate(thirtyDaysAgo);
