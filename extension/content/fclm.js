@@ -662,6 +662,26 @@
       let unitColumnIndex = -1;
       let uphColumnIndex = -1;
 
+      // First check if this table has employee data rows (empl-amzn class)
+      const employeeRows = table.querySelectorAll('tr.empl-amzn, tr.empl-all');
+      if (employeeRows.length === 0) {
+        // No employee rows in this table, check for AMZN cells
+        const amznCells = table.querySelectorAll('td');
+        let hasAmznRows = false;
+        for (const cell of amznCells) {
+          if (cell.textContent.trim() === 'AMZN') {
+            hasAmznRows = true;
+            break;
+          }
+        }
+        if (!hasAmznRows) {
+          log(`Table ${tableIndex}: Skipping - no employee rows found`);
+          return; // Skip tables without employee data
+        }
+      }
+
+      log(`Table ${tableIndex}: Found ${employeeRows.length} employee rows (empl-amzn/empl-all)`);
+
       // Try to find the sub-function name for this table
       let subFunctionName = '';
 
@@ -857,14 +877,34 @@
       }
 
       if (!mainHeaderRow) {
-        log(`Table ${tableIndex}: No main header row found (no 'Type' column)`);
-        return; // Skip this table
+        // Try alternative: look for header row with ID/Name columns
+        for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+          const row = rows[rowIdx];
+          const thCells = row.querySelectorAll('th');
+          if (thCells.length >= 3) {
+            const texts = Array.from(thCells).map(c => cleanHeaderText(c.textContent));
+            // Look for ID and Name in headers
+            if (texts.includes('id') && texts.includes('name')) {
+              mainHeaderRow = { cells: thCells, rowIdx };
+              log(`Table ${tableIndex}: Found header via ID/Name columns`);
+              break;
+            }
+          }
+        }
+      }
+
+      if (!mainHeaderRow) {
+        // Still no header? Use default column layout for FCLM function rollup
+        // Type=0, ID=1, Name=2, Manager=3, Hours varies, Jobs/JPH near end
+        log(`Table ${tableIndex}: Using default column layout (no header found)`);
+        // Continue with defaults, don't return
       }
 
       // Parse main header row - build column position map accounting for colspan
-      const { cells: headerCells } = mainHeaderRow;
-      const headerTexts = Array.from(headerCells).map(c => c.textContent.trim());
-      log(`Table ${tableIndex} main header:`, headerTexts.join(' | '));
+      if (mainHeaderRow) {
+        const { cells: headerCells } = mainHeaderRow;
+        const headerTexts = Array.from(headerCells).map(c => c.textContent.trim());
+        log(`Table ${tableIndex} main header:`, headerTexts.join(' | '));
 
       // Build a map of actual column index to header text, accounting for colspan
       const columnMap = [];
@@ -971,8 +1011,13 @@
           subColIndex += subColspan;
         }
       }
+      } // End of if (mainHeaderRow)
 
       log(`Table ${tableIndex} final indices - ID: ${idColumnIndex}, Name: ${nameColumnIndex}, Total: ${totalColumnIndex}, Jobs: ${jobsColumnIndex}, JPH: ${jphColumnIndex}`)
+
+      // If we still don't have Jobs/JPH indices, try to detect from first AMZN row
+      // FCLM typical layout: Type(0), ID(1), Name(2), Manager(3), Hours(4-8), Jobs(9), JPH(10), Units...
+      let detectedFromData = false;
 
       // Second pass: parse data rows
       let rowCount = 0;
@@ -994,6 +1039,43 @@
             const val = c.textContent.trim().substring(0, 25);
             log(`  [${idx}] = "${val}"`);
           });
+
+          // Try to auto-detect Jobs/JPH columns if not found
+          if (jobsColumnIndex === -1 || jphColumnIndex === -1) {
+            // FCLM typical layout after Name/Manager:
+            // Look for numeric columns that could be Jobs (integer) and JPH (decimal)
+            for (let i = 4; i < cells.length - 1; i++) {
+              const val = cells[i]?.textContent?.trim() || '';
+              const nextVal = cells[i + 1]?.textContent?.trim() || '';
+              // Jobs is usually an integer, JPH is a decimal
+              if (/^\d+$/.test(val) && /^\d+\.?\d*$/.test(nextVal) && parseFloat(nextVal) < 200) {
+                // Could be Jobs/JPH pair
+                const potentialJobs = parseInt(val);
+                const potentialJPH = parseFloat(nextVal);
+                // JPH is typically between 0-100 for most paths
+                if (potentialJobs > 0 && potentialJPH > 0 && potentialJPH < 200) {
+                  if (jobsColumnIndex === -1) jobsColumnIndex = i;
+                  if (jphColumnIndex === -1) jphColumnIndex = i + 1;
+                  detectedFromData = true;
+                  log(`  Auto-detected Jobs at col ${i}, JPH at col ${i + 1}`);
+                  break;
+                }
+              }
+            }
+          }
+
+          // Also try to find Total Hours if not found
+          if (totalColumnIndex === -1) {
+            // Look for a column with hours value (decimal between 0-24)
+            for (let i = 3; i < Math.min(10, cells.length); i++) {
+              const val = parseFloat(cells[i]?.textContent?.trim() || '');
+              if (!isNaN(val) && val > 0 && val < 24) {
+                totalColumnIndex = i;
+                log(`  Auto-detected Total Hours at col ${i}`);
+                break;
+              }
+            }
+          }
         }
         rowCount++;
 
