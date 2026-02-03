@@ -1170,6 +1170,7 @@
 
   /**
    * Fetch performance data for a specific date range (called from dashboard)
+   * Uses cache for historical data, fresh fetch for current day
    */
   async function fetchPerformanceDataForRange(period, customStart = null, customEnd = null) {
     log(`Fetching performance data for period: ${period}`);
@@ -1202,42 +1203,73 @@
       endHour: dateRange.endHour
     })}`);
 
-
-    const performanceData = [];
+    let performanceData = [];
     const allEmployees = new Map();
+    let fromCache = false;
 
-    for (const path of ENABLED_PATHS) {
+    // Try to get data from cache first (except for 'today' which needs fresh data)
+    if (period !== 'today' && window.FCLMDataCache) {
       try {
-        const rollupData = await fetchFunctionRollup(path.processId, dateRange);
+        const cachedResult = await getDataFromCache(period, customStart, customEnd);
+        if (cachedResult && cachedResult.records && cachedResult.records.length > 0) {
+          log(`[Cache] Using ${cachedResult.records.length} cached records for ${period}`);
+          performanceData = cachedResult.records;
+          fromCache = true;
 
-        if (rollupData.success && rollupData.employees) {
-          rollupData.employees.forEach(emp => {
-            if (!allEmployees.has(emp.badgeId)) {
-              allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
+          // Extract unique employees from cached data
+          performanceData.forEach(record => {
+            if (!allEmployees.has(record.employeeId)) {
+              allEmployees.set(record.employeeId, {
+                id: record.employeeId,
+                name: record.employeeName
+              });
             }
-
-            // Use subFunction name if available, otherwise use parent path name
-            const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
-            performanceData.push({
-              employeeId: emp.badgeId,
-              employeeName: emp.name,
-              pathId: path.id,
-              pathName: subFunctionName,
-              pathColor: path.color,
-              category: path.category,
-              parentPath: path.name,
-              hours: emp.totalHours,
-              jobs: emp.jobs,
-              jph: emp.jph,
-              units: emp.units,
-              uph: emp.uph
-            });
           });
         }
-      } catch (err) {
-        log(`Error fetching ${path.name}:`, err);
+      } catch (cacheErr) {
+        log(`[Cache] Error reading cache: ${cacheErr.message}, falling back to live fetch`);
       }
     }
+
+    // If no cached data or 'today', fetch live data
+    if (performanceData.length === 0) {
+      log(`Fetching live data for ${period}...`);
+
+      for (const path of ENABLED_PATHS) {
+        try {
+          const rollupData = await fetchFunctionRollup(path.processId, dateRange);
+
+          if (rollupData.success && rollupData.employees) {
+            rollupData.employees.forEach(emp => {
+              if (!allEmployees.has(emp.badgeId)) {
+                allEmployees.set(emp.badgeId, { id: emp.badgeId, name: emp.name });
+              }
+
+              // Use subFunction name if available, otherwise use parent path name
+              const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
+              performanceData.push({
+                employeeId: emp.badgeId,
+                employeeName: emp.name,
+                pathId: path.id,
+                pathName: subFunctionName,
+                pathColor: path.color,
+                category: path.category,
+                parentPath: path.name,
+                hours: emp.totalHours,
+                jobs: emp.jobs,
+                jph: emp.jph,
+                units: emp.units,
+                uph: emp.uph
+              });
+            });
+          }
+        } catch (err) {
+          log(`Error fetching ${path.name}:`, err);
+        }
+      }
+    }
+
+    log(`Returning ${performanceData.length} records for ${allEmployees.size} employees${fromCache ? ' (from cache)' : ' (live)'}`);
 
     return {
       success: true,
@@ -1250,7 +1282,8 @@
         endDate: formatDateForURL(dateRange.endDate),
         spanType: dateRange.spanType
       },
-      fetchedAt: new Date().toISOString()
+      fetchedAt: new Date().toISOString(),
+      fromCache
     };
   }
 
