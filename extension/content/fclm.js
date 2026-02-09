@@ -664,6 +664,7 @@
       let jphColumnIndex = -1;
       let unitColumnIndex = -1;
       let uphColumnIndex = -1;
+      let functionColumnIndex = -1; // Track function/process column for per-row sub-function
 
       // Check if this table has any AMZN cells (employee data)
       // More permissive check - look for any td containing just "AMZN"
@@ -927,9 +928,6 @@
       }
 
       log(`Table ${tableIndex} column map:`, JSON.stringify(columnMap));
-
-      // Track function/process column index for per-row sub-function
-      let functionColumnIndex = -1;
 
       // Now find the column indices from the column map
       for (const col of columnMap) {
