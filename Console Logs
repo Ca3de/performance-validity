@@ -1,0 +1,1307 @@
+This page is in Almost Standards Mode. Page layout may be impacted. For Standards Mode use “<!DOCTYPE html>”. processPathRollup
+Empty string passed to getElementById(). 14 processPathRollup
+Empty string passed to getElementById(). 10 LoginManager.shared.sys.mjs:43:23
+[DataCache] Storage-based cache module loaded dataCache.js:38:15
+[Performance Validity 8:43:45 PM] Initializing FCLM content script fclm.js:13:15
+[Performance Validity 8:43:45 PM] Warehouse ID: IND8 fclm.js:13:15
+[Performance Validity 8:43:45 PM] Floating action button created fclm.js:13:15
+[Performance Validity 8:43:45 PM] Status indicator created fclm.js:13:15
+[Performance Validity 8:43:45 PM] FCLM content script initialized fclm.js:13:15
+localeID: en-US common.controlPanel.min.js:1:208
+XML Parsing Error: not well-formed
+Location: https://fclm-portal.amazon.com/reports/processPathRollup/getPublicViewsFromS3
+Line Number 1, Column 1: getPublicViewsFromS3:1:1
+Empty string passed to getElementById(). 10 LoginManager.shared.sys.mjs:43:23
+[FC Labor Tracking] FCLM content script loaded fclm.js:7:11
+[FC Labor Tracking FCLM] [8:43:47 PM] ================================================== fclm.js:29:13
+[FC Labor Tracking FCLM] [8:43:47 PM] FCLM Ready for employee lookups! fclm.js:29:13
+[FC Labor Tracking FCLM] [8:43:47 PM] Warehouse: IND8 fclm.js:29:13
+[FC Labor Tracking FCLM] [8:43:47 PM] Current URL: https://fclm-portal.amazon.com/reports/processPathRollup?reportFormat=HTML&warehouseId=IND8&maxIntradayDays=1&spanType=Intraday&startDateIntraday=2026%2F02%2F09&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F10&endHourIntraday=6&endMinuteIntraday=0&_adjustPlanHours=on&_hideEmptyLineItems=on&pprCustomViewName=PPT&_rememberViewForWarehouse=on&employmentType=AllEmployees&privateView=true fclm.js:29:13
+[FC Labor Tracking FCLM] [8:43:47 PM] ================================================== fclm.js:29:13
+[FC Labor Tracking FCLM] [8:43:47 PM] Registered with background script fclm.js:29:13
+XML Parsing Error: not well-formed
+Location: https://fclm-portal.amazon.com/reports/processPathRollup/getPublicViewsFromS3
+Line Number 1, Column 1: getPublicViewsFromS3:1:1
+[Performance Validity 8:43:48 PM] [Cache] Initializing daily data cache... fclm.js:13:15
+[Performance Validity 8:43:48 PM] [Cache] Step 1: Opening IndexedDB... fclm.js:13:15
+[DataCache] Initializing browser.storage.local cache... dataCache.js:38:15
+[DataCache] Cache ready dataCache.js:38:15
+[Performance Validity 8:43:48 PM] [Cache] Step 1: IndexedDB opened fclm.js:13:15
+[Performance Validity 8:43:48 PM] [Cache] Step 2: Getting dates to cache... fclm.js:13:15
+[Performance Validity 8:43:48 PM] [Cache] Step 2: Will cache 30 days: 2026-02-09, 2026-02-08, 2026-02-07... fclm.js:13:15
+[Performance Validity 8:43:48 PM] [Cache] Step 3: Setting fetch progress... fclm.js:13:15
+[Performance Validity 8:43:49 PM] [Cache] Step 4: Checking which days need fetching... fclm.js:13:15
+[Performance Validity 8:43:49 PM] [Cache] Step 4: 30 of 30 days need fetching fclm.js:13:15
+[Performance Validity 8:43:49 PM] [Cache] Step 5: Starting parallel fetch... fclm.js:13:15
+[Performance Validity 8:43:49 PM] [Cache] Fetching batch: 2026-02-09 (0%) fclm.js:13:15
+[Performance Validity 8:43:49 PM] [Cache] Fetching day 2026-02-09 (shift: all)... fclm.js:13:15
+[Performance Validity 8:43:49 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F08&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F09&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:49 PM]   Date range: Sun Feb 08 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 09 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:49 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:49 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:49 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:49 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:49 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:49 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F08&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F09&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:49 PM]   Date range: Sun Feb 08 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 09 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:49 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:49 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:49 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:49 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:49 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:49 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F08&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F09&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:49 PM]   Date range: Sun Feb 08 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 09 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:49 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:49 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:49 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:49 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:49 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:51 PM] [Cache] Fetching batch: 2026-02-08 (3%) fclm.js:13:15
+[Performance Validity 8:43:51 PM] [Cache] Fetching day 2026-02-08 (shift: all)... fclm.js:13:15
+[Performance Validity 8:43:51 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F07&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F08&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:51 PM]   Date range: Sat Feb 07 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 08 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:51 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:51 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:51 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:51 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:51 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:51 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F07&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F08&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:51 PM]   Date range: Sat Feb 07 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 08 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:51 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:51 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:51 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:51 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:51 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:51 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F07&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F08&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:51 PM]   Date range: Sat Feb 07 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 08 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:52 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:52 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:52 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:52 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:52 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:54 PM] [Cache] Fetching batch: 2026-02-07 (7%) fclm.js:13:15
+[Performance Validity 8:43:54 PM] [Cache] Fetching day 2026-02-07 (shift: all)... fclm.js:13:15
+[Performance Validity 8:43:54 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F06&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F07&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:54 PM]   Date range: Fri Feb 06 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Feb 07 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:54 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:54 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:54 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:54 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:54 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:54 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F06&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F07&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:54 PM]   Date range: Fri Feb 06 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Feb 07 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:54 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:54 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:54 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:54 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:54 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:54 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F06&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F07&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:54 PM]   Date range: Fri Feb 06 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Feb 07 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:54 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:54 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:54 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:54 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:54 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:56 PM] [Cache] Fetching batch: 2026-02-06 (10%) fclm.js:13:15
+[Performance Validity 8:43:56 PM] [Cache] Fetching day 2026-02-06 (shift: all)... fclm.js:13:15
+[Performance Validity 8:43:56 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F05&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F06&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:56 PM]   Date range: Thu Feb 05 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Feb 06 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:56 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:56 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:56 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:56 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:56 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:56 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F05&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F06&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:56 PM]   Date range: Thu Feb 05 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Feb 06 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:56 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:56 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:56 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:56 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:56 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:56 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F05&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F06&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:56 PM]   Date range: Thu Feb 05 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Feb 06 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:56 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:56 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:56 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:56 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:56 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:58 PM] [Cache] Fetching batch: 2026-02-05 (13%) fclm.js:13:15
+[Performance Validity 8:43:58 PM] [Cache] Fetching day 2026-02-05 (shift: all)... fclm.js:13:15
+[Performance Validity 8:43:58 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F04&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F05&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:58 PM]   Date range: Wed Feb 04 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Feb 05 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:59 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:59 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:59 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:59 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:59 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:59 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F04&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F05&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:59 PM]   Date range: Wed Feb 04 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Feb 05 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:59 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:59 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:59 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:59 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:59 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:43:59 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F04&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F05&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:43:59 PM]   Date range: Wed Feb 04 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Feb 05 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:43:59 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:43:59 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:43:59 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:43:59 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:43:59 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:01 PM] [Cache] Fetching batch: 2026-02-04 (17%) fclm.js:13:15
+[Performance Validity 8:44:01 PM] [Cache] Fetching day 2026-02-04 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:01 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F03&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F04&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:01 PM]   Date range: Tue Feb 03 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Feb 04 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:01 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:01 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:01 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:01 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:01 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:01 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F03&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F04&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:01 PM]   Date range: Tue Feb 03 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Feb 04 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:01 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:01 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:01 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:01 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:01 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:01 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F03&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F04&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:01 PM]   Date range: Tue Feb 03 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Feb 04 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:01 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:01 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:01 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:01 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:01 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:03 PM] [Cache] Fetching batch: 2026-02-03 (20%) fclm.js:13:15
+[Performance Validity 8:44:03 PM] [Cache] Fetching day 2026-02-03 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:03 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F02&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:03 PM]   Date range: Mon Feb 02 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:03 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:03 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:03 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:03 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:03 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:03 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F02&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:03 PM]   Date range: Mon Feb 02 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:03 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:03 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:03 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:03 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:03 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:03 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F02&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F03&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:03 PM]   Date range: Mon Feb 02 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Feb 03 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:04 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:04 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:04 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:04 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:04 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:06 PM] [Cache] Fetching batch: 2026-02-02 (23%) fclm.js:13:15
+[Performance Validity 8:44:06 PM] [Cache] Fetching day 2026-02-02 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:06 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:06 PM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:06 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:06 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:06 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:06 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:06 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:06 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:06 PM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:06 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:06 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:06 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:06 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:06 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:06 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F02%2F01&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F02&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:06 PM]   Date range: Sun Feb 01 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Feb 02 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:06 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:06 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:06 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:06 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:06 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:08 PM] [Cache] Fetching batch: 2026-02-01 (27%) fclm.js:13:15
+[Performance Validity 8:44:08 PM] [Cache] Fetching day 2026-02-01 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:08 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F31&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F01&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:08 PM]   Date range: Sat Jan 31 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 01 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:08 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:08 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:08 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:08 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:08 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:08 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F31&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F01&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:08 PM]   Date range: Sat Jan 31 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 01 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:09 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:09 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:09 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:09 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:09 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:09 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F31&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F01&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:09 PM]   Date range: Sat Jan 31 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Feb 01 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:09 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:09 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:09 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:09 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:09 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:11 PM] [Cache] Fetching batch: 2026-01-31 (30%) fclm.js:13:15
+[Performance Validity 8:44:11 PM] [Cache] Fetching day 2026-01-31 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:11 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F30&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F31&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:11 PM]   Date range: Fri Jan 30 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 31 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:11 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:11 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:11 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:11 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:11 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:11 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F30&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F31&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:11 PM]   Date range: Fri Jan 30 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 31 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:11 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:11 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:11 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:11 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:11 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:11 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F30&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F31&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:11 PM]   Date range: Fri Jan 30 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 31 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:12 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:12 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:12 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:12 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:12 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:14 PM] [Cache] Fetching batch: 2026-01-30 (33%) fclm.js:13:15
+[Performance Validity 8:44:14 PM] [Cache] Fetching day 2026-01-30 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:14 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F29&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F30&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:14 PM]   Date range: Thu Jan 29 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 30 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:14 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:14 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:14 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:14 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:14 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:14 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F29&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F30&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:14 PM]   Date range: Thu Jan 29 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 30 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:14 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:14 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:14 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:14 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:14 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:14 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F29&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F30&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:14 PM]   Date range: Thu Jan 29 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 30 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:14 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:14 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:14 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:14 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:14 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:16 PM] [Cache] Fetching batch: 2026-01-29 (37%) fclm.js:13:15
+[Performance Validity 8:44:16 PM] [Cache] Fetching day 2026-01-29 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:16 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F28&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F29&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:16 PM]   Date range: Wed Jan 28 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 29 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:16 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:16 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:16 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:16 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:16 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:16 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F28&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F29&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:16 PM]   Date range: Wed Jan 28 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 29 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:16 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:16 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:16 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:16 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:16 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:16 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F28&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F29&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:16 PM]   Date range: Wed Jan 28 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 29 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:16 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:16 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:16 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:16 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:16 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[FC Labor Tracking FCLM] [8:44:17 PM] Registered with background script fclm.js:29:13
+[Performance Validity 8:44:18 PM] [Cache] Fetching batch: 2026-01-28 (40%) fclm.js:13:15
+[Performance Validity 8:44:18 PM] [Cache] Fetching day 2026-01-28 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:18 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F27&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F28&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:18 PM]   Date range: Tue Jan 27 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 28 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:19 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:19 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:19 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:19 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:19 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:19 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F27&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F28&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:19 PM]   Date range: Tue Jan 27 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 28 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:19 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:19 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:19 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:19 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:19 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:19 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F27&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F28&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:19 PM]   Date range: Tue Jan 27 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 28 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:19 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:19 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:19 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:19 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:19 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:22 PM] [Cache] Fetching batch: 2026-01-27 (43%) fclm.js:13:15
+[Performance Validity 8:44:22 PM] [Cache] Fetching day 2026-01-27 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:22 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F26&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F27&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:22 PM]   Date range: Mon Jan 26 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 27 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:22 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:22 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:22 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:22 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:22 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:22 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F26&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F27&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:22 PM]   Date range: Mon Jan 26 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 27 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:22 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:22 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:22 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:22 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:22 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:22 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F26&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F27&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:22 PM]   Date range: Mon Jan 26 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 27 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:22 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:22 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:22 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:22 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:22 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:26 PM] [Cache] Fetching batch: 2026-01-26 (47%) fclm.js:13:15
+[Performance Validity 8:44:26 PM] [Cache] Fetching day 2026-01-26 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:26 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F25&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F26&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:26 PM]   Date range: Sun Jan 25 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 26 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:26 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:26 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:26 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:26 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:26 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:26 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F25&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F26&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:26 PM]   Date range: Sun Jan 25 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 26 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:26 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:26 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:26 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:26 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:26 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:26 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F25&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F26&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:26 PM]   Date range: Sun Jan 25 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 26 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:26 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:26 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:26 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:26 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:26 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:29 PM] [Cache] Fetching batch: 2026-01-25 (50%) fclm.js:13:15
+[Performance Validity 8:44:29 PM] [Cache] Fetching day 2026-01-25 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:29 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F24&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F25&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:29 PM]   Date range: Sat Jan 24 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 25 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:29 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:29 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:29 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:29 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:29 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:29 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F24&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F25&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:29 PM]   Date range: Sat Jan 24 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 25 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:29 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:29 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:29 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:29 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:29 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:29 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F24&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F25&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:29 PM]   Date range: Sat Jan 24 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 25 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:29 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:29 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:29 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:29 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:29 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:32 PM] [Cache] Fetching batch: 2026-01-24 (53%) fclm.js:13:15
+[Performance Validity 8:44:32 PM] [Cache] Fetching day 2026-01-24 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:32 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F23&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F24&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:32 PM]   Date range: Fri Jan 23 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 24 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:32 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:32 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:32 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:32 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:32 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:32 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F23&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F24&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:32 PM]   Date range: Fri Jan 23 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 24 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:32 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:32 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:32 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:32 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:32 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:32 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F23&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F24&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:32 PM]   Date range: Fri Jan 23 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 24 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:32 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:32 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:32 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:32 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:32 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:35 PM] [Cache] Fetching batch: 2026-01-23 (57%) fclm.js:13:15
+[Performance Validity 8:44:35 PM] [Cache] Fetching day 2026-01-23 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:35 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F22&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F23&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:35 PM]   Date range: Thu Jan 22 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 23 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:35 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:35 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:35 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:35 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:35 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:35 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F22&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F23&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:35 PM]   Date range: Thu Jan 22 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 23 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:35 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:35 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:35 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:35 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:35 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:35 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F22&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F23&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:35 PM]   Date range: Thu Jan 22 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 23 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:36 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:36 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:36 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:36 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:36 PM] Parsed 0 employees from function rollup fclm.js:13:15
+Empty string passed to getElementById(). 2 processPathRollup
+[Performance Validity 8:44:38 PM] [Cache] Fetching batch: 2026-01-22 (60%) fclm.js:13:15
+[Performance Validity 8:44:38 PM] [Cache] Fetching day 2026-01-22 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:38 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F21&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F22&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:38 PM]   Date range: Wed Jan 21 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 22 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:38 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:38 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:38 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:38 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:38 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:38 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F21&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F22&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:38 PM]   Date range: Wed Jan 21 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 22 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:38 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:38 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:38 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:38 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:38 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:38 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F21&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F22&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:38 PM]   Date range: Wed Jan 21 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 22 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:38 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:38 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:38 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:38 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:38 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:40 PM] [Cache] Fetching batch: 2026-01-21 (63%) fclm.js:13:15
+[Performance Validity 8:44:40 PM] [Cache] Fetching day 2026-01-21 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:40 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F20&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F21&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:40 PM]   Date range: Tue Jan 20 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 21 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:40 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:40 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:40 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:40 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:40 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:40 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F20&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F21&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:40 PM]   Date range: Tue Jan 20 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 21 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:40 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:40 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:40 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:40 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:40 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:40 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F20&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F21&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:40 PM]   Date range: Tue Jan 20 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 21 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:40 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:40 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:40 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:40 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:40 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:43 PM] [Cache] Fetching batch: 2026-01-20 (67%) fclm.js:13:15
+[Performance Validity 8:44:43 PM] [Cache] Fetching day 2026-01-20 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:43 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F19&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F20&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:43 PM]   Date range: Mon Jan 19 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 20 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:43 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:43 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:43 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:43 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:43 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:43 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F19&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F20&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:43 PM]   Date range: Mon Jan 19 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 20 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:43 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:43 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:43 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:43 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:43 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:43 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F19&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F20&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:43 PM]   Date range: Mon Jan 19 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 20 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:43 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:43 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:43 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:43 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:43 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:45 PM] [Cache] Fetching batch: 2026-01-19 (70%) fclm.js:13:15
+[Performance Validity 8:44:45 PM] [Cache] Fetching day 2026-01-19 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:45 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F18&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F19&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:45 PM]   Date range: Sun Jan 18 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 19 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:45 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:45 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:45 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:45 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:45 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:45 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F18&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F19&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:45 PM]   Date range: Sun Jan 18 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 19 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:45 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:45 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:45 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:45 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:45 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:45 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F18&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F19&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:45 PM]   Date range: Sun Jan 18 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 19 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:45 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:45 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:45 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:45 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:45 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[FC Labor Tracking FCLM] [8:44:47 PM] Registered with background script fclm.js:29:13
+[Performance Validity 8:44:47 PM] [Cache] Fetching batch: 2026-01-18 (73%) fclm.js:13:15
+[Performance Validity 8:44:47 PM] [Cache] Fetching day 2026-01-18 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:47 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F17&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F18&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:47 PM]   Date range: Sat Jan 17 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 18 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:48 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:48 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:48 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:48 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:48 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:48 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F17&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F18&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:48 PM]   Date range: Sat Jan 17 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 18 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:48 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:48 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:48 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:48 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:48 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:48 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F17&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F18&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:48 PM]   Date range: Sat Jan 17 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 18 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:48 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:48 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:48 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:48 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:48 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:50 PM] [Cache] Fetching batch: 2026-01-17 (77%) fclm.js:13:15
+[Performance Validity 8:44:50 PM] [Cache] Fetching day 2026-01-17 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:50 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F16&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F17&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:50 PM]   Date range: Fri Jan 16 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 17 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:50 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:50 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:50 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:50 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:50 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:50 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F16&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F17&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:50 PM]   Date range: Fri Jan 16 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 17 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:50 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:50 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:50 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:50 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:50 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:50 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F16&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F17&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:50 PM]   Date range: Fri Jan 16 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sat Jan 17 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:50 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:50 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:50 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:50 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:50 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:52 PM] [Cache] Fetching batch: 2026-01-16 (80%) fclm.js:13:15
+[Performance Validity 8:44:52 PM] [Cache] Fetching day 2026-01-16 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:52 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F15&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F16&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:52 PM]   Date range: Thu Jan 15 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 16 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:53 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:53 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:53 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:53 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:53 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:53 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F15&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F16&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:53 PM]   Date range: Thu Jan 15 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 16 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:53 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:53 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:53 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:53 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:53 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:53 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F15&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F16&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:53 PM]   Date range: Thu Jan 15 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Fri Jan 16 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:53 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:53 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:53 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:53 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:53 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:55 PM] [Cache] Fetching batch: 2026-01-15 (83%) fclm.js:13:15
+[Performance Validity 8:44:55 PM] [Cache] Fetching day 2026-01-15 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:55 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F14&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F15&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:55 PM]   Date range: Wed Jan 14 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 15 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:55 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:55 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:55 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:55 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:55 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:55 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F14&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F15&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:55 PM]   Date range: Wed Jan 14 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 15 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:55 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:55 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:55 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:55 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:55 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:55 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F14&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F15&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:55 PM]   Date range: Wed Jan 14 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Thu Jan 15 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:55 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:55 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:55 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:55 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:55 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:57 PM] [Cache] Fetching batch: 2026-01-14 (87%) fclm.js:13:15
+[Performance Validity 8:44:57 PM] [Cache] Fetching day 2026-01-14 (shift: all)... fclm.js:13:15
+[Performance Validity 8:44:57 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F13&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F14&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:57 PM]   Date range: Tue Jan 13 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 14 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:58 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:58 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:58 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:58 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:58 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:58 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F13&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F14&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:58 PM]   Date range: Tue Jan 13 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 14 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:58 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:58 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:58 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:58 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:58 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:44:58 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F13&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F14&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:44:58 PM]   Date range: Tue Jan 13 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Wed Jan 14 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:44:58 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:44:58 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:44:58 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:44:58 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:44:58 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:00 PM] [Cache] Fetching batch: 2026-01-13 (90%) fclm.js:13:15
+[Performance Validity 8:45:00 PM] [Cache] Fetching day 2026-01-13 (shift: all)... fclm.js:13:15
+[Performance Validity 8:45:00 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F12&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F13&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:00 PM]   Date range: Mon Jan 12 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 13 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:00 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:00 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:00 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:00 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:00 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:00 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F12&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F13&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:00 PM]   Date range: Mon Jan 12 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 13 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:00 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:00 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:00 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:00 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:00 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:00 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F12&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F13&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:00 PM]   Date range: Mon Jan 12 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Tue Jan 13 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:00 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:00 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:00 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:00 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:00 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:02 PM] [Cache] Fetching batch: 2026-01-12 (93%) fclm.js:13:15
+[Performance Validity 8:45:02 PM] [Cache] Fetching day 2026-01-12 (shift: all)... fclm.js:13:15
+[Performance Validity 8:45:02 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F11&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F12&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:02 PM]   Date range: Sun Jan 11 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 12 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:03 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:03 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:03 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:03 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:03 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:03 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F11&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F12&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:03 PM]   Date range: Sun Jan 11 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 12 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:03 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:03 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:03 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:03 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:03 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:03 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F11&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F12&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:03 PM]   Date range: Sun Jan 11 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Mon Jan 12 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:03 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:03 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:03 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:03 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:03 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:05 PM] [Cache] Fetching batch: 2026-01-11 (97%) fclm.js:13:15
+[Performance Validity 8:45:05 PM] [Cache] Fetching day 2026-01-11 (shift: all)... fclm.js:13:15
+[Performance Validity 8:45:05 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F10&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F11&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:05 PM]   Date range: Sat Jan 10 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 11 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:05 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:05 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:05 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:05 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:05 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:05 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F10&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F11&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:05 PM]   Date range: Sat Jan 10 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 11 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:05 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:05 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:05 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:05 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:05 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:05 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=3&startDateIntraday=2026%2F01%2F10&startHourIntraday=0&startMinuteIntraday=0&endDateIntraday=2026%2F01%2F11&endHourIntraday=23&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:05 PM]   Date range: Sat Jan 10 2026 00:00:00 GMT-0500 (Eastern Standard Time) to Sun Jan 11 2026 23:00:00 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:05 PM] Found 1 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:05 PM] Document headings: <empty string> fclm.js:13:15
+[Performance Validity 8:45:05 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] fclm.js:13:15
+[Performance Validity 8:45:05 PM] Table 0: Skipping - no AMZN cells found (5 total tds) fclm.js:13:15
+[Performance Validity 8:45:05 PM] Parsed 0 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:05 PM] [Cache] Step 5: Parallel fetch complete fclm.js:13:15
+[Performance Validity 8:45:05 PM] [Cache] Step 6: Fetching current day data... fclm.js:13:15
+[Performance Validity 8:45:05 PM] [Cache] Refreshing current day data (2026-02-09, night shift)... fclm.js:13:15
+[Performance Validity 8:45:05 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003034&spanType=Intraday&maxIntradayDays=2&startDateIntraday=2026%2F02%2F09&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F10&endHourIntraday=6&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:05 PM]   Date range: Mon Feb 09 2026 20:45:05 GMT-0500 (Eastern Standard Time) to Tue Feb 10 2026 20:45:05 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Found 6 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:06 PM] Document headings: 2026-02-09 20:38 EST fclm.js:13:15
+[Performance Validity 8:45:06 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] | FRACS Multis Pick | FRACS Singles Pick | Liquidations Pick fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 0: Skipping - no AMZN cells found (3 total tds) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 1: Skipping - no AMZN cells found (500 total tds) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 sub-function: "FRACS Multis Pick" | prev: "
+
+Summary
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Function
+    Size
+    Total Paid Hours
+ItemPic" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "105229790" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Sa,Nai Hong" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "burns,justin" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.79" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "0.93" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.72" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "132" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "76.68" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "68" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "85.89" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "64" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "68.86" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "132" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "76.68" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="132" parsed=132, JPH col=10 raw="76.68" parsed=76.68 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First employee parsed: 
+Object { type: "AMZN", id: "105229790", badgeId: "105229790", name: "Sa,Nai Hong", totalHours: 1.72, jobs: 132, jph: 76.68, units: 0, uph: 0, processId: "1003034", … }
+fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 sub-function: "FRACS Multis Pick" | prev: "
+
+Destroy Autocomplete [4300035094]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Nam" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "102168971" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "HTIKE,WIN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "Krienke,Jonothan" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.69" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "1.03" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.72" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "123" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "71.45" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "53" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "76.63" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "70" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "68.00" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "123" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "71.45" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="123" parsed=123, JPH col=10 raw="71.45" parsed=71.45 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="140" parsed=140, JPH col=10 raw="81.33" parsed=81.33 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 3: Jobs col=9 raw="140" parsed=140, JPH col=10 raw="81.33" parsed=81.33 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 sub-function: "FRACS Singles Pick" | prev: "
+
+FRACS Multis Pick [4300016819]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+ " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "104141991" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Kam,Van" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "Cruz,Luca" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.97" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "0.74" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "0.01" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.72" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "216" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "125.48" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "113" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "117.00" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "102" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "137.07" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "1" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "92.31" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "216" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "125.48" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="216" parsed=216, JPH col=10 raw="125.48" parsed=125.48 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="191" parsed=191, JPH col=10 raw="110.96" parsed=110.96 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 sub-function: "Liquidations Pick" | prev: "
+
+FRACS Singles Pick [4300016818]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 main header: Type | ID | Name | Manager | Paid Hours | ItemPicked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempicked","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempicked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "100605881" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Biak,Josef" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "burns,justin" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.51" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "1.18" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "0.01" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.70" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "185" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "108.52" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "62" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "121.77" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "122" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "103.29" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "1" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "72.00" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "185" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "108.52" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="185" parsed=185, JPH col=10 raw="108.52" parsed=108.52 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="236" parsed=236, JPH col=10 raw="137.10" parsed=137.1 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 3: Jobs col=9 raw="233" parsed=233, JPH col=10 raw="135.36" parsed=135.36 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Parsed 25 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:06 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003056&spanType=Intraday&maxIntradayDays=2&startDateIntraday=2026%2F02%2F09&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F10&endHourIntraday=6&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Date range: Mon Feb 09 2026 20:45:05 GMT-0500 (Eastern Standard Time) to Tue Feb 10 2026 20:45:05 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Found 6 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:06 PM] Document headings: 2026-02-09 20:38 EST fclm.js:13:15
+[Performance Validity 8:45:06 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] | FRACSPnH | Singles | Packing fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 0: Skipping - no AMZN cells found (3 total tds) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 1: Skipping - no AMZN cells found (836 total tds) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 sub-function: "Pack Singles" | prev: "
+
+Summary
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Function
+    Size
+    Total Paid Hours
+ItemPac" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | Package fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "109972466" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Tling,Ngun" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "burns,justin" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.10" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "0.17" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "0.01" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "0.29" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "123" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "429.90" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "48" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "459.57" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "80" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "479.20" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "1" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "70.59" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "129" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "450.87" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [21] = "19" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [22] = "66.41" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="123" parsed=123, JPH col=10 raw="429.90" parsed=429.9 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First employee parsed: 
+Object { type: "AMZN", id: "109972466", badgeId: "109972466", name: "Tling,Ngun", totalHours: 0.29, jobs: 123, jph: 429.9, units: 0, uph: 0, processId: "1003056", … }
+fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="12" parsed=12, JPH col=10 raw="42.27" parsed=42.27 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 3: Jobs col=9 raw="199" parsed=199, JPH col=10 raw="715.68" parsed=715.68 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 sub-function: "Singles [4300006717]" | prev: "
+
+Pack FRACSPnH [1695309731180]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+  " | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | package fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 3 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "111865806" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Kim,Van" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "burns,justin" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "0.24" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "0.24" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "10" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "42.06" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "10" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "42.06" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "10" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "42.06" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [21] = "9" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [22] = "37.85" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="10" parsed=10, JPH col=10 raw="42.06" parsed=42.06 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="19" parsed=19, JPH col=10 raw="" parsed=0 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 sub-function: "Packing" | prev: "
+
+Pack Singles [4300006717]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+    Ma" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | package fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 4 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "105524293" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "wright,marcia" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "Krienke,Jonothan" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.81" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "0.91" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.72" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "445" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "258.55" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "249" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "305.73" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "196" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "216.24" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "445" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "258.55" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [21] = "24" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [22] = "13.94" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="445" parsed=445, JPH col=10 raw="258.55" parsed=258.55 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="30" parsed=30, JPH col=10 raw="95.24" parsed=95.24 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 3: Jobs col=9 raw="545" parsed=545, JPH col=10 raw="316.76" parsed=316.76 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 sub-function: "PacknHold" | prev: "
+
+Packing [4300000130]
+
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Type
+    ID
+    Name
+    Manager" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 main header: Type | ID | Name | Manager | Paid Hours | ItemPacked fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"itempacked","startCol":9,"colspan":14,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total | Package fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "itempacked" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[7] col=21: "package" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 5 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 23 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "106290197" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Thang,Lian" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "burns,justin" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.62" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "1.10" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "0.00" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.72" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "1141" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "662.84" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "522" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "844.20" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "653" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "594.39" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "3" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "720.00" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "1178" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "684.33" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [21] = "173" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [22] = "100.50" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="1141" parsed=1141, JPH col=10 raw="662.84" parsed=662.84 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="822" parsed=822, JPH col=10 raw="572.82" parsed=572.82 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 3: Jobs col=9 raw="895" parsed=895, JPH col=10 raw="622.85" parsed=622.85 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Parsed 17 employees from function rollup fclm.js:13:15
+[Performance Validity 8:45:06 PM] Fetching function rollup (Intraday): https://fclm-portal.amazon.com/reports/functionRollup?warehouseId=IND8&reportFormat=HTML&processId=1003055&spanType=Intraday&maxIntradayDays=2&startDateIntraday=2026%2F02%2F09&startHourIntraday=18&startMinuteIntraday=0&endDateIntraday=2026%2F02%2F10&endHourIntraday=6&endMinuteIntraday=59 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Date range: Mon Feb 09 2026 20:45:05 GMT-0500 (Eastern Standard Time) to Tue Feb 10 2026 20:45:05 GMT-0500 (Eastern Standard Time) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Found 3 tables in function rollup response fclm.js:13:15
+[Performance Validity 8:45:06 PM] Document headings: 2026-02-09 20:38 EST fclm.js:13:15
+[Performance Validity 8:45:06 PM] Sub-function matches in HTML: WHD">HWHD | Multis [1002991] | Singles [1002993] | WHD Grading [1002979] | WHD Grading Support [1003060] | WHD SpecialtyGrading [1003057] | Singles [456] | Stow C Returns | Stow C Returns | Stow C Returns fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 0: Skipping - no AMZN cells found (3 total tds) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 1: Skipping - no AMZN cells found (140 total tds) fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2: Found AMZN cells, processing... fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 sub-function: "Stow C Returns" | prev: "
+
+Summary
+Small
+Medium
+Large
+HeavyBulky
+Total
+
+
+
+
+    Function
+    Size
+    Total Paid Hours
+EachSto" | parent: id=(no id) class=main-panel fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 main header: Type | ID | Name | Manager | Paid Hours | EachStowed fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 column map: [{"header":"type","startCol":0,"colspan":1,"isGroup":false},{"header":"id","startCol":1,"colspan":1,"isGroup":false},{"header":"name","startCol":2,"colspan":1,"isGroup":false},{"header":"manager","startCol":3,"colspan":1,"isGroup":false},{"header":"paid hours","startCol":4,"colspan":5,"isGroup":true},{"header":"eachstowed","startCol":9,"colspan":12,"isGroup":true}] fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Paid Hours group at col 4, Total at col 8 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header row: Jobs | JPH | EACH-Small | EACH-Medium | EACH-Large | EACH-HeavyBulky | EACH-Total fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Found job action group "eachstowed" at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Sub-header starts at column offset: 9 (first sub: "jobs") fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[0] col=9: "jobs" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found Jobs at col 9 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[1] col=10: "jph" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     -> Found JPH at col 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[2] col=11: "each-small" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[3] col=13: "each-medium" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[4] col=15: "each-large" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[5] col=17: "each-heavybulky" fclm.js:13:15
+[Performance Validity 8:45:06 PM]     Sub[6] col=19: "each-total" fclm.js:13:15
+[Performance Validity 8:45:06 PM] Table 2 final indices - ID: 1, Name: 2, Total: 8, Jobs: 9, JPH: 10 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First AMZN row has 21 cells: fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [0] = "AMZN" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [1] = "104199585" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [2] = "Diallo,M'Mah" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [3] = "Cruz,Luca" (class: ) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [4] = "0.62" (class:  size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [5] = "1.00" (class:  size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [6] = "" (class:  size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [7] = "" (class:  size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [8] = "1.62" (class:  size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [9] = "242" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [10] = "149.31" (class: numeric) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [11] = "98" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [12] = "158.85" (class: numeric size-small) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [13] = "144" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [14] = "143.48" (class: numeric size-medium) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [15] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [16] = "" (class: numeric size-large) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [17] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [18] = "" (class: numeric size-heavybulky) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [19] = "242" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   [20] = "149.31" (class: numeric size-total highlighted) fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 1: Jobs col=9 raw="242" parsed=242, JPH col=10 raw="149.31" parsed=149.31 fclm.js:13:15
+[Performance Validity 8:45:06 PM] First employee parsed: 
+Object { type: "AMZN", id: "104199585", badgeId: "104199585", name: "Diallo,M'Mah", totalHours: 1.62, jobs: 242, jph: 149.31, units: 0, uph: 0, processId: "1003055", … }
+fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 2: Jobs col=9 raw="249" parsed=249, JPH col=10 raw="146.11" parsed=146.11 fclm.js:13:15
+[Performance Validity 8:45:06 PM]   Row 3: Jobs col=9 raw="262" parsed=262, JPH col=10 raw="152.25" parsed=152.25 fclm.js:13:15
+[Performance Validity 8:45:06 PM] Parsed 10 employees from function rollup fclm.js:13:15
+[DataCache] Stored 52 records for cache_IND8_2026-02-09_night dataCache.js:38:15
+[Performance Validity 8:45:06 PM] [Cache] Cached 52 current day records fclm.js:13:15
+[Performance Validity 8:45:06 PM] [Cache] Step 6: Current day data fetched fclm.js:13:15
+[Performance Validity 8:45:06 PM] [Cache] Step 7: Getting cache stats... fclm.js:13:15
+[Performance Validity 8:45:06 PM] [Cache] Step 7: Cache stats: 
+Object { totalDays: 1, totalRecords: 52, dateRange: {…}, byShift: {…} }
+fclm.js:13:15
+[Performance Validity 8:45:06 PM] [Cache] Initialization complete! fclm.js:13:15
