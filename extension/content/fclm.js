@@ -166,7 +166,7 @@
         startDate.setDate(startDate.getDate() - startDate.getDay()); // Go to Sunday
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(now);
-        spanType = 'Intraday';  // Intraday for daily granularity
+        spanType = 'Week';
         break;
 
       case 'lastWeek':
@@ -185,7 +185,7 @@
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         startDate.setHours(0, 0, 0, 0);
         endDate = new Date(now);
-        spanType = 'Intraday';  // Intraday for daily granularity
+        spanType = 'Month';
         break;
 
       case 'lastMonth':
@@ -205,7 +205,12 @@
         // Calculate days difference to determine span type
         const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
         if (daysDiff <= 1) {
-          spanType = 'Intraday';
+          // Single day: use Day span for historical, Intraday for today
+          const today = new Date();
+          const isToday = startDate.getFullYear() === today.getFullYear() &&
+                          startDate.getMonth() === today.getMonth() &&
+                          startDate.getDate() === today.getDate();
+          spanType = isToday ? 'Intraday' : 'Day';
         } else if (daysDiff <= 7) {
           spanType = 'Week';
           // Adjust endDate to be exclusive (add 1 day)
@@ -505,7 +510,13 @@
       return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
     };
 
-    if (spanType === 'Week' || spanType === 'Month') {
+    if (spanType === 'Day') {
+      // Day span - for historical single-day queries
+      // Uses processId without leading 0, and startDateDay parameter
+      url.searchParams.set('processId', processId);
+      url.searchParams.set('spanType', 'Day');
+      url.searchParams.set('startDateDay', formatDateForURL(range.startDate));
+    } else if (spanType === 'Week' || spanType === 'Month') {
       // Week/Month span - use startDate and endDate in ISO format
       // Process ID needs leading 0 for Week/Month spans
       url.searchParams.set('processId', '0' + processId);
@@ -513,7 +524,7 @@
       url.searchParams.set('startDate', formatDateISO(range.startDate));
       url.searchParams.set('endDate', formatDateISO(range.endDate));
     } else {
-      // Intraday span - for single/multi day queries with real-time data
+      // Intraday span - for current/real-time day queries with hour-level precision
       // Intraday uses processId without leading 0
       url.searchParams.set('processId', processId);
       url.searchParams.set('spanType', 'Intraday');
@@ -1652,39 +1663,35 @@
    */
   async function fetchAndCacheDay(dateStr, shift = 'all') {
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
-    const date = new Date(dateStr);
 
-    // Create date range for the day
-    let startHour = 0;
-    let endHour = 23;
+    // Parse date string as local date (YYYY-MM-DD) to avoid UTC timezone shift
+    const parts = dateStr.split('-');
+    const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
 
-    // For shift-specific queries, adjust hours
-    if (shift === 'day') {
-      startHour = 6;
-      endHour = 18;
-    } else if (shift === 'night') {
-      // Night shift spans two days, but for caching we store by the start date
-      startHour = 18;
-      endHour = 6;
+    // Check if this is today's date - use Intraday for today, Day for historical
+    const today = new Date();
+    const isToday = date.getFullYear() === today.getFullYear() &&
+                    date.getMonth() === today.getMonth() &&
+                    date.getDate() === today.getDate();
+
+    let dateRange;
+
+    if (isToday) {
+      // Current day: use Intraday span with shift-specific hours for real-time data
+      dateRange = getShiftDateRange();
+    } else {
+      // Historical dates: use Day span type (FCLM only returns data for Day span on past dates)
+      const startDate = new Date(date);
+      startDate.setHours(0, 0, 0, 0);
+
+      dateRange = {
+        startDate,
+        endDate: startDate, // Day span only needs startDateDay, endDate unused
+        spanType: 'Day',
+        startHour: 0,
+        endHour: 23
+      };
     }
-
-    const startDate = new Date(date);
-    startDate.setHours(startHour, 0, 0, 0);
-
-    // For night shift or full day, end date might be next day
-    const endDate = new Date(date);
-    if (shift === 'night' || shift === 'all') {
-      endDate.setDate(endDate.getDate() + 1);
-    }
-    endDate.setHours(endHour, 0, 0, 0);
-
-    const dateRange = {
-      startDate,
-      endDate,
-      spanType: 'Intraday',  // Intraday for daily granularity
-      startHour,
-      endHour
-    };
 
     log(`[Cache] Fetching day ${dateStr} (shift: ${shift})...`);
 
