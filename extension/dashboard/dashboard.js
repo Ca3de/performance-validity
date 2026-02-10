@@ -31,7 +31,8 @@
   const PATH_CONFIG = {
     'pick': { name: 'Pick', color: '#4CAF50', goal: 30 },
     'pack': { name: 'Pack', color: '#2196F3', goal: 35 },
-    'stow': { name: 'Stow', color: '#9C27B0', goal: 45 }
+    'stow': { name: 'Stow', color: '#9C27B0', goal: 45 },
+    'sort_batch': { name: 'Sort-Batch', color: '#FF9800', goal: 280 }
   };
 
   // Badge photo URL helper
