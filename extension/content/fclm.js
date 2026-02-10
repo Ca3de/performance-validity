@@ -27,6 +27,7 @@
     PICK: '1003034',           // V-Returns Pick (contains all pick sub-functions)
     PACK: '1003056',           // V-Returns Pack (contains all pack sub-functions)
     STOW: '1003055',           // C-Returns Stow (contains all stow sub-functions)
+    SORT_BATCH: '1003015',     // Sort-Batch (contains Rebin sub-function)
     SUPPORT_C: '1003058',      // C-Returns Support
     SUPPORT_V: '1003059'       // V-Returns Support
   };
@@ -36,6 +37,7 @@
     { id: 'pick', name: 'Pick', processId: PROCESS_IDS.PICK, category: 'Pick', color: '#4CAF50', enabled: true },
     { id: 'pack', name: 'Pack', processId: PROCESS_IDS.PACK, category: 'Pack', color: '#2196F3', enabled: true },
     { id: 'stow', name: 'Stow', processId: PROCESS_IDS.STOW, category: 'Stow', color: '#9C27B0', enabled: true },
+    { id: 'sort_batch', name: 'Sort-Batch', processId: PROCESS_IDS.SORT_BATCH, category: 'Sort', color: '#FF9800', enabled: true },
     // Support paths - disabled by default
     { id: 'support_c', name: 'C-Returns Support', processId: PROCESS_IDS.SUPPORT_C, category: 'Support', color: '#607D8B', enabled: false },
     { id: 'support_v', name: 'V-Returns Support', processId: PROCESS_IDS.SUPPORT_V, category: 'Support', color: '#795548', enabled: false }

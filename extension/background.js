@@ -56,6 +56,11 @@ const PERFORMANCE_PATHS = {
     name: 'Receive',
     processPath: 'Receive',
     color: '#FFC107'
+  },
+  'sort_batch': {
+    name: 'Sort-Batch',
+    processPath: 'SortBatch',
+    color: '#FF9800'
   }
 };
 
