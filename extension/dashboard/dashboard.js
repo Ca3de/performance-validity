@@ -134,7 +134,6 @@
     el.aaJPHBar = document.getElementById('aaJPHBar');
     el.aaJobsBar = document.getElementById('aaJobsBar');
     el.aaHoursBar = document.getElementById('aaHoursBar');
-    el.aaPathsList = document.getElementById('aaPathsList');
     el.vsComparison = document.getElementById('vsComparison');
 
     // Data Hub
@@ -694,6 +693,100 @@
   }
 
   /**
+   * Calculate percentile rank of a value within an array of values
+   */
+  function percentileRank(value, allValues) {
+    if (allValues.length === 0) return 50;
+    const below = allValues.filter(v => v < value).length;
+    return Math.round((below / allValues.length) * 100);
+  }
+
+  /**
+   * Calculate per-path peer stats for FM-style position ratings
+   * Returns array of { pathId, pathName, jph, percentile, rating, hours, jobs }
+   */
+  function calculatePathPositions(employeeId, records, allData) {
+    // Group AA's records by pathId
+    const aaByPath = {};
+    records.forEach(r => {
+      const pathId = r.pathId || 'other';
+      if (!aaByPath[pathId]) {
+        aaByPath[pathId] = { name: r.pathName || pathId, hours: 0, jobs: 0 };
+      }
+      aaByPath[pathId].hours += r.hours || 0;
+      aaByPath[pathId].jobs += r.jobs || 0;
+    });
+
+    // For each path, calculate all employees' JPH to find percentile
+    const positions = [];
+    for (const [pathId, aa] of Object.entries(aaByPath)) {
+      if (aa.hours <= 0) continue;
+      const aaJPH = aa.jobs / aa.hours;
+
+      // Get all employees' JPH in this path
+      const pathEmployees = {};
+      allData.forEach(r => {
+        if ((r.pathId || '').toLowerCase() !== pathId.toLowerCase()) return;
+        if (!pathEmployees[r.employeeId]) {
+          pathEmployees[r.employeeId] = { hours: 0, jobs: 0 };
+        }
+        pathEmployees[r.employeeId].hours += r.hours || 0;
+        pathEmployees[r.employeeId].jobs += r.jobs || 0;
+      });
+
+      const peerJPHs = Object.values(pathEmployees)
+        .filter(e => e.hours > 0)
+        .map(e => e.jobs / e.hours);
+
+      const pct = percentileRank(aaJPH, peerJPHs);
+      let rating;
+      if (pct >= 75) rating = 'natural';
+      else if (pct >= 50) rating = 'accomplished';
+      else if (pct >= 25) rating = 'competent';
+      else rating = 'unconvincing';
+
+      positions.push({
+        pathId,
+        pathName: aa.name,
+        jph: aaJPH,
+        percentile: pct,
+        rating,
+        hours: aa.hours,
+        jobs: aa.jobs
+      });
+    }
+
+    // Sort by percentile (best first)
+    positions.sort((a, b) => b.percentile - a.percentile);
+    return positions;
+  }
+
+  /**
+   * Get daily JPH trend for an employee from all cached data
+   */
+  function getDailyTrend(employeeId, allData) {
+    // Group records by date
+    const byDate = {};
+    allData.forEach(r => {
+      if (String(r.employeeId) !== String(employeeId)) return;
+      const date = String(r.date).substring(0, 10);
+      if (!byDate[date]) byDate[date] = { hours: 0, jobs: 0 };
+      byDate[date].hours += r.hours || 0;
+      byDate[date].jobs += r.jobs || 0;
+    });
+
+    return Object.entries(byDate)
+      .map(([date, d]) => ({
+        date,
+        jph: d.hours > 0 ? d.jobs / d.hours : 0,
+        hours: d.hours,
+        jobs: d.jobs
+      }))
+      .filter(d => d.hours > 0)
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  /**
    * Display AA detail card
    */
   async function displayAADetail(records) {
@@ -744,7 +837,7 @@
       }
     }
 
-    // Set photo URL (use login if available, otherwise fall back to employeeId)
+    // Set photo URL
     const photoUrl = getBadgePhotoUrl(login || employeeId);
     el.aaAvatarImg.src = photoUrl;
 
@@ -754,89 +847,126 @@
     el.aaJobs.textContent = totalJobs.toLocaleString();
     el.aaHours.textContent = totalHours.toFixed(1);
 
-    // Stat bars (normalize to max of 100 JPH, 10000 jobs, 160 hours)
-    el.aaJPHBar.style.width = `${Math.min(avgJPH / 60 * 100, 100)}%`;
-    el.aaJobsBar.style.width = `${Math.min(totalJobs / 5000 * 100, 100)}%`;
-    el.aaHoursBar.style.width = `${Math.min(totalHours / 160 * 100, 100)}%`;
-
-    // Group by path
-    const pathGroups = {};
-    records.forEach(r => {
-      const pathId = r.pathId || 'other';
-      if (!pathGroups[pathId]) {
-        pathGroups[pathId] = { name: r.pathName || pathId, hours: 0, jobs: 0 };
-      }
-      pathGroups[pathId].hours += r.hours || 0;
-      pathGroups[pathId].jobs += r.jobs || 0;
-    });
-
-    // Render path breakdown
-    el.aaPathsList.innerHTML = Object.entries(pathGroups).map(([id, p]) => {
-      const jph = p.hours > 0 ? (p.jobs / p.hours).toFixed(1) : 0;
-      return `
-        <div class="aa-path-item ${id}">
-          <span class="aa-path-name">${p.name}</span>
-          <span class="aa-path-stats">
-            <strong>${jph}</strong> JPH | ${p.hours.toFixed(1)}h | ${p.jobs.toLocaleString()} jobs
-          </span>
-        </div>
-      `;
-    }).join('');
-
-    // Calculate comparison with average
+    // --- Build peer comparison data ---
     const allData = filterByPeriod(state.allCachedData, state.lookupPeriod);
     const employeeMap = new Map();
     allData.forEach(r => {
       if (!employeeMap.has(r.employeeId)) {
-        employeeMap.set(r.employeeId, { hours: 0, jobs: 0 });
+        employeeMap.set(r.employeeId, { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} });
       }
       const emp = employeeMap.get(r.employeeId);
       emp.hours += r.hours || 0;
       emp.jobs += r.jobs || 0;
+      emp.paths.add(r.pathId);
+      // Track daily JPH for consistency
+      const d = String(r.date).substring(0, 10);
+      if (!emp.dailyJPH[d]) emp.dailyJPH[d] = { hours: 0, jobs: 0 };
+      emp.dailyJPH[d].hours += r.hours || 0;
+      emp.dailyJPH[d].jobs += r.jobs || 0;
     });
 
-    // Calculate averages for radar chart
-    let totalAvgHours = 0, totalAvgJobs = 0, totalAvgJPH = 0;
-    let count = 0;
+    // Compute per-employee aggregates
+    const allJPHs = [], allHours = [], allJobs = [], allConsistencies = [];
     employeeMap.forEach(emp => {
-      if (emp.hours > 0) {
-        totalAvgHours += emp.hours;
-        totalAvgJobs += emp.jobs;
-        totalAvgJPH += emp.jobs / emp.hours;
-        count++;
+      if (emp.hours <= 0) return;
+      allJPHs.push(emp.jobs / emp.hours);
+      allHours.push(emp.hours);
+      allJobs.push(emp.jobs);
+      // Consistency: coefficient of variation of daily JPH (inverted)
+      const dailyJPHs = Object.values(emp.dailyJPH)
+        .filter(d => d.hours > 0)
+        .map(d => d.jobs / d.hours);
+      if (dailyJPHs.length >= 2) {
+        const mean = dailyJPHs.reduce((s, v) => s + v, 0) / dailyJPHs.length;
+        const variance = dailyJPHs.reduce((s, v) => s + (v - mean) ** 2, 0) / dailyJPHs.length;
+        const cv = mean > 0 ? Math.sqrt(variance) / mean : 1;
+        allConsistencies.push(Math.max(0, 100 - cv * 100)); // 0 CV = 100 consistency
       }
     });
 
-    const avgHoursAll = count > 0 ? totalAvgHours / count : 0;
-    const avgJobsAll = count > 0 ? totalAvgJobs / count : 0;
-    const overallAvg = count > 0 ? totalAvgJPH / count : 0;
+    // AA's own values
+    const aaEmp = employeeMap.get(employeeId) || { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} };
+    const aaDailyJPHs = Object.values(aaEmp.dailyJPH).filter(d => d.hours > 0).map(d => d.jobs / d.hours);
+    let aaConsistency = 50;
+    if (aaDailyJPHs.length >= 2) {
+      const mean = aaDailyJPHs.reduce((s, v) => s + v, 0) / aaDailyJPHs.length;
+      const variance = aaDailyJPHs.reduce((s, v) => s + (v - mean) ** 2, 0) / aaDailyJPHs.length;
+      const cv = mean > 0 ? Math.sqrt(variance) / mean : 1;
+      aaConsistency = Math.max(0, 100 - cv * 100);
+    }
 
-    // Render radar chart
+    const overallAvg = allJPHs.length > 0 ? allJPHs.reduce((s, v) => s + v, 0) / allJPHs.length : 0;
+    const avgHoursAll = allHours.length > 0 ? allHours.reduce((s, v) => s + v, 0) / allHours.length : 0;
+    const avgJobsAll = allJobs.length > 0 ? allJobs.reduce((s, v) => s + v, 0) / allJobs.length : 0;
+    const avgConsistencyAll = allConsistencies.length > 0 ? allConsistencies.reduce((s, v) => s + v, 0) / allConsistencies.length : 50;
+
+    // Dynamic stat bars based on peer data
+    const maxJPH = allJPHs.length > 0 ? Math.max(...allJPHs) : 60;
+    const maxJobs = allJobs.length > 0 ? Math.max(...allJobs) : 5000;
+    const maxHours = allHours.length > 0 ? Math.max(...allHours) : 160;
+    el.aaJPHBar.style.width = `${Math.min(avgJPH / maxJPH * 100, 100)}%`;
+    el.aaJobsBar.style.width = `${Math.min(totalJobs / maxJobs * 100, 100)}%`;
+    el.aaHoursBar.style.width = `${Math.min(totalHours / maxHours * 100, 100)}%`;
+
+    // --- Radar chart with dynamic maxes ---
     const radarData = {
       aa: {
         jph: avgJPH,
         hours: totalHours,
         jobs: totalJobs,
-        efficiency: overallAvg > 0 ? (avgJPH / overallAvg) * 100 : 100,
-        consistency: 85, // Placeholder - would need daily data
-        volume: avgJobsAll > 0 ? (totalJobs / avgJobsAll) * 100 : 100
+        consistency: aaConsistency,
+        versatility: Object.keys(PATH_CONFIG).length > 0
+          ? (aaEmp.paths.size / Object.keys(PATH_CONFIG).length) * 100
+          : 0
       },
       avg: {
         jph: overallAvg,
         hours: avgHoursAll,
         jobs: avgJobsAll,
-        efficiency: 100,
-        consistency: 75,
-        volume: 100
+        consistency: avgConsistencyAll,
+        versatility: 50
+      },
+      maxes: {
+        jph: Math.max(maxJPH * 1.1, 1),
+        hours: Math.max(maxHours * 1.1, 1),
+        jobs: Math.max(maxJobs * 1.1, 1),
+        consistency: 100,
+        versatility: 100
       }
     };
 
     renderRadarChart(radarData, employeeName);
-
-    // Update legend name
     const legendName = document.getElementById('radarLegendName');
     if (legendName) legendName.textContent = employeeName.split(' ')[0] || 'This AA';
 
+    // --- Best Paths (FM-style positions) ---
+    const positions = calculatePathPositions(employeeId, records, allData);
+    const positionLabels = {
+      natural: 'Natural',
+      accomplished: 'Accomplished',
+      competent: 'Competent',
+      unconvincing: 'Unconvincing'
+    };
+    const positionsList = document.getElementById('aaPositionsList');
+    if (positionsList) {
+      positionsList.innerHTML = positions.length > 0
+        ? positions.map(p => `
+          <div class="position-item ${p.rating}">
+            <span class="position-badge ${p.rating}">${positionLabels[p.rating]}</span>
+            <span class="position-path">${p.pathName}</span>
+            <span class="position-stats">
+              <strong>${p.jph.toFixed(1)}</strong> JPH &middot; Top ${100 - p.percentile}%
+            </span>
+          </div>
+        `).join('')
+        : '<div class="empty-state">No path data</div>';
+    }
+
+    // --- JPH Trend Over Time ---
+    const trend = getDailyTrend(employeeId, state.allCachedData);
+    renderTrendChart(trend, overallAvg);
+
+    // --- Performance vs Average ---
     const diff = avgJPH - overallAvg;
     const diffClass = diff >= 0 ? 'positive' : 'negative';
     const diffSign = diff >= 0 ? '+' : '';
@@ -844,12 +974,12 @@
     el.vsComparison.innerHTML = `
       <div class="vs-item">
         <div class="vs-value">${avgJPH.toFixed(1)}</div>
-        <div class="vs-label">Your JPH</div>
+        <div class="vs-label">Their JPH</div>
       </div>
       <div class="vs-divider"></div>
       <div class="vs-item">
         <div class="vs-value">${overallAvg.toFixed(1)}</div>
-        <div class="vs-label">Avg JPH</div>
+        <div class="vs-label">Site Avg</div>
       </div>
       <div class="vs-divider"></div>
       <div class="vs-item">
@@ -864,31 +994,28 @@
   }
 
   /**
-   * Render radar/polygon chart
+   * Render radar/polygon chart with dynamic maxes
    */
   function renderRadarChart(data, name) {
     const svg = document.getElementById('radarChart');
     if (!svg) return;
 
-    const cx = 150, cy = 150; // Center
+    const cx = 150, cy = 150;
     const maxRadius = 100;
     const levels = 5;
 
-    // Metrics to display
     const metrics = [
-      { key: 'jph', label: 'JPH', max: 60 },
-      { key: 'efficiency', label: 'Efficiency', max: 150 },
-      { key: 'volume', label: 'Volume', max: 150 },
-      { key: 'hours', label: 'Hours', max: 160 },
-      { key: 'jobs', label: 'Jobs', max: 5000 },
-      { key: 'consistency', label: 'Consistency', max: 100 }
+      { key: 'jph', label: 'JPH', format: v => v.toFixed(1) },
+      { key: 'consistency', label: 'Consistency', format: v => Math.round(v) + '%' },
+      { key: 'versatility', label: 'Versatility', format: v => Math.round(v) + '%' },
+      { key: 'hours', label: 'Hours', format: v => v.toFixed(1) },
+      { key: 'jobs', label: 'Jobs', format: v => Math.round(v).toLocaleString() }
     ];
 
     const angleStep = (2 * Math.PI) / metrics.length;
 
-    // Helper to get point on radar
     const getPoint = (value, max, index) => {
-      const normalized = Math.min(value / max, 1);
+      const normalized = Math.min(max > 0 ? value / max : 0, 1);
       const angle = index * angleStep - Math.PI / 2;
       return {
         x: cx + maxRadius * normalized * Math.cos(angle),
@@ -896,7 +1023,6 @@
       };
     };
 
-    // Build SVG content
     let svgContent = '';
 
     // Grid circles
@@ -917,36 +1043,100 @@
       svgContent += `<text x="${labelX}" y="${labelY}" class="radar-label" dy="0.35em">${m.label}</text>`;
     });
 
-    // Average polygon (background)
+    // Average polygon
     const avgPoints = metrics.map((m, i) => {
-      const p = getPoint(data.avg[m.key] || 0, m.max, i);
+      const p = getPoint(data.avg[m.key] || 0, data.maxes[m.key], i);
       return `${p.x},${p.y}`;
     }).join(' ');
     svgContent += `<polygon points="${avgPoints}" class="radar-polygon radar-polygon-avg" />`;
 
-    // AA polygon (foreground)
+    // AA polygon
     const aaPoints = metrics.map((m, i) => {
-      const p = getPoint(data.aa[m.key] || 0, m.max, i);
+      const p = getPoint(data.aa[m.key] || 0, data.maxes[m.key], i);
       return `${p.x},${p.y}`;
     }).join(' ');
     svgContent += `<polygon points="${aaPoints}" class="radar-polygon radar-polygon-aa" />`;
 
-    // Value dots and labels for AA
+    // Value dots and labels
     metrics.forEach((m, i) => {
-      const p = getPoint(data.aa[m.key] || 0, m.max, i);
-      const val = data.aa[m.key] || 0;
-      const displayVal = m.key === 'jobs' ? Math.round(val).toLocaleString() :
-                         m.key === 'hours' ? val.toFixed(1) :
-                         m.key === 'jph' ? val.toFixed(1) :
-                         Math.round(val);
-
+      const p = getPoint(data.aa[m.key] || 0, data.maxes[m.key], i);
       svgContent += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--accent)" />`;
 
-      // Position value label
       const angle = i * angleStep - Math.PI / 2;
       const valX = p.x + 15 * Math.cos(angle);
       const valY = p.y + 15 * Math.sin(angle);
-      svgContent += `<text x="${valX}" y="${valY}" class="radar-value" dy="0.35em">${displayVal}</text>`;
+      svgContent += `<text x="${valX}" y="${valY}" class="radar-value" dy="0.35em">${m.format(data.aa[m.key] || 0)}</text>`;
+    });
+
+    svg.innerHTML = svgContent;
+  }
+
+  /**
+   * Render JPH trend sparkline chart
+   */
+  function renderTrendChart(trend, avgJPH) {
+    const svg = document.getElementById('trendChart');
+    if (!svg || trend.length === 0) {
+      if (svg) svg.innerHTML = '<text x="300" y="60" text-anchor="middle" class="trend-label" style="font-size:12px">No daily history available</text>';
+      return;
+    }
+
+    const W = 600, H = 120;
+    const padL = 40, padR = 10, padT = 15, padB = 25;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+
+    const maxJPH = Math.max(...trend.map(d => d.jph), avgJPH) * 1.15;
+    const minJPH = 0;
+
+    const xStep = trend.length > 1 ? chartW / (trend.length - 1) : chartW / 2;
+    const yScale = (v) => padT + chartH - ((v - minJPH) / (maxJPH - minJPH)) * chartH;
+    const xPos = (i) => padL + (trend.length > 1 ? i * xStep : chartW / 2);
+
+    let svgContent = '';
+
+    // Avg line
+    const avgY = yScale(avgJPH);
+    svgContent += `<line x1="${padL}" y1="${avgY}" x2="${W - padR}" y2="${avgY}" class="trend-avg-line" />`;
+    svgContent += `<text x="${padL - 4}" y="${avgY}" text-anchor="end" class="trend-avg-label" dy="0.35em">Avg ${avgJPH.toFixed(0)}</text>`;
+
+    // Area fill
+    if (trend.length > 1) {
+      let areaPath = `M ${xPos(0)} ${yScale(trend[0].jph)}`;
+      for (let i = 1; i < trend.length; i++) {
+        areaPath += ` L ${xPos(i)} ${yScale(trend[i].jph)}`;
+      }
+      areaPath += ` L ${xPos(trend.length - 1)} ${padT + chartH} L ${xPos(0)} ${padT + chartH} Z`;
+      svgContent += `<path d="${areaPath}" class="trend-area" />`;
+    }
+
+    // Line
+    if (trend.length > 1) {
+      let linePath = `M ${xPos(0)} ${yScale(trend[0].jph)}`;
+      for (let i = 1; i < trend.length; i++) {
+        linePath += ` L ${xPos(i)} ${yScale(trend[i].jph)}`;
+      }
+      svgContent += `<path d="${linePath}" class="trend-line" />`;
+    }
+
+    // Dots and date labels
+    trend.forEach((d, i) => {
+      const x = xPos(i);
+      const y = yScale(d.jph);
+      svgContent += `<circle cx="${x}" cy="${y}" r="3" class="trend-dot" />`;
+
+      // Value label on every point (or every other if crowded)
+      const showLabel = trend.length <= 14 || i % 2 === 0 || i === trend.length - 1;
+      if (showLabel) {
+        svgContent += `<text x="${x}" y="${y - 8}" text-anchor="middle" class="trend-value-label">${d.jph.toFixed(0)}</text>`;
+      }
+
+      // Date label (show first, last, and every ~7th)
+      const showDate = i === 0 || i === trend.length - 1 || (trend.length > 7 && i % 7 === 0);
+      if (showDate) {
+        const dateLabel = d.date.substring(5); // MM-DD
+        svgContent += `<text x="${x}" y="${H - 4}" text-anchor="middle" class="trend-label">${dateLabel}</text>`;
+      }
     });
 
     svg.innerHTML = svgContent;

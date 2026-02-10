@@ -196,6 +196,7 @@
                     <option value="pick">Pick</option>
                     <option value="pack">Pack</option>
                     <option value="stow">Stow</option>
+                    <option value="sort_batch">Sort-Batch</option>
                   </select>
                 </div>
               </div>
@@ -232,7 +233,7 @@
                   </div>
                   <div class="legend-item">
                     <span class="legend-color legend-avg"></span>
-                    <span>Path Average</span>
+                    <span>Site Average</span>
                   </div>
                 </div>
               </div>
@@ -263,20 +264,25 @@
                   </div>
                 </div>
 
+                <!-- Best Paths (FM-style positions) -->
                 <div class="aa-paths-section">
-                  <h3 class="section-title">Path Breakdown</h3>
-                  <div class="aa-paths-list" id="aaPathsList">
-                    <!-- Path breakdown injected here -->
-                  </div>
+                  <h3 class="section-title">Best Paths</h3>
+                  <div class="aa-positions-list" id="aaPositionsList"></div>
                 </div>
+              </div>
+            </div>
+
+            <!-- JPH Trend Over Time -->
+            <div class="aa-performance-section">
+              <h3 class="section-title">JPH Trend</h3>
+              <div class="trend-container" id="trendContainer">
+                <svg id="trendChart" class="trend-chart" viewBox="0 0 600 120" preserveAspectRatio="none"></svg>
               </div>
             </div>
 
             <div class="aa-performance-section">
               <h3 class="section-title">Performance vs Average</h3>
-              <div class="vs-comparison" id="vsComparison">
-                <!-- Comparison injected here -->
-              </div>
+              <div class="vs-comparison" id="vsComparison"></div>
             </div>
           </div>
         </div>
