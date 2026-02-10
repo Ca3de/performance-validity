@@ -21,7 +21,10 @@
     dataPeriod: 'today',
     dataSearch: '',
     dataPathFilter: 'all',
-    fclmTabId: null
+    fclmTabId: null,
+    // Refresh state
+    refreshInterval: null,
+    refreshing: false
   };
 
   // Path configuration
@@ -316,6 +319,7 @@
         state.allCachedData = response.performanceData || [];
         el.warehouseId.textContent = state.warehouseId;
         renderOverview();
+        updateLastRefreshTime();
         showToast(`Loaded ${response.totalRecords} records`, 'success');
       } else {
         showToast('No cached data available', 'warning');
@@ -326,57 +330,74 @@
     }
   }
 
+  // Auto-refresh interval (5 minutes)
+  const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+
   /**
-   * Listen for data update messages from the content script (via background)
+   * Start auto-refresh: polls FCLM tab for fresh data every 5 minutes.
+   * Also listens for push notifications from the content script for immediate updates.
    */
   function listenForDataUpdates() {
-    browser.runtime.onMessage.addListener((message) => {
-      if (message.action === 'dataUpdated') {
-        console.log(`[Dashboard] Data updated notification: ${message.recordCount} records at ${message.updatedAt}`);
-        refreshData();
-      }
-    });
-    console.log('[Dashboard] Listening for data updates');
+    // Primary: poll on a fixed interval
+    state.refreshInterval = setInterval(() => {
+      console.log('[Dashboard] Auto-refresh triggered');
+      refreshData();
+    }, REFRESH_INTERVAL_MS);
+    console.log(`[Dashboard] Auto-refresh started (every ${REFRESH_INTERVAL_MS / 1000}s)`);
+
+    // Secondary: listen for push notifications from content script for immediate refresh
+    try {
+      browser.runtime.onMessage.addListener((message) => {
+        if (message.action === 'dataUpdated') {
+          console.log(`[Dashboard] Push notification: ${message.recordCount} records at ${message.updatedAt}`);
+          refreshData();
+        }
+      });
+    } catch (e) {
+      console.log('[Dashboard] Could not register message listener:', e);
+    }
   }
 
   /**
    * Refresh data from FCLM tab and re-render current view
    */
   async function refreshData() {
-    if (!state.fclmTabId) {
-      // Re-discover the FCLM tab
-      try {
-        const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
-        if (tabs.length > 0) {
-          state.fclmTabId = tabs[0].id;
-        } else {
-          console.log('[Dashboard] No FCLM tab found for refresh');
-          return;
-        }
-      } catch (err) {
-        console.log('[Dashboard] Error finding FCLM tab:', err);
-        return;
-      }
-    }
+    if (state.refreshing) return; // Prevent concurrent refreshes
+    state.refreshing = true;
 
     try {
+      // Always re-discover the FCLM tab to handle tab closes/reopens
+      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
+      if (tabs.length === 0) {
+        console.log('[Dashboard] No FCLM tab found for refresh');
+        return;
+      }
+      state.fclmTabId = tabs[0].id;
+
       const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getAllCachedData' });
 
       if (response?.success && response.totalRecords > 0) {
+        const oldCount = state.allCachedData.length;
         state.allCachedData = response.performanceData || [];
         state.warehouseId = response.warehouseId || state.warehouseId;
+        el.warehouseId.textContent = state.warehouseId;
 
         // Re-render current view
         if (state.currentView === 'overview') renderOverview();
         if (state.currentView === 'data') renderDataTable();
 
         updateLastRefreshTime();
+
+        if (oldCount > 0 && state.allCachedData.length !== oldCount) {
+          showToast(`Data refreshed (${response.totalRecords} records)`, 'success');
+        }
         console.log(`[Dashboard] Refreshed: ${response.totalRecords} records`);
       }
     } catch (err) {
       console.log('[Dashboard] Error refreshing data:', err.message);
-      // Tab may have been closed — clear the cached tab ID
       state.fclmTabId = null;
+    } finally {
+      state.refreshing = false;
     }
   }
 
