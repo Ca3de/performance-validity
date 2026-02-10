@@ -762,28 +762,37 @@
   }
 
   /**
-   * Get daily JPH trend for an employee from all cached data
+   * Get daily JPH trend for an employee, grouped by path.
+   * Returns { pathId: [{date, jph, hours, jobs}, ...], ... }
    */
-  function getDailyTrend(employeeId, allData) {
-    // Group records by date
-    const byDate = {};
+  function getDailyTrendByPath(employeeId, allData) {
+    const byPath = {};
     allData.forEach(r => {
       if (String(r.employeeId) !== String(employeeId)) return;
+      const pathId = (r.pathId || 'other').toLowerCase();
       const date = String(r.date).substring(0, 10);
-      if (!byDate[date]) byDate[date] = { hours: 0, jobs: 0 };
-      byDate[date].hours += r.hours || 0;
-      byDate[date].jobs += r.jobs || 0;
+      if (!byPath[pathId]) byPath[pathId] = {};
+      if (!byPath[pathId][date]) byPath[pathId][date] = { hours: 0, jobs: 0 };
+      byPath[pathId][date].hours += r.hours || 0;
+      byPath[pathId][date].jobs += r.jobs || 0;
     });
 
-    return Object.entries(byDate)
-      .map(([date, d]) => ({
-        date,
-        jph: d.hours > 0 ? d.jobs / d.hours : 0,
-        hours: d.hours,
-        jobs: d.jobs
-      }))
-      .filter(d => d.hours > 0)
-      .sort((a, b) => a.date.localeCompare(b.date));
+    const result = {};
+    for (const [pathId, dates] of Object.entries(byPath)) {
+      const points = Object.entries(dates)
+        .map(([date, d]) => ({
+          date,
+          jph: d.hours > 0 ? d.jobs / d.hours : 0,
+          hours: d.hours,
+          jobs: d.jobs
+        }))
+        .filter(d => d.hours > 0)
+        .sort((a, b) => a.date.localeCompare(b.date));
+      if (points.length > 0) {
+        result[pathId] = points;
+      }
+    }
+    return result;
   }
 
   /**
@@ -962,9 +971,9 @@
         : '<div class="empty-state">No path data</div>';
     }
 
-    // --- JPH Trend Over Time ---
-    const trend = getDailyTrend(employeeId, state.allCachedData);
-    renderTrendChart(trend, overallAvg);
+    // --- JPH Trend by Path ---
+    const trendByPath = getDailyTrendByPath(employeeId, state.allCachedData);
+    renderTrendCharts(trendByPath);
 
     // --- Performance vs Average ---
     const diff = avgJPH - overallAvg;
@@ -1072,21 +1081,60 @@
   }
 
   /**
-   * Render JPH trend sparkline chart
+   * Render per-path JPH trend mini charts into the trendContainer
    */
-  function renderTrendChart(trend, avgJPH) {
-    const svg = document.getElementById('trendChart');
-    if (!svg || trend.length === 0) {
-      if (svg) svg.innerHTML = '<text x="300" y="60" text-anchor="middle" class="trend-label" style="font-size:12px">No daily history available</text>';
+  function renderTrendCharts(trendByPath) {
+    const container = document.getElementById('trendContainer');
+    if (!container) return;
+
+    const pathIds = Object.keys(trendByPath);
+    if (pathIds.length === 0) {
+      container.innerHTML = '<div class="empty-state" style="padding:20px">No daily history available</div>';
       return;
     }
 
-    const W = 600, H = 120;
-    const padL = 40, padR = 10, padT = 15, padB = 25;
+    // Sort paths by most data points (primary path first)
+    pathIds.sort((a, b) => trendByPath[b].length - trendByPath[a].length);
+
+    container.innerHTML = pathIds.map(pathId => {
+      const config = PATH_CONFIG[pathId] || { name: pathId, color: '#00d4aa', goal: null };
+      const trend = trendByPath[pathId];
+      const avgJPH = trend.reduce((s, d) => s + d.jph, 0) / trend.length;
+
+      return `
+        <div class="trend-path-section">
+          <div class="trend-path-header">
+            <span class="trend-path-dot" style="background:${config.color}"></span>
+            <span class="trend-path-name">${config.name}</span>
+            <span class="trend-path-avg">Avg ${avgJPH.toFixed(1)} JPH</span>
+          </div>
+          <svg class="trend-chart" viewBox="0 0 600 100" preserveAspectRatio="none" id="trendChart_${pathId}"></svg>
+        </div>
+      `;
+    }).join('');
+
+    // Render each mini chart
+    pathIds.forEach(pathId => {
+      const config = PATH_CONFIG[pathId] || { name: pathId, color: '#00d4aa', goal: null };
+      const trend = trendByPath[pathId];
+      const avgJPH = trend.reduce((s, d) => s + d.jph, 0) / trend.length;
+      renderSingleTrendChart(`trendChart_${pathId}`, trend, avgJPH, config.color, config.goal);
+    });
+  }
+
+  /**
+   * Render a single path's trend sparkline into an SVG element
+   */
+  function renderSingleTrendChart(svgId, trend, avgJPH, color, goal) {
+    const svg = document.getElementById(svgId);
+    if (!svg || trend.length === 0) return;
+
+    const W = 600, H = 100;
+    const padL = 40, padR = 10, padT = 12, padB = 22;
     const chartW = W - padL - padR;
     const chartH = H - padT - padB;
 
-    const maxJPH = Math.max(...trend.map(d => d.jph), avgJPH) * 1.15;
+    const maxJPH = Math.max(...trend.map(d => d.jph), avgJPH, goal || 0) * 1.15;
     const minJPH = 0;
 
     const xStep = trend.length > 1 ? chartW / (trend.length - 1) : chartW / 2;
@@ -1095,10 +1143,17 @@
 
     let svgContent = '';
 
+    // Goal line
+    if (goal) {
+      const goalY = yScale(goal);
+      svgContent += `<line x1="${padL}" y1="${goalY}" x2="${W - padR}" y2="${goalY}" stroke="#f39c12" stroke-width="1" stroke-dasharray="6,3" opacity="0.5" />`;
+      svgContent += `<text x="${padL - 4}" y="${goalY}" text-anchor="end" fill="#f39c12" font-size="9" dy="0.35em" opacity="0.7">Goal</text>`;
+    }
+
     // Avg line
     const avgY = yScale(avgJPH);
     svgContent += `<line x1="${padL}" y1="${avgY}" x2="${W - padR}" y2="${avgY}" class="trend-avg-line" />`;
-    svgContent += `<text x="${padL - 4}" y="${avgY}" text-anchor="end" class="trend-avg-label" dy="0.35em">Avg ${avgJPH.toFixed(0)}</text>`;
+    svgContent += `<text x="${padL - 4}" y="${avgY}" text-anchor="end" class="trend-avg-label" dy="0.35em">${avgJPH.toFixed(0)}</text>`;
 
     // Area fill
     if (trend.length > 1) {
@@ -1107,7 +1162,7 @@
         areaPath += ` L ${xPos(i)} ${yScale(trend[i].jph)}`;
       }
       areaPath += ` L ${xPos(trend.length - 1)} ${padT + chartH} L ${xPos(0)} ${padT + chartH} Z`;
-      svgContent += `<path d="${areaPath}" class="trend-area" />`;
+      svgContent += `<path d="${areaPath}" fill="${color}" opacity="0.15" />`;
     }
 
     // Line
@@ -1116,25 +1171,23 @@
       for (let i = 1; i < trend.length; i++) {
         linePath += ` L ${xPos(i)} ${yScale(trend[i].jph)}`;
       }
-      svgContent += `<path d="${linePath}" class="trend-line" />`;
+      svgContent += `<path d="${linePath}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />`;
     }
 
-    // Dots and date labels
+    // Dots and labels
     trend.forEach((d, i) => {
       const x = xPos(i);
       const y = yScale(d.jph);
-      svgContent += `<circle cx="${x}" cy="${y}" r="3" class="trend-dot" />`;
+      svgContent += `<circle cx="${x}" cy="${y}" r="3" fill="${color}" />`;
 
-      // Value label on every point (or every other if crowded)
       const showLabel = trend.length <= 14 || i % 2 === 0 || i === trend.length - 1;
       if (showLabel) {
-        svgContent += `<text x="${x}" y="${y - 8}" text-anchor="middle" class="trend-value-label">${d.jph.toFixed(0)}</text>`;
+        svgContent += `<text x="${x}" y="${y - 8}" text-anchor="middle" fill="${color}" font-size="10" font-weight="600">${d.jph.toFixed(0)}</text>`;
       }
 
-      // Date label (show first, last, and every ~7th)
       const showDate = i === 0 || i === trend.length - 1 || (trend.length > 7 && i % 7 === 0);
       if (showDate) {
-        const dateLabel = d.date.substring(5); // MM-DD
+        const dateLabel = d.date.substring(5);
         svgContent += `<text x="${x}" y="${H - 4}" text-anchor="middle" class="trend-label">${dateLabel}</text>`;
       }
     });
