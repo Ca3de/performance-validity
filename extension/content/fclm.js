@@ -1786,6 +1786,20 @@
     if (window.FCLMDataCache && allRecords.length > 0) {
       await window.FCLMDataCache.storeDailyData(warehouseId, today, currentShift, allRecords);
       log(`[Cache] Cached ${allRecords.length} current day records`);
+
+      // Notify dashboard tab that fresh data is available
+      try {
+        browser.runtime.sendMessage({
+          action: 'dataUpdated',
+          warehouseId,
+          date: today,
+          shift: currentShift,
+          recordCount: allRecords.length,
+          updatedAt: new Date().toISOString()
+        });
+      } catch (e) {
+        // Dashboard may not be open - ignore
+      }
     }
 
     return allRecords;

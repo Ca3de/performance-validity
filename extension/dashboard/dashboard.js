@@ -78,6 +78,7 @@
 
     cacheElements();
     attachEventListeners();
+    listenForDataUpdates();
     updateHeaderDate();
     await loadInitialData();
 
@@ -323,6 +324,69 @@
       console.error('[Dashboard] Error loading from FCLM:', error);
       showToast('Error connecting to FCLM', 'error');
     }
+  }
+
+  /**
+   * Listen for data update messages from the content script (via background)
+   */
+  function listenForDataUpdates() {
+    browser.runtime.onMessage.addListener((message) => {
+      if (message.action === 'dataUpdated') {
+        console.log(`[Dashboard] Data updated notification: ${message.recordCount} records at ${message.updatedAt}`);
+        refreshData();
+      }
+    });
+    console.log('[Dashboard] Listening for data updates');
+  }
+
+  /**
+   * Refresh data from FCLM tab and re-render current view
+   */
+  async function refreshData() {
+    if (!state.fclmTabId) {
+      // Re-discover the FCLM tab
+      try {
+        const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
+        if (tabs.length > 0) {
+          state.fclmTabId = tabs[0].id;
+        } else {
+          console.log('[Dashboard] No FCLM tab found for refresh');
+          return;
+        }
+      } catch (err) {
+        console.log('[Dashboard] Error finding FCLM tab:', err);
+        return;
+      }
+    }
+
+    try {
+      const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getAllCachedData' });
+
+      if (response?.success && response.totalRecords > 0) {
+        state.allCachedData = response.performanceData || [];
+        state.warehouseId = response.warehouseId || state.warehouseId;
+
+        // Re-render current view
+        if (state.currentView === 'overview') renderOverview();
+        if (state.currentView === 'data') renderDataTable();
+
+        updateLastRefreshTime();
+        console.log(`[Dashboard] Refreshed: ${response.totalRecords} records`);
+      }
+    } catch (err) {
+      console.log('[Dashboard] Error refreshing data:', err.message);
+      // Tab may have been closed — clear the cached tab ID
+      state.fclmTabId = null;
+    }
+  }
+
+  /**
+   * Update the header date to show last refresh time
+   */
+  function updateLastRefreshTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    el.headerDate.textContent = `Updated ${timeStr}`;
   }
 
   /**

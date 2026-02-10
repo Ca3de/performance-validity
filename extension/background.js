@@ -101,6 +101,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       sendResponse({ success: true });
       return true;
 
+    case 'dataUpdated':
+      // Relay data update notification to dashboard tabs
+      log('Data updated, notifying dashboard tabs...');
+      relayToExtensionPages(message);
+      sendResponse({ success: true });
+      return true;
+
     default:
       log('Unknown action:', message.action);
       sendResponse({ success: false, error: 'Unknown action' });
@@ -224,6 +231,17 @@ function getPastMonthDateRange() {
     startDate: startDate.toISOString().split('T')[0],
     endDate: endDate.toISOString().split('T')[0]
   };
+}
+
+/**
+ * Relay a message to all extension pages (dashboard, popup)
+ * Uses runtime.sendMessage which broadcasts to all extension contexts
+ */
+function relayToExtensionPages(message) {
+  browser.runtime.sendMessage(message).catch(() => {
+    // No listeners - dashboard may not be open
+  });
+  log(`Relayed ${message.action} to extension pages`);
 }
 
 // Extension installation/update handler
