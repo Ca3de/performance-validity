@@ -763,7 +763,7 @@
 
   /**
    * Get daily JPH trend for an employee, grouped by path.
-   * Returns { pathId: [{date, jph, hours, jobs}, ...], ... }
+   * Returns { pathId: [{label, jph, hours, jobs}, ...], ... }
    */
   function getDailyTrendByPath(employeeId, allData) {
     const byPath = {};
@@ -781,17 +781,60 @@
     for (const [pathId, dates] of Object.entries(byPath)) {
       const points = Object.entries(dates)
         .map(([date, d]) => ({
-          date,
+          label: date,
           jph: d.hours > 0 ? d.jobs / d.hours : 0,
           hours: d.hours,
           jobs: d.jobs
         }))
         .filter(d => d.hours > 0)
-        .sort((a, b) => a.date.localeCompare(b.date));
+        .sort((a, b) => a.label.localeCompare(b.label));
       if (points.length > 0) {
         result[pathId] = points;
       }
     }
+    return result;
+  }
+
+  /**
+   * Build hourly JPH trend from intraday snapshots for a specific employee.
+   * Snapshots keyed by hour: { 7: { time, data: [{e, p, j, h}, ...] }, 8: {...}, ... }
+   * Returns { pathId: [{label, jph, hours, jobs}, ...], ... }
+   */
+  function getHourlyTrendFromSnapshots(employeeId, snapshots) {
+    const result = {};
+    const hours = Object.keys(snapshots)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    for (const hour of hours) {
+      const snap = snapshots[hour];
+      if (!snap || !snap.data) continue;
+
+      // Find this employee's records in the snapshot
+      snap.data.forEach(r => {
+        if (String(r.e) !== String(employeeId)) return;
+        const pathId = (r.p || 'other').toLowerCase();
+        if (!result[pathId]) result[pathId] = [];
+
+        const jobs = r.j || 0;
+        const hrs = r.h || 0;
+        const jph = hrs > 0 ? jobs / hrs : 0;
+
+        // Format hour label (e.g., "7 AM", "1 PM")
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+        const label = `${h12} ${ampm}`;
+
+        result[pathId].push({ label, jph, hours: hrs, jobs });
+      });
+    }
+
+    // Filter out empty paths
+    for (const pathId of Object.keys(result)) {
+      result[pathId] = result[pathId].filter(d => d.hours > 0);
+      if (result[pathId].length === 0) delete result[pathId];
+    }
+
     return result;
   }
 
@@ -972,8 +1015,31 @@
     }
 
     // --- JPH Trend by Path ---
-    const trendByPath = getDailyTrendByPath(employeeId, state.allCachedData);
-    renderTrendCharts(trendByPath);
+    // For "today": show hourly trend from intraday snapshots
+    // For multi-day periods: show daily trend from cached data
+    let trendByPath = {};
+    const isToday = state.lookupPeriod === 'today';
+
+    if (isToday && state.fclmTabId) {
+      try {
+        const resp = await browser.tabs.sendMessage(state.fclmTabId, {
+          action: 'getIntradaySnapshots'
+        });
+        if (resp?.success && resp.snapshots && Object.keys(resp.snapshots).length > 0) {
+          trendByPath = getHourlyTrendFromSnapshots(employeeId, resp.snapshots);
+        }
+      } catch (err) {
+        console.log('[Dashboard] Could not load intraday snapshots:', err.message);
+      }
+    }
+
+    // Fallback to daily trend if no intraday data or multi-day period
+    if (Object.keys(trendByPath).length === 0) {
+      const trendData = filterByPeriod(state.allCachedData, state.lookupPeriod);
+      trendByPath = getDailyTrendByPath(employeeId, trendData);
+    }
+
+    renderTrendCharts(trendByPath, isToday);
 
     // --- Performance vs Average ---
     const diff = avgJPH - overallAvg;
@@ -1081,20 +1147,24 @@
   }
 
   /**
-   * Render per-path JPH trend mini charts into the trendContainer
+   * Render per-path JPH trend mini charts into the trendContainer.
+   * @param {Object} trendByPath - { pathId: [{label, jph, hours, jobs}, ...] }
+   * @param {boolean} isHourly - true for today's hourly view, false for daily
    */
-  function renderTrendCharts(trendByPath) {
+  function renderTrendCharts(trendByPath, isHourly) {
     const container = document.getElementById('trendContainer');
     if (!container) return;
 
     const pathIds = Object.keys(trendByPath);
     if (pathIds.length === 0) {
-      container.innerHTML = '<div class="empty-state" style="padding:20px">No daily history available</div>';
+      container.innerHTML = '<div class="empty-state" style="padding:20px">No trend data available</div>';
       return;
     }
 
     // Sort paths by most data points (primary path first)
     pathIds.sort((a, b) => trendByPath[b].length - trendByPath[a].length);
+
+    const modeLabel = isHourly ? 'Hourly' : 'Daily';
 
     container.innerHTML = pathIds.map(pathId => {
       const config = PATH_CONFIG[pathId] || { name: pathId, color: '#00d4aa', goal: null };
@@ -1106,7 +1176,7 @@
           <div class="trend-path-header">
             <span class="trend-path-dot" style="background:${config.color}"></span>
             <span class="trend-path-name">${config.name}</span>
-            <span class="trend-path-avg">Avg ${avgJPH.toFixed(1)} JPH</span>
+            <span class="trend-path-avg">${modeLabel} &middot; Avg ${avgJPH.toFixed(1)} JPH</span>
           </div>
           <svg class="trend-chart" viewBox="0 0 600 100" preserveAspectRatio="none" id="trendChart_${pathId}"></svg>
         </div>
@@ -1118,14 +1188,15 @@
       const config = PATH_CONFIG[pathId] || { name: pathId, color: '#00d4aa', goal: null };
       const trend = trendByPath[pathId];
       const avgJPH = trend.reduce((s, d) => s + d.jph, 0) / trend.length;
-      renderSingleTrendChart(`trendChart_${pathId}`, trend, avgJPH, config.color, config.goal);
+      renderSingleTrendChart(`trendChart_${pathId}`, trend, avgJPH, config.color, config.goal, isHourly);
     });
   }
 
   /**
-   * Render a single path's trend sparkline into an SVG element
+   * Render a single path's trend sparkline into an SVG element.
+   * Trend points use .label (hour string like "7 AM" or date string like "2026-02-09").
    */
-  function renderSingleTrendChart(svgId, trend, avgJPH, color, goal) {
+  function renderSingleTrendChart(svgId, trend, avgJPH, color, goal, isHourly) {
     const svg = document.getElementById(svgId);
     if (!svg || trend.length === 0) return;
 
@@ -1180,15 +1251,23 @@
       const y = yScale(d.jph);
       svgContent += `<circle cx="${x}" cy="${y}" r="3" fill="${color}" />`;
 
-      const showLabel = trend.length <= 14 || i % 2 === 0 || i === trend.length - 1;
-      if (showLabel) {
+      // JPH value labels
+      const showValue = trend.length <= 14 || i % 2 === 0 || i === trend.length - 1;
+      if (showValue) {
         svgContent += `<text x="${x}" y="${y - 8}" text-anchor="middle" fill="${color}" font-size="10" font-weight="600">${d.jph.toFixed(0)}</text>`;
       }
 
-      const showDate = i === 0 || i === trend.length - 1 || (trend.length > 7 && i % 7 === 0);
-      if (showDate) {
-        const dateLabel = d.date.substring(5);
-        svgContent += `<text x="${x}" y="${H - 4}" text-anchor="middle" class="trend-label">${dateLabel}</text>`;
+      // X-axis labels: for hourly show all hours, for daily show at intervals
+      let showXLabel;
+      if (isHourly) {
+        showXLabel = trend.length <= 12 || i % 2 === 0 || i === trend.length - 1;
+      } else {
+        showXLabel = i === 0 || i === trend.length - 1 || (trend.length > 7 && i % 7 === 0);
+      }
+      if (showXLabel) {
+        // For hourly: label is already "7 AM" etc. For daily: extract MM-DD from date
+        const xLabel = isHourly ? d.label : d.label.substring(5);
+        svgContent += `<text x="${x}" y="${H - 4}" text-anchor="middle" class="trend-label">${xLabel}</text>`;
       }
     });
 

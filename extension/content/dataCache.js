@@ -272,6 +272,61 @@
     return result[key] || null;
   }
 
+  /**
+   * Store an intraday snapshot (called on each refresh for current day).
+   * Snapshots are keyed by hour so we keep one per hour (latest wins).
+   */
+  async function storeIntradaySnapshot(warehouseId, records) {
+    const today = formatDate(new Date());
+    const key = `intraday_${warehouseId}_${today}`;
+    const now = new Date();
+    const hour = now.getHours();
+
+    const { [key]: existing = {} } = await browser.storage.local.get(key);
+
+    // Store compact per-employee per-path data for this hour
+    existing[hour] = {
+      time: now.toISOString(),
+      data: records.map(r => ({
+        e: r.employeeId,
+        p: r.pathId,
+        j: r.jobs,
+        h: r.hours
+      }))
+    };
+
+    await browser.storage.local.set({ [key]: existing });
+    log(`Stored intraday snapshot for hour ${hour} (${records.length} records)`);
+  }
+
+  /**
+   * Get intraday snapshots for a given date
+   */
+  async function getIntradaySnapshots(warehouseId, date) {
+    const key = `intraday_${warehouseId}_${formatDate(date || new Date())}`;
+    const { [key]: data = {} } = await browser.storage.local.get(key);
+    return data;
+  }
+
+  /**
+   * Clean up old intraday snapshots (keep only today and yesterday)
+   */
+  async function cleanIntradaySnapshots(warehouseId) {
+    const all = await browser.storage.local.get(null);
+    const today = formatDate(new Date());
+    const yesterday = formatDate(new Date(Date.now() - 86400000));
+    const prefix = `intraday_${warehouseId}_`;
+
+    const toRemove = Object.keys(all).filter(k =>
+      k.startsWith(prefix) && !k.endsWith(today) && !k.endsWith(yesterday)
+    );
+
+    if (toRemove.length > 0) {
+      await browser.storage.local.remove(toRemove);
+      log(`Cleaned ${toRemove.length} old intraday snapshot keys`);
+    }
+  }
+
   // Expose to global scope for use by fclm.js
   window.FCLMDataCache = {
     init,
@@ -287,6 +342,9 @@
     formatDate,
     setFetchProgress,
     getFetchProgress,
+    storeIntradaySnapshot,
+    getIntradaySnapshots,
+    cleanIntradaySnapshots,
     CONFIG,
     SHIFTS
   };
