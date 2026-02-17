@@ -1625,6 +1625,94 @@ body {
   }
 }
 
+/* ===== Backup & Restore ===== */
+.backup-panel {
+  margin-top: 20px;
+}
+
+.backup-grid {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.backup-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 16px;
+}
+
+.backup-divider {
+  width: 1px;
+  background: var(--border-color);
+  flex-shrink: 0;
+}
+
+.backup-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backup-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.backup-icon-export {
+  background: rgba(0, 212, 170, 0.15);
+  color: var(--accent);
+}
+
+.backup-icon-import {
+  background: rgba(77, 171, 247, 0.15);
+  color: var(--info);
+}
+
+.backup-info {
+  flex: 1;
+}
+
+.backup-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.backup-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.backup-import-btn {
+  cursor: pointer;
+}
+
+.backup-status {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  min-height: 20px;
+}
+
+.backup-status.success {
+  color: var(--success);
+}
+
+.backup-status.error {
+  color: var(--danger);
+}
+
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
   width: 8px;

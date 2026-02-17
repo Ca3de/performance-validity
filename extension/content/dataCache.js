@@ -335,6 +335,85 @@
     }
   }
 
+  /**
+   * Export all cached data (daily cache + intraday snapshots) as a JSON object.
+   * This allows the user to back up data before uninstalling the browser.
+   */
+  async function exportAllData() {
+    const all = await browser.storage.local.get(null);
+    const exportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      keys: {}
+    };
+
+    Object.entries(all).forEach(([key, value]) => {
+      // Export cache_, meta_, and intraday_ keys (skip settings and transient data)
+      if (key.startsWith(STORAGE_PREFIX) || key.startsWith(META_PREFIX) || key.startsWith('intraday_')) {
+        exportData.keys[key] = value;
+      }
+    });
+
+    const keyCount = Object.keys(exportData.keys).length;
+    log(`Exported ${keyCount} keys`);
+    return exportData;
+  }
+
+  /**
+   * Import previously exported data back into browser.storage.local.
+   * Merges with existing data (newer entries win by fetchedAt timestamp).
+   */
+  async function importData(exportData) {
+    if (!exportData || !exportData.keys || exportData.version !== 1) {
+      throw new Error('Invalid backup file format');
+    }
+
+    const existing = await browser.storage.local.get(null);
+    const toStore = {};
+    let imported = 0;
+    let skipped = 0;
+
+    Object.entries(exportData.keys).forEach(([key, value]) => {
+      // Only import recognized key prefixes
+      if (!key.startsWith(STORAGE_PREFIX) && !key.startsWith(META_PREFIX) && !key.startsWith('intraday_')) {
+        skipped++;
+        return;
+      }
+
+      // For cache entries, keep the newer one (by fetchedAt)
+      if (existing[key] && existing[key].fetchedAt && value.fetchedAt) {
+        if (new Date(existing[key].fetchedAt) >= new Date(value.fetchedAt)) {
+          skipped++;
+          return;
+        }
+      }
+
+      // For intraday snapshots, merge hour-level entries
+      if (key.startsWith('intraday_') && existing[key]) {
+        const merged = { ...existing[key] };
+        Object.entries(value).forEach(([hour, snap]) => {
+          // Only overwrite if we don't already have this hour
+          if (!merged[hour]) {
+            merged[hour] = snap;
+          }
+        });
+        toStore[key] = merged;
+        imported++;
+        return;
+      }
+
+      toStore[key] = value;
+      imported++;
+    });
+
+    if (Object.keys(toStore).length > 0) {
+      await browser.storage.local.set(toStore);
+    }
+
+    log(`Import complete: ${imported} keys imported, ${skipped} skipped`);
+    return { imported, skipped };
+  }
+
   // Expose to global scope for use by fclm.js
   window.FCLMDataCache = {
     init,
@@ -353,6 +432,8 @@
     storeIntradaySnapshot,
     getIntradaySnapshots,
     cleanIntradaySnapshots,
+    exportAllData,
+    importData,
     CONFIG,
     SHIFTS
   };

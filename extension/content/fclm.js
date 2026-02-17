@@ -1636,6 +1636,26 @@
         }
         return true;
 
+      case 'exportBackup':
+        if (window.FCLMDataCache) {
+          window.FCLMDataCache.exportAllData()
+            .then(data => sendResponse({ success: true, data }))
+            .catch(err => sendResponse({ success: false, error: err.message }));
+        } else {
+          sendResponse({ success: false, error: 'Cache not ready' });
+        }
+        return true;
+
+      case 'importBackup':
+        if (window.FCLMDataCache && message.data) {
+          window.FCLMDataCache.importData(message.data)
+            .then(result => sendResponse({ success: true, ...result }))
+            .catch(err => sendResponse({ success: false, error: err.message }));
+        } else {
+          sendResponse({ success: false, error: 'Cache not ready or no data provided' });
+        }
+        return true;
+
       default:
         sendResponse({ success: false, error: 'Unknown action' });
         return true;
