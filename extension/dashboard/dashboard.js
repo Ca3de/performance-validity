@@ -937,12 +937,13 @@
       emp.dailyJPH[d].jobs += r.jobs || 0;
     });
 
-    // Same-path peer aggregates (for JPH and Jobs)
-    const peerJPHs = [], peerJobs = [], peerConsistencies = [];
+    // Same-path peer aggregates (for JPH, Jobs, Hours)
+    const peerJPHs = [], peerJobs = [], peerHours = [], peerConsistencies = [];
     peerMap.forEach(emp => {
       if (emp.hours <= 0) return;
       peerJPHs.push(emp.jobs / emp.hours);
       peerJobs.push(emp.jobs);
+      peerHours.push(emp.hours);
       const dailyJPHs = Object.values(emp.dailyJPH)
         .filter(d => d.hours > 0)
         .map(d => d.jobs / d.hours);
@@ -954,11 +955,12 @@
       }
     });
 
-    // All-employee aggregates (for Hours)
-    const allHours = [];
+    // Versatility: compute from all employees (cross-path), compare AA vs peers
+    const peerVersatilities = [];
+    const totalPathCount = Object.keys(PATH_CONFIG).length || 1;
     fullMap.forEach(emp => {
       if (emp.hours <= 0) return;
-      allHours.push(emp.hours);
+      peerVersatilities.push(emp.paths.size);
     });
 
     // AA's own values
@@ -976,13 +978,21 @@
     // Path-specific averages for radar
     const peerAvgJPH = peerJPHs.length > 0 ? peerJPHs.reduce((s, v) => s + v, 0) / peerJPHs.length : 0;
     const peerAvgJobs = peerJobs.length > 0 ? peerJobs.reduce((s, v) => s + v, 0) / peerJobs.length : 0;
-    const avgHoursAll = allHours.length > 0 ? allHours.reduce((s, v) => s + v, 0) / allHours.length : 0;
+    const peerAvgHours = peerHours.length > 0 ? peerHours.reduce((s, v) => s + v, 0) / peerHours.length : 0;
     const avgConsistencyAll = peerConsistencies.length > 0 ? peerConsistencies.reduce((s, v) => s + v, 0) / peerConsistencies.length : 50;
 
-    // Dynamic maxes - JPH and Jobs from same-path peers, Hours from all
+    // Versatility: AA's paths vs peer avg paths, scaled to 0-100
+    const avgPeerVersatility = peerVersatilities.length > 0
+      ? peerVersatilities.reduce((s, v) => s + v, 0) / peerVersatilities.length : 1;
+    const maxPeerVersatility = peerVersatilities.length > 0
+      ? Math.max(...peerVersatilities) : 1;
+    const aaVersatility = (aaEmp.paths.size / Math.max(maxPeerVersatility, 1)) * 100;
+    const avgVersatility = (avgPeerVersatility / Math.max(maxPeerVersatility, 1)) * 100;
+
+    // Dynamic maxes - all from same-path peers
     const maxJPH = peerJPHs.length > 0 ? Math.max(...peerJPHs) : 60;
     const maxJobs = peerJobs.length > 0 ? Math.max(...peerJobs) : 5000;
-    const maxHours = allHours.length > 0 ? Math.max(...allHours) : 160;
+    const maxHours = peerHours.length > 0 ? Math.max(...peerHours) : 10;
     el.aaJPHBar.style.width = `${Math.min(avgJPH / maxJPH * 100, 100)}%`;
     el.aaJobsBar.style.width = `${Math.min(totalJobs / maxJobs * 100, 100)}%`;
     el.aaHoursBar.style.width = `${Math.min(totalHours / maxHours * 100, 100)}%`;
@@ -994,16 +1004,14 @@
         hours: totalHours,
         jobs: totalJobs,
         consistency: aaConsistency,
-        versatility: Object.keys(PATH_CONFIG).length > 0
-          ? (aaEmp.paths.size / Object.keys(PATH_CONFIG).length) * 100
-          : 0
+        versatility: aaVersatility
       },
       avg: {
         jph: peerAvgJPH,
-        hours: avgHoursAll,
+        hours: peerAvgHours,
         jobs: peerAvgJobs,
         consistency: avgConsistencyAll,
-        versatility: 50
+        versatility: avgVersatility
       },
       maxes: {
         jph: Math.max(maxJPH * 1.1, 1),
@@ -1129,10 +1137,14 @@
 
     let svgContent = '';
 
-    // Grid circles
-    for (let i = 1; i <= levels; i++) {
-      const r = (maxRadius / levels) * i;
-      svgContent += `<circle cx="${cx}" cy="${cy}" r="${r}" class="radar-grid-line" />`;
+    // Grid polygons (pentagons instead of circles)
+    for (let lvl = 1; lvl <= levels; lvl++) {
+      const r = (maxRadius / levels) * lvl;
+      const pts = metrics.map((_, i) => {
+        const angle = i * angleStep - Math.PI / 2;
+        return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
+      }).join(' ');
+      svgContent += `<polygon points="${pts}" class="radar-grid-line" />`;
     }
 
     // Axis lines and labels
