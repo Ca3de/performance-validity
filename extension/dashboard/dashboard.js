@@ -24,7 +24,9 @@
     fclmTabId: null,
     // Refresh state
     refreshInterval: null,
-    refreshing: false
+    countdownInterval: null,
+    refreshing: false,
+    secondsUntilRefresh: 300
   };
 
   // Path configuration
@@ -102,6 +104,8 @@
     el.pageTitle = document.getElementById('pageTitle');
     el.globalSearch = document.getElementById('globalSearch');
     el.headerDate = document.getElementById('headerDate');
+    el.refreshTimer = document.getElementById('refreshTimer');
+    el.countdownText = document.getElementById('countdownText');
 
     // Views
     el.views = document.querySelectorAll('.view');
@@ -331,21 +335,39 @@
   }
 
   // Auto-refresh interval (5 minutes)
-  const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+  const REFRESH_INTERVAL_SECS = 5 * 60; // 5 minutes
 
   /**
-   * Start auto-refresh: polls FCLM tab for fresh data every 5 minutes.
-   * Also listens for push notifications from the content script for immediate updates.
+   * Start auto-refresh with a visible countdown timer.
+   * Also listens for push notifications from the content script.
    */
   function listenForDataUpdates() {
-    // Primary: poll on a fixed interval
-    state.refreshInterval = setInterval(() => {
-      console.log('[Dashboard] Auto-refresh triggered');
-      refreshData();
-    }, REFRESH_INTERVAL_MS);
-    console.log(`[Dashboard] Auto-refresh started (every ${REFRESH_INTERVAL_MS / 1000}s)`);
+    // Reset countdown
+    state.secondsUntilRefresh = REFRESH_INTERVAL_SECS;
+    updateCountdownDisplay();
 
-    // Secondary: listen for push notifications from content script for immediate refresh
+    // Tick every second to update the countdown
+    if (state.countdownInterval) clearInterval(state.countdownInterval);
+    state.countdownInterval = setInterval(() => {
+      state.secondsUntilRefresh--;
+      if (state.secondsUntilRefresh <= 0) {
+        console.log('[Dashboard] Countdown reached 0, refreshing...');
+        refreshData();
+      }
+      updateCountdownDisplay();
+    }, 1000);
+
+    // Click the timer to force an immediate refresh
+    if (el.refreshTimer) {
+      el.refreshTimer.addEventListener('click', () => {
+        if (!state.refreshing) {
+          console.log('[Dashboard] Manual refresh triggered');
+          refreshData();
+        }
+      });
+    }
+
+    // Listen for push notifications from content script for immediate refresh
     try {
       browser.runtime.onMessage.addListener((message) => {
         if (message.action === 'dataUpdated') {
@@ -356,14 +378,29 @@
     } catch (e) {
       console.log('[Dashboard] Could not register message listener:', e);
     }
+
+    console.log(`[Dashboard] Auto-refresh started (every ${REFRESH_INTERVAL_SECS}s with countdown)`);
   }
 
   /**
-   * Refresh data from FCLM tab and re-render current view
+   * Update the countdown display in the header
+   */
+  function updateCountdownDisplay() {
+    if (!el.countdownText) return;
+    const secs = Math.max(0, state.secondsUntilRefresh);
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    el.countdownText.textContent = `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  /**
+   * Refresh data from FCLM tab and re-render current view.
+   * Resets the countdown timer on completion.
    */
   async function refreshData() {
     if (state.refreshing) return; // Prevent concurrent refreshes
     state.refreshing = true;
+    if (el.refreshTimer) el.refreshTimer.classList.add('refreshing');
 
     try {
       // Always re-discover the FCLM tab to handle tab closes/reopens
@@ -398,6 +435,10 @@
       state.fclmTabId = null;
     } finally {
       state.refreshing = false;
+      if (el.refreshTimer) el.refreshTimer.classList.remove('refreshing');
+      // Reset countdown
+      state.secondsUntilRefresh = REFRESH_INTERVAL_SECS;
+      updateCountdownDisplay();
     }
   }
 
