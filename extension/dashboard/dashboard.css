@@ -555,6 +555,127 @@ body {
   text-transform: uppercase;
 }
 
+/* ===== Path Leaders Grid ===== */
+.path-leaders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.path-leader-column {
+  background: var(--bg-input);
+  border-radius: var(--radius);
+  padding: 14px;
+  border-top: 3px solid var(--accent);
+}
+
+.path-leader-column.pick { border-top-color: var(--pick-color); }
+.path-leader-column.pack { border-top-color: var(--pack-color); }
+.path-leader-column.stow { border-top-color: var(--stow-color); }
+.path-leader-column.sort_batch { border-top-color: var(--sort-batch-color); }
+
+.path-leader-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.path-leader-title .path-goal {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.leader-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.leader-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.leader-item:hover {
+  background: var(--bg-card-hover);
+}
+
+.leader-rank {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  color: var(--text-muted);
+}
+
+.leader-rank.gold { background: rgba(255, 215, 0, 0.2); color: #ffd700; }
+.leader-rank.silver { background: rgba(192, 192, 192, 0.2); color: #c0c0c0; }
+.leader-rank.bronze { background: rgba(205, 127, 50, 0.2); color: #cd7f32; }
+
+.leader-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.leader-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.leader-avatar .avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leader-avatar .avatar-fallback svg {
+  width: 16px;
+  height: 16px;
+}
+
+.leader-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leader-jph {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
 /* ===== Performer List ===== */
 .performer-list {
   display: flex;
