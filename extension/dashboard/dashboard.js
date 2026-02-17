@@ -921,7 +921,7 @@
       emp.dailyJPH[d].jobs += r.jobs || 0;
     });
 
-    // Build full employee map for hours and versatility (cross-path)
+    // Build full employee map for the current period (used for aaEmp lookup)
     const fullMap = new Map();
     allData.forEach(r => {
       if (!fullMap.has(r.employeeId)) {
@@ -935,6 +935,17 @@
       if (!emp.dailyJPH[d]) emp.dailyJPH[d] = { hours: 0, jobs: 0 };
       emp.dailyJPH[d].hours += r.hours || 0;
       emp.dailyJPH[d].jobs += r.jobs || 0;
+    });
+
+    // Versatility uses ALL cached data (last 30 days) regardless of lookup period.
+    // An AA's versatility is about how many paths they've worked over time,
+    // not just what they did today.
+    const versMap = new Map();
+    state.allCachedData.forEach(r => {
+      if (!versMap.has(r.employeeId)) {
+        versMap.set(r.employeeId, new Set());
+      }
+      versMap.get(r.employeeId).add(r.pathId);
     });
 
     // Same-path peer aggregates (for JPH, Jobs, Hours)
@@ -955,12 +966,12 @@
       }
     });
 
-    // Versatility: compute from all employees (cross-path), compare AA vs peers
+    // Versatility: computed from all 30 days of cached data, not the current period.
+    // Counts distinct paths each employee has worked over the full cache window.
     const peerVersatilities = [];
     const totalPathCount = Object.keys(PATH_CONFIG).length || 1;
-    fullMap.forEach(emp => {
-      if (emp.hours <= 0) return;
-      peerVersatilities.push(emp.paths.size);
+    versMap.forEach((paths, empId) => {
+      peerVersatilities.push(paths.size);
     });
 
     // AA's own values
@@ -981,12 +992,13 @@
     const peerAvgHours = peerHours.length > 0 ? peerHours.reduce((s, v) => s + v, 0) / peerHours.length : 0;
     const avgConsistencyAll = peerConsistencies.length > 0 ? peerConsistencies.reduce((s, v) => s + v, 0) / peerConsistencies.length : 50;
 
-    // Versatility: AA's paths vs peer avg paths, scaled to 0-100
+    // Versatility: AA's paths (from full 30-day history) vs peers, scaled to 0-100
+    const aaPathCount = versMap.get(employeeId)?.size || aaEmp.paths.size;
     const avgPeerVersatility = peerVersatilities.length > 0
       ? peerVersatilities.reduce((s, v) => s + v, 0) / peerVersatilities.length : 1;
     const maxPeerVersatility = peerVersatilities.length > 0
       ? Math.max(...peerVersatilities) : 1;
-    const aaVersatility = (aaEmp.paths.size / Math.max(maxPeerVersatility, 1)) * 100;
+    const aaVersatility = (aaPathCount / Math.max(maxPeerVersatility, 1)) * 100;
     const avgVersatility = (avgPeerVersatility / Math.max(maxPeerVersatility, 1)) * 100;
 
     // Dynamic maxes - all from same-path peers
