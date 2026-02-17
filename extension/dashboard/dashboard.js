@@ -11,14 +11,15 @@
     warehouseId: 'UNKNOWN',
     allCachedData: [],
     currentView: 'overview',
-    // Overview state
-    overviewPeriod: 'last30',
+    // Global filters (affect all views)
+    globalPeriod: 'today',
+    globalShift: 'all',       // 'all' | 'day' | 'night'
+    customDateFrom: null,     // YYYY-MM-DD string for custom range
+    customDateTo: null,       // YYYY-MM-DD string for custom range
     // Lookup state
-    lookupPeriod: 'last30',
     lookupPath: 'all',
     selectedAA: null,
     // Data hub state
-    dataPeriod: 'today',
     dataSearch: '',
     dataPathFilter: 'all',
     fclmTabId: null,
@@ -110,12 +111,19 @@
     // Views
     el.views = document.querySelectorAll('.view');
 
+    // Global filters
+    el.shiftBtns = document.querySelectorAll('.shift-btn');
+    el.periodBtns = document.querySelectorAll('.period-btn');
+    el.customDateRange = document.getElementById('customDateRange');
+    el.dateFrom = document.getElementById('dateFrom');
+    el.dateTo = document.getElementById('dateTo');
+    el.applyDateRange = document.getElementById('applyDateRange');
+
     // Overview
     el.totalAAs = document.getElementById('totalAAs');
     el.aboveGoal = document.getElementById('aboveGoal');
     el.belowGoal = document.getElementById('belowGoal');
     el.avgJPH = document.getElementById('avgJPH');
-    el.overviewPeriod = document.getElementById('overviewPeriod');
     el.pathGrid = document.getElementById('pathGrid');
     el.pathLeaders = document.getElementById('pathLeaders');
     el.needsAttention = document.getElementById('needsAttention');
@@ -124,7 +132,6 @@
     // Lookup
     el.lookupInput = document.getElementById('lookupInput');
     el.lookupBtn = document.getElementById('lookupBtn');
-    el.lookupPeriod = document.getElementById('lookupPeriod');
     el.lookupPath = document.getElementById('lookupPath');
     el.aaDetailCard = document.getElementById('aaDetailCard');
     el.closeDetail = document.getElementById('closeDetail');
@@ -141,7 +148,6 @@
     el.vsComparison = document.getElementById('vsComparison');
 
     // Data Hub
-    el.periodTabs = document.querySelectorAll('.period-tab');
     el.exportBtn = document.getElementById('exportBtn');
     el.dataCount = document.getElementById('dataCount');
     el.dataSearch = document.getElementById('dataSearch');
@@ -186,10 +192,51 @@
       }
     });
 
-    // Overview period
-    el.overviewPeriod?.addEventListener('change', (e) => {
-      state.overviewPeriod = e.target.value;
-      renderOverview();
+    // Global shift filter
+    el.shiftBtns?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        el.shiftBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.globalShift = btn.dataset.shift;
+        renderCurrentView();
+      });
+    });
+
+    // Global period filter
+    el.periodBtns?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        el.periodBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const period = btn.dataset.period;
+        if (period === 'custom') {
+          el.customDateRange.style.display = 'flex';
+          // Set default dates if empty
+          if (!el.dateFrom.value) {
+            const d = new Date();
+            d.setDate(d.getDate() - 7);
+            el.dateFrom.value = formatDateStr(d);
+          }
+          if (!el.dateTo.value) {
+            el.dateTo.value = formatDateStr(new Date());
+          }
+        } else {
+          el.customDateRange.style.display = 'none';
+          state.globalPeriod = period;
+          state.customDateFrom = null;
+          state.customDateTo = null;
+          renderCurrentView();
+        }
+      });
+    });
+
+    // Custom date range apply
+    el.applyDateRange?.addEventListener('click', () => {
+      if (el.dateFrom.value && el.dateTo.value) {
+        state.globalPeriod = 'custom';
+        state.customDateFrom = el.dateFrom.value;
+        state.customDateTo = el.dateTo.value;
+        renderCurrentView();
+      }
     });
 
     // Lookup
@@ -197,25 +244,12 @@
     el.lookupInput?.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleLookup();
     });
-    el.lookupPeriod?.addEventListener('change', (e) => {
-      state.lookupPeriod = e.target.value;
-    });
     el.lookupPath?.addEventListener('change', (e) => {
       state.lookupPath = e.target.value;
     });
     el.closeDetail?.addEventListener('click', () => {
       el.aaDetailCard.style.display = 'none';
       state.selectedAA = null;
-    });
-
-    // Data Hub period tabs
-    el.periodTabs?.forEach(tab => {
-      tab.addEventListener('click', () => {
-        el.periodTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        state.dataPeriod = tab.dataset.period;
-        renderDataTable();
-      });
     });
 
     // Data Hub filters
@@ -429,8 +463,7 @@
         el.warehouseId.textContent = state.warehouseId;
 
         // Re-render current view
-        if (state.currentView === 'overview') renderOverview();
-        if (state.currentView === 'data') renderDataTable();
+        renderCurrentView();
 
         updateLastRefreshTime();
 
@@ -461,6 +494,33 @@
   }
 
   /**
+   * Format a Date object as YYYY-MM-DD string
+   */
+  function formatDateStr(d) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Re-render whichever view is currently active
+   */
+  function renderCurrentView() {
+    if (state.currentView === 'overview') renderOverview();
+    if (state.currentView === 'data') renderDataTable();
+    // For lookup, the detail re-renders on next search
+  }
+
+  /**
+   * Filter data by shift. Records with shift='all' always pass.
+   */
+  function filterByShift(data, shift) {
+    if (shift === 'all') return data;
+    return data.filter(r => !r.shift || r.shift === 'all' || r.shift === shift);
+  }
+
+  /**
    * Filter data by period
    */
   function filterByPeriod(data, period) {
@@ -470,15 +530,8 @@
     // Reset to start of day to avoid time comparison issues
     now.setHours(0, 0, 0, 0);
 
-    const formatDate = (d) => {
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
-
     let startDate, endDate;
-    const todayStr = formatDate(now);
+    const todayStr = formatDateStr(now);
 
     switch (period) {
       case 'today':
@@ -489,7 +542,7 @@
         // This week: Sunday to today
         const weekStart = new Date(now);
         weekStart.setDate(now.getDate() - now.getDay());
-        startDate = formatDate(weekStart);
+        startDate = formatDateStr(weekStart);
         endDate = todayStr;
         break;
       }
@@ -505,15 +558,15 @@
         const lastWeekSunday = new Date(lastWeekSaturday);
         lastWeekSunday.setDate(lastWeekSaturday.getDate() - 6);
 
-        startDate = formatDate(lastWeekSunday);
-        endDate = formatDate(lastWeekSaturday);
+        startDate = formatDateStr(lastWeekSunday);
+        endDate = formatDateStr(lastWeekSaturday);
         break;
       }
 
       case 'month': {
         // This Month: 1st of current month to today (calendar month)
         const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-        startDate = formatDate(monthStart);
+        startDate = formatDateStr(monthStart);
         endDate = todayStr;
         break;
       }
@@ -522,8 +575,20 @@
         // Last 30 days (rolling, not calendar month)
         const thirtyDaysAgo = new Date(now);
         thirtyDaysAgo.setDate(now.getDate() - 29); // 30 days including today
-        startDate = formatDate(thirtyDaysAgo);
+        startDate = formatDateStr(thirtyDaysAgo);
         endDate = todayStr;
+        break;
+      }
+
+      case 'custom': {
+        // Custom date range from the global filter bar
+        if (state.customDateFrom && state.customDateTo) {
+          startDate = state.customDateFrom;
+          endDate = state.customDateTo;
+        } else {
+          console.log('[Dashboard] Custom period but no dates set');
+          return data;
+        }
         break;
       }
 
@@ -556,7 +621,7 @@
    * Render overview
    */
   function renderOverview() {
-    const data = filterByPeriod(state.allCachedData, state.overviewPeriod);
+    const data = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
 
     // Aggregate by employee
     const employeeMap = new Map();
@@ -595,8 +660,8 @@
     // Path cards
     renderPathCards(data);
 
-    // Top performers by path (always uses last 30 days for a broader picture)
-    renderPathLeaders(state.allCachedData);
+    // Top performers by path (uses selected period data, with shift applied)
+    renderPathLeaders(data);
 
     // Needs attention (bottom performers with hours > 0)
     const needsAttention = employees
@@ -778,8 +843,8 @@
       return;
     }
 
-    // Filter by period and path
-    matches = filterByPeriod(matches, state.lookupPeriod);
+    // Filter by period and shift
+    matches = filterByShift(filterByPeriod(matches, state.globalPeriod), state.globalShift);
 
     if (state.lookupPath !== 'all') {
       matches = matches.filter(r => (r.pathId || '').toLowerCase().includes(state.lookupPath));
@@ -1001,7 +1066,7 @@
     el.aaHours.textContent = totalHours.toFixed(1);
 
     // --- Build peer comparison data ---
-    const allData = filterByPeriod(state.allCachedData, state.lookupPeriod);
+    const allData = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
 
     // Identify which paths this AA works
     const aaPaths = new Set(records.map(r => r.pathId));
@@ -1038,11 +1103,12 @@
       emp.dailyJPH[d].jobs += r.jobs || 0;
     });
 
-    // Versatility uses ALL cached data (last 30 days) regardless of lookup period.
+    // Versatility uses ALL cached data (last 30 days) regardless of period.
     // An AA's versatility is about how many paths they've worked over time,
-    // not just what they did today.
+    // not just what they did today. Shift filter still applies.
+    const shiftFilteredCache = filterByShift(state.allCachedData, state.globalShift);
     const versMap = new Map();
-    state.allCachedData.forEach(r => {
+    shiftFilteredCache.forEach(r => {
       if (!versMap.has(r.employeeId)) {
         versMap.set(r.employeeId, new Set());
       }
@@ -1058,10 +1124,11 @@
       peerHours.push(emp.hours);
     });
 
-    // Consistency uses ALL cached data (last 30 days) regardless of lookup period.
+    // Consistency uses ALL cached data (last 30 days) regardless of period.
     // It measures how steady an AA's daily JPH is over time — needs multiple days.
+    // Shift filter still applies.
     const consistencyMap = new Map();
-    state.allCachedData.forEach(r => {
+    shiftFilteredCache.forEach(r => {
       if (!aaPaths.has(r.pathId)) return; // only same paths for fair comparison
       if (!consistencyMap.has(r.employeeId)) {
         consistencyMap.set(r.employeeId, {});
@@ -1188,10 +1255,10 @@
     // Single-day periods: try to show hourly trend from intraday snapshots
     // Multi-day periods: show daily trend from cached data
     let trendByPath = {};
-    const isToday = state.lookupPeriod === 'today';
+    const isToday = state.globalPeriod === 'today';
 
     // Determine if this is a single-day period where we can show hourly data
-    const periodData = filterByPeriod(state.allCachedData, state.lookupPeriod);
+    const periodData = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
     const uniqueDates = new Set(periodData.map(r => String(r.date).substring(0, 10)));
     const isSingleDay = isToday || uniqueDates.size === 1;
     const singleDayDate = isToday ? null : (uniqueDates.size === 1 ? [...uniqueDates][0] : null);
@@ -1460,7 +1527,7 @@
    * Render data table
    */
   function renderDataTable() {
-    let data = filterByPeriod(state.allCachedData, state.dataPeriod);
+    let data = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
 
     // Filter by search
     if (state.dataSearch) {
@@ -1530,7 +1597,7 @@
    * Handle export
    */
   function handleExport() {
-    let data = filterByPeriod(state.allCachedData, state.dataPeriod);
+    let data = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
 
     if (data.length === 0) {
       showToast('No data to export', 'warning');
@@ -1554,7 +1621,7 @@
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = `performance_${state.warehouseId}_${state.dataPeriod}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `performance_${state.warehouseId}_${state.globalPeriod}_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
 
     URL.revokeObjectURL(url);
