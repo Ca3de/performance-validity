@@ -1624,6 +1624,18 @@
           .catch(err => sendResponse({ success: false, error: err.message }));
         return true;
 
+      case 'getIntradaySnapshots':
+        // Return intraday hourly snapshots for today
+        if (window.FCLMDataCache) {
+          const wId = CONFIG.warehouseId || getWarehouseId();
+          window.FCLMDataCache.getIntradaySnapshots(wId, message.date || null)
+            .then(snapshots => sendResponse({ success: true, snapshots }))
+            .catch(err => sendResponse({ success: false, error: err.message }));
+        } else {
+          sendResponse({ success: false, error: 'Cache not ready' });
+        }
+        return true;
+
       default:
         sendResponse({ success: false, error: 'Unknown action' });
         return true;
@@ -1788,6 +1800,11 @@
     if (window.FCLMDataCache && allRecords.length > 0) {
       await window.FCLMDataCache.storeDailyData(warehouseId, today, currentShift, allRecords);
       log(`[Cache] Cached ${allRecords.length} current day records`);
+
+      // Store intraday snapshot for hourly trend tracking
+      await window.FCLMDataCache.storeIntradaySnapshot(warehouseId, allRecords);
+      // Periodically clean old intraday data
+      window.FCLMDataCache.cleanIntradaySnapshots(warehouseId).catch(() => {});
 
       // Notify dashboard tab that fresh data is available
       try {
