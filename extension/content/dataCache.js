@@ -309,17 +309,25 @@
   }
 
   /**
-   * Clean up old intraday snapshots (keep only today and yesterday)
+   * Clean up old intraday snapshots (keep last 30 days).
+   * Hourly snapshots persist across sessions so the user doesn't lose
+   * data when they close the browser and come back days later.
    */
   async function cleanIntradaySnapshots(warehouseId) {
     const all = await browser.storage.local.get(null);
-    const today = formatDate(new Date());
-    const yesterday = formatDate(new Date(Date.now() - 86400000));
     const prefix = `intraday_${warehouseId}_`;
 
-    const toRemove = Object.keys(all).filter(k =>
-      k.startsWith(prefix) && !k.endsWith(today) && !k.endsWith(yesterday)
-    );
+    // Build set of dates to keep (last 30 days)
+    const keepDates = new Set();
+    for (let i = 0; i < 30; i++) {
+      keepDates.add(formatDate(new Date(Date.now() - i * 86400000)));
+    }
+
+    const toRemove = Object.keys(all).filter(k => {
+      if (!k.startsWith(prefix)) return false;
+      const dateStr = k.replace(prefix, '');
+      return !keepDates.has(dateStr);
+    });
 
     if (toRemove.length > 0) {
       await browser.storage.local.remove(toRemove);

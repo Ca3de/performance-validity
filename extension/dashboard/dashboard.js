@@ -117,7 +117,7 @@
     el.avgJPH = document.getElementById('avgJPH');
     el.overviewPeriod = document.getElementById('overviewPeriod');
     el.pathGrid = document.getElementById('pathGrid');
-    el.topPerformers = document.getElementById('topPerformers');
+    el.pathLeaders = document.getElementById('pathLeaders');
     el.needsAttention = document.getElementById('needsAttention');
     el.attentionCount = document.getElementById('attentionCount');
 
@@ -586,21 +586,14 @@
     // Path cards
     renderPathCards(data);
 
-    // Top performers (top 5 by JPH)
-    const topPerformers = employees
-      .filter(e => e.jph > 0)
-      .sort((a, b) => b.jph - a.jph)
-      .slice(0, 5);
+    // Top performers by path (always uses last 30 days for a broader picture)
+    renderPathLeaders(state.allCachedData);
 
-    el.topPerformers.innerHTML = topPerformers.length > 0
-      ? topPerformers.map((e, i) => renderPerformerItem(e, i + 1, false)).join('')
-      : '<div class="empty-state">No data available</div>';
-
-    // Needs attention (bottom 5 with hours > 0)
+    // Needs attention (bottom performers with hours > 0)
     const needsAttention = employees
       .filter(e => e.hours >= 1 && e.jph < avgGoal)
       .sort((a, b) => a.jph - b.jph)
-      .slice(0, 5);
+      .slice(0, 10);
 
     el.attentionCount.textContent = needsAttention.length;
     el.needsAttention.innerHTML = needsAttention.length > 0
@@ -608,7 +601,7 @@
       : '<div class="empty-state">Everyone is performing well!</div>';
 
     // Setup avatar fallbacks after render
-    setupAvatarFallbacks(el.topPerformers);
+    setupAvatarFallbacks(el.pathLeaders);
     setupAvatarFallbacks(el.needsAttention);
   }
 
@@ -655,6 +648,64 @@
               <div class="path-stat-label">Jobs</div>
             </div>
           </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /**
+   * Render top performers per path (always uses full 30-day data)
+   */
+  function renderPathLeaders(allData) {
+    if (!el.pathLeaders) return;
+
+    const rankClasses = ['gold', 'silver', 'bronze'];
+
+    el.pathLeaders.innerHTML = Object.entries(PATH_CONFIG).map(([pathId, config]) => {
+      // Aggregate by employee for this path
+      const empMap = new Map();
+      allData.forEach(r => {
+        if ((r.pathId || '').toLowerCase() !== pathId) return;
+        if (!empMap.has(r.employeeId)) {
+          empMap.set(r.employeeId, { id: r.employeeId, name: r.employeeName, login: r.login || r.employeeId, hours: 0, jobs: 0 });
+        }
+        const emp = empMap.get(r.employeeId);
+        emp.hours += r.hours || 0;
+        emp.jobs += r.jobs || 0;
+      });
+
+      const top5 = Array.from(empMap.values())
+        .map(e => ({ ...e, jph: e.hours > 0 ? e.jobs / e.hours : 0 }))
+        .filter(e => e.jph > 0 && e.hours >= 1)
+        .sort((a, b) => b.jph - a.jph)
+        .slice(0, 5);
+
+      const leaderItems = top5.length > 0
+        ? top5.map((e, i) => {
+            const login = e.login || e.id;
+            const photoUrl = getBadgePhotoUrl(login);
+            const rankClass = i < 3 ? rankClasses[i] : '';
+            return `
+              <div class="leader-item">
+                <div class="leader-rank ${rankClass}">${i + 1}</div>
+                <div class="leader-avatar">
+                  <img src="${photoUrl}" alt="${e.name || login}">
+                  <div class="avatar-fallback">${DEFAULT_AVATAR_SVG}</div>
+                </div>
+                <div class="leader-name">${e.name || e.id}</div>
+                <div class="leader-jph">${e.jph.toFixed(1)}</div>
+              </div>
+            `;
+          }).join('')
+        : '<div class="empty-state" style="padding:8px;font-size:12px">No data</div>';
+
+      return `
+        <div class="path-leader-column ${pathId}">
+          <div class="path-leader-title">
+            ${config.name}
+            <span class="path-goal">Goal: ${config.goal} JPH</span>
+          </div>
+          <div class="leader-list">${leaderItems}</div>
         </div>
       `;
     }).join('');
@@ -1125,16 +1176,22 @@
     }
 
     // --- JPH Trend by Path ---
-    // For "today": show hourly trend from intraday snapshots
-    // For multi-day periods: show daily trend from cached data
+    // Single-day periods: try to show hourly trend from intraday snapshots
+    // Multi-day periods: show daily trend from cached data
     let trendByPath = {};
     const isToday = state.lookupPeriod === 'today';
 
-    if (isToday && state.fclmTabId) {
+    // Determine if this is a single-day period where we can show hourly data
+    const periodData = filterByPeriod(state.allCachedData, state.lookupPeriod);
+    const uniqueDates = new Set(periodData.map(r => String(r.date).substring(0, 10)));
+    const isSingleDay = isToday || uniqueDates.size === 1;
+    const singleDayDate = isToday ? null : (uniqueDates.size === 1 ? [...uniqueDates][0] : null);
+
+    if (isSingleDay && state.fclmTabId) {
       try {
-        const resp = await browser.tabs.sendMessage(state.fclmTabId, {
-          action: 'getIntradaySnapshots'
-        });
+        const msg = { action: 'getIntradaySnapshots' };
+        if (singleDayDate) msg.date = singleDayDate;
+        const resp = await browser.tabs.sendMessage(state.fclmTabId, msg);
         if (resp?.success && resp.snapshots && Object.keys(resp.snapshots).length > 0) {
           trendByPath = getHourlyTrendFromSnapshots(employeeId, resp.snapshots);
         }
@@ -1143,11 +1200,11 @@
       }
     }
 
-    // Fallback to daily trend if no intraday data or multi-day period
-    let gotHourlyData = Object.keys(trendByPath).length > 0 && isToday;
+    // Fallback to daily trend if no hourly data available
+    let gotHourlyData = Object.keys(trendByPath).length > 0 && isSingleDay;
     if (Object.keys(trendByPath).length === 0) {
-      // For today without hourly snapshots, show full cached history as daily context
-      const trendData = isToday ? state.allCachedData : filterByPeriod(state.allCachedData, state.lookupPeriod);
+      // For single-day without hourly snapshots, show full cached history as daily context
+      const trendData = isSingleDay ? state.allCachedData : periodData;
       trendByPath = getDailyTrendByPath(employeeId, trendData);
     }
 
