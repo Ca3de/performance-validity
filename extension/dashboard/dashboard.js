@@ -949,13 +949,32 @@
     });
 
     // Same-path peer aggregates (for JPH, Jobs, Hours)
-    const peerJPHs = [], peerJobs = [], peerHours = [], peerConsistencies = [];
+    const peerJPHs = [], peerJobs = [], peerHours = [];
     peerMap.forEach(emp => {
       if (emp.hours <= 0) return;
       peerJPHs.push(emp.jobs / emp.hours);
       peerJobs.push(emp.jobs);
       peerHours.push(emp.hours);
-      const dailyJPHs = Object.values(emp.dailyJPH)
+    });
+
+    // Consistency uses ALL cached data (last 30 days) regardless of lookup period.
+    // It measures how steady an AA's daily JPH is over time — needs multiple days.
+    const consistencyMap = new Map();
+    state.allCachedData.forEach(r => {
+      if (!aaPaths.has(r.pathId)) return; // only same paths for fair comparison
+      if (!consistencyMap.has(r.employeeId)) {
+        consistencyMap.set(r.employeeId, {});
+      }
+      const dailyMap = consistencyMap.get(r.employeeId);
+      const d = String(r.date).substring(0, 10);
+      if (!dailyMap[d]) dailyMap[d] = { hours: 0, jobs: 0 };
+      dailyMap[d].hours += r.hours || 0;
+      dailyMap[d].jobs += r.jobs || 0;
+    });
+
+    const peerConsistencies = [];
+    consistencyMap.forEach(dailyMap => {
+      const dailyJPHs = Object.values(dailyMap)
         .filter(d => d.hours > 0)
         .map(d => d.jobs / d.hours);
       if (dailyJPHs.length >= 2) {
@@ -976,8 +995,11 @@
 
     // AA's own values
     const aaEmp = fullMap.get(employeeId) || { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} };
-    const aaPeer = peerMap.get(employeeId) || { hours: 0, jobs: 0, dailyJPH: {} };
-    const aaDailyJPHs = Object.values(aaPeer.dailyJPH).filter(d => d.hours > 0).map(d => d.jobs / d.hours);
+    // AA consistency from full 30-day history
+    const aaConsistencyDaily = consistencyMap.get(employeeId) || {};
+    const aaDailyJPHs = Object.values(aaConsistencyDaily)
+      .filter(d => d.hours > 0)
+      .map(d => d.jobs / d.hours);
     let aaConsistency = 50;
     if (aaDailyJPHs.length >= 2) {
       const mean = aaDailyJPHs.reduce((s, v) => s + v, 0) / aaDailyJPHs.length;
