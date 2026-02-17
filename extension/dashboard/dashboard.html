@@ -343,6 +343,47 @@
             </table>
           </div>
         </div>
+
+        <!-- Backup & Restore Panel -->
+        <div class="panel panel-full backup-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Backup & Restore</h2>
+            <span class="panel-subtitle">Preserve data across browser reinstalls</span>
+          </div>
+          <div class="panel-body">
+            <div class="backup-grid">
+              <div class="backup-section">
+                <div class="backup-icon backup-icon-export">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                </div>
+                <div class="backup-info">
+                  <h3 class="backup-title">Backup Data</h3>
+                  <p class="backup-desc">Download all cached performance data, hourly snapshots, and settings as a JSON file. Use this before uninstalling or switching browsers.</p>
+                </div>
+                <button class="btn btn-primary" id="backupBtn">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                  Backup Now
+                </button>
+              </div>
+              <div class="backup-divider"></div>
+              <div class="backup-section">
+                <div class="backup-icon backup-icon-import">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                </div>
+                <div class="backup-info">
+                  <h3 class="backup-title">Restore Data</h3>
+                  <p class="backup-desc">Import a previously exported backup file. Newer data is kept when conflicts occur. Hourly snapshots are merged.</p>
+                </div>
+                <label class="btn btn-secondary backup-import-btn" id="restoreLabel">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                  Restore
+                  <input type="file" id="restoreInput" accept=".json" hidden>
+                </label>
+              </div>
+            </div>
+            <div class="backup-status" id="backupStatus"></div>
+          </div>
+        </div>
       </div>
     </main>
   </div>

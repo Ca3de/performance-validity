@@ -148,6 +148,11 @@
     el.pathFilter = document.getElementById('pathFilter');
     el.dataTableBody = document.getElementById('dataTableBody');
 
+    // Backup & Restore
+    el.backupBtn = document.getElementById('backupBtn');
+    el.restoreInput = document.getElementById('restoreInput');
+    el.backupStatus = document.getElementById('backupStatus');
+
     // Toast
     el.toastContainer = document.getElementById('toastContainer');
   }
@@ -226,6 +231,10 @@
 
     // Export
     el.exportBtn?.addEventListener('click', handleExport);
+
+    // Backup & Restore
+    el.backupBtn?.addEventListener('click', handleBackup);
+    el.restoreInput?.addEventListener('change', handleRestore);
   }
 
   /**
@@ -1550,6 +1559,191 @@
 
     URL.revokeObjectURL(url);
     showToast('CSV exported', 'success');
+  }
+
+  /**
+   * Handle full backup (all cached data + intraday snapshots)
+   */
+  async function handleBackup() {
+    const statusEl = el.backupStatus;
+    if (statusEl) {
+      statusEl.textContent = 'Preparing backup...';
+      statusEl.className = 'backup-status';
+    }
+
+    try {
+      if (!state.fclmTabId) {
+        const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
+        if (tabs.length > 0) state.fclmTabId = tabs[0].id;
+      }
+
+      if (!state.fclmTabId) {
+        // Fallback: export directly from storage (dashboard has access)
+        const all = await browser.storage.local.get(null);
+        const exportData = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          keys: {}
+        };
+        Object.entries(all).forEach(([key, value]) => {
+          if (key.startsWith('cache_') || key.startsWith('meta_') || key.startsWith('intraday_')) {
+            exportData.keys[key] = value;
+          }
+        });
+        downloadBackup(exportData);
+        return;
+      }
+
+      const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'exportBackup' });
+      if (response?.success && response.data) {
+        downloadBackup(response.data);
+      } else {
+        throw new Error(response?.error || 'Export failed');
+      }
+    } catch (err) {
+      console.error('[Dashboard] Backup error:', err);
+      if (statusEl) {
+        statusEl.textContent = `Backup failed: ${err.message}`;
+        statusEl.className = 'backup-status error';
+      }
+      showToast('Backup failed', 'error');
+    }
+  }
+
+  /**
+   * Download backup data as a JSON file
+   */
+  function downloadBackup(data) {
+    const keyCount = Object.keys(data.keys).length;
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aa-performance-backup_${state.warehouseId}_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    if (el.backupStatus) {
+      el.backupStatus.textContent = `Backup saved (${keyCount} data entries)`;
+      el.backupStatus.className = 'backup-status success';
+    }
+    showToast(`Backup exported (${keyCount} entries)`, 'success');
+  }
+
+  /**
+   * Handle restore from a backup JSON file
+   */
+  async function handleRestore(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const statusEl = el.backupStatus;
+    if (statusEl) {
+      statusEl.textContent = 'Reading backup file...';
+      statusEl.className = 'backup-status';
+    }
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+
+      if (!data || !data.keys || data.version !== 1) {
+        throw new Error('Invalid backup file format');
+      }
+
+      const keyCount = Object.keys(data.keys).length;
+      if (statusEl) {
+        statusEl.textContent = `Importing ${keyCount} entries...`;
+      }
+
+      // Try via FCLM tab first, fallback to direct storage
+      let result;
+      if (state.fclmTabId) {
+        try {
+          const response = await browser.tabs.sendMessage(state.fclmTabId, {
+            action: 'importBackup',
+            data: data
+          });
+          if (response?.success) {
+            result = response;
+          } else {
+            throw new Error(response?.error || 'Import failed');
+          }
+        } catch (err) {
+          // Fallback: import directly into storage
+          result = await importDirectly(data);
+        }
+      } else {
+        result = await importDirectly(data);
+      }
+
+      if (statusEl) {
+        statusEl.textContent = `Restored ${result.imported} entries (${result.skipped} skipped)`;
+        statusEl.className = 'backup-status success';
+      }
+      showToast(`Restored ${result.imported} entries`, 'success');
+
+      // Reload data to reflect imported records
+      await loadFromFCLM();
+    } catch (err) {
+      console.error('[Dashboard] Restore error:', err);
+      if (statusEl) {
+        statusEl.textContent = `Restore failed: ${err.message}`;
+        statusEl.className = 'backup-status error';
+      }
+      showToast('Restore failed: ' + err.message, 'error');
+    }
+
+    // Reset file input so the same file can be selected again
+    e.target.value = '';
+  }
+
+  /**
+   * Import backup data directly into browser.storage.local
+   * (fallback when FCLM tab is not available)
+   */
+  async function importDirectly(exportData) {
+    const existing = await browser.storage.local.get(null);
+    const toStore = {};
+    let imported = 0;
+    let skipped = 0;
+
+    Object.entries(exportData.keys).forEach(([key, value]) => {
+      if (!key.startsWith('cache_') && !key.startsWith('meta_') && !key.startsWith('intraday_')) {
+        skipped++;
+        return;
+      }
+
+      if (existing[key] && existing[key].fetchedAt && value.fetchedAt) {
+        if (new Date(existing[key].fetchedAt) >= new Date(value.fetchedAt)) {
+          skipped++;
+          return;
+        }
+      }
+
+      if (key.startsWith('intraday_') && existing[key]) {
+        const merged = { ...existing[key] };
+        Object.entries(value).forEach(([hour, snap]) => {
+          if (!merged[hour]) {
+            merged[hour] = snap;
+          }
+        });
+        toStore[key] = merged;
+        imported++;
+        return;
+      }
+
+      toStore[key] = value;
+      imported++;
+    });
+
+    if (Object.keys(toStore).length > 0) {
+      await browser.storage.local.set(toStore);
+    }
+
+    return { imported, skipped };
   }
 
   /**
