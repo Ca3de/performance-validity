@@ -901,30 +901,48 @@
 
     // --- Build peer comparison data ---
     const allData = filterByPeriod(state.allCachedData, state.lookupPeriod);
-    const employeeMap = new Map();
+
+    // Identify which paths this AA works
+    const aaPaths = new Set(records.map(r => r.pathId));
+
+    // Build employee map from same-path peers (for JPH/Jobs comparisons)
+    const peerMap = new Map();
     allData.forEach(r => {
-      if (!employeeMap.has(r.employeeId)) {
-        employeeMap.set(r.employeeId, { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} });
+      if (!aaPaths.has(r.pathId)) return; // only same paths
+      if (!peerMap.has(r.employeeId)) {
+        peerMap.set(r.employeeId, { hours: 0, jobs: 0, dailyJPH: {} });
       }
-      const emp = employeeMap.get(r.employeeId);
+      const emp = peerMap.get(r.employeeId);
       emp.hours += r.hours || 0;
       emp.jobs += r.jobs || 0;
-      emp.paths.add(r.pathId);
-      // Track daily JPH for consistency
       const d = String(r.date).substring(0, 10);
       if (!emp.dailyJPH[d]) emp.dailyJPH[d] = { hours: 0, jobs: 0 };
       emp.dailyJPH[d].hours += r.hours || 0;
       emp.dailyJPH[d].jobs += r.jobs || 0;
     });
 
-    // Compute per-employee aggregates
-    const allJPHs = [], allHours = [], allJobs = [], allConsistencies = [];
-    employeeMap.forEach(emp => {
+    // Build full employee map for hours and versatility (cross-path)
+    const fullMap = new Map();
+    allData.forEach(r => {
+      if (!fullMap.has(r.employeeId)) {
+        fullMap.set(r.employeeId, { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} });
+      }
+      const emp = fullMap.get(r.employeeId);
+      emp.hours += r.hours || 0;
+      emp.jobs += r.jobs || 0;
+      emp.paths.add(r.pathId);
+      const d = String(r.date).substring(0, 10);
+      if (!emp.dailyJPH[d]) emp.dailyJPH[d] = { hours: 0, jobs: 0 };
+      emp.dailyJPH[d].hours += r.hours || 0;
+      emp.dailyJPH[d].jobs += r.jobs || 0;
+    });
+
+    // Same-path peer aggregates (for JPH and Jobs)
+    const peerJPHs = [], peerJobs = [], peerConsistencies = [];
+    peerMap.forEach(emp => {
       if (emp.hours <= 0) return;
-      allJPHs.push(emp.jobs / emp.hours);
-      allHours.push(emp.hours);
-      allJobs.push(emp.jobs);
-      // Consistency: coefficient of variation of daily JPH (inverted)
+      peerJPHs.push(emp.jobs / emp.hours);
+      peerJobs.push(emp.jobs);
       const dailyJPHs = Object.values(emp.dailyJPH)
         .filter(d => d.hours > 0)
         .map(d => d.jobs / d.hours);
@@ -932,13 +950,21 @@
         const mean = dailyJPHs.reduce((s, v) => s + v, 0) / dailyJPHs.length;
         const variance = dailyJPHs.reduce((s, v) => s + (v - mean) ** 2, 0) / dailyJPHs.length;
         const cv = mean > 0 ? Math.sqrt(variance) / mean : 1;
-        allConsistencies.push(Math.max(0, 100 - cv * 100)); // 0 CV = 100 consistency
+        peerConsistencies.push(Math.max(0, 100 - cv * 100));
       }
     });
 
+    // All-employee aggregates (for Hours)
+    const allHours = [];
+    fullMap.forEach(emp => {
+      if (emp.hours <= 0) return;
+      allHours.push(emp.hours);
+    });
+
     // AA's own values
-    const aaEmp = employeeMap.get(employeeId) || { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} };
-    const aaDailyJPHs = Object.values(aaEmp.dailyJPH).filter(d => d.hours > 0).map(d => d.jobs / d.hours);
+    const aaEmp = fullMap.get(employeeId) || { hours: 0, jobs: 0, paths: new Set(), dailyJPH: {} };
+    const aaPeer = peerMap.get(employeeId) || { hours: 0, jobs: 0, dailyJPH: {} };
+    const aaDailyJPHs = Object.values(aaPeer.dailyJPH).filter(d => d.hours > 0).map(d => d.jobs / d.hours);
     let aaConsistency = 50;
     if (aaDailyJPHs.length >= 2) {
       const mean = aaDailyJPHs.reduce((s, v) => s + v, 0) / aaDailyJPHs.length;
@@ -947,14 +973,15 @@
       aaConsistency = Math.max(0, 100 - cv * 100);
     }
 
-    const overallAvg = allJPHs.length > 0 ? allJPHs.reduce((s, v) => s + v, 0) / allJPHs.length : 0;
+    // Path-specific averages for radar
+    const peerAvgJPH = peerJPHs.length > 0 ? peerJPHs.reduce((s, v) => s + v, 0) / peerJPHs.length : 0;
+    const peerAvgJobs = peerJobs.length > 0 ? peerJobs.reduce((s, v) => s + v, 0) / peerJobs.length : 0;
     const avgHoursAll = allHours.length > 0 ? allHours.reduce((s, v) => s + v, 0) / allHours.length : 0;
-    const avgJobsAll = allJobs.length > 0 ? allJobs.reduce((s, v) => s + v, 0) / allJobs.length : 0;
-    const avgConsistencyAll = allConsistencies.length > 0 ? allConsistencies.reduce((s, v) => s + v, 0) / allConsistencies.length : 50;
+    const avgConsistencyAll = peerConsistencies.length > 0 ? peerConsistencies.reduce((s, v) => s + v, 0) / peerConsistencies.length : 50;
 
-    // Dynamic stat bars based on peer data
-    const maxJPH = allJPHs.length > 0 ? Math.max(...allJPHs) : 60;
-    const maxJobs = allJobs.length > 0 ? Math.max(...allJobs) : 5000;
+    // Dynamic maxes - JPH and Jobs from same-path peers, Hours from all
+    const maxJPH = peerJPHs.length > 0 ? Math.max(...peerJPHs) : 60;
+    const maxJobs = peerJobs.length > 0 ? Math.max(...peerJobs) : 5000;
     const maxHours = allHours.length > 0 ? Math.max(...allHours) : 160;
     el.aaJPHBar.style.width = `${Math.min(avgJPH / maxJPH * 100, 100)}%`;
     el.aaJobsBar.style.width = `${Math.min(totalJobs / maxJobs * 100, 100)}%`;
@@ -972,9 +999,9 @@
           : 0
       },
       avg: {
-        jph: overallAvg,
+        jph: peerAvgJPH,
         hours: avgHoursAll,
-        jobs: avgJobsAll,
+        jobs: peerAvgJobs,
         consistency: avgConsistencyAll,
         versatility: 50
       },
@@ -1034,15 +1061,17 @@
     }
 
     // Fallback to daily trend if no intraday data or multi-day period
+    let gotHourlyData = Object.keys(trendByPath).length > 0 && isToday;
     if (Object.keys(trendByPath).length === 0) {
-      const trendData = filterByPeriod(state.allCachedData, state.lookupPeriod);
+      // For today without hourly snapshots, show full cached history as daily context
+      const trendData = isToday ? state.allCachedData : filterByPeriod(state.allCachedData, state.lookupPeriod);
       trendByPath = getDailyTrendByPath(employeeId, trendData);
     }
 
-    renderTrendCharts(trendByPath, isToday);
+    renderTrendCharts(trendByPath, gotHourlyData);
 
-    // --- Performance vs Average ---
-    const diff = avgJPH - overallAvg;
+    // --- Performance vs Average (same-path peers) ---
+    const diff = avgJPH - peerAvgJPH;
     const diffClass = diff >= 0 ? 'positive' : 'negative';
     const diffSign = diff >= 0 ? '+' : '';
 
@@ -1053,8 +1082,8 @@
       </div>
       <div class="vs-divider"></div>
       <div class="vs-item">
-        <div class="vs-value">${overallAvg.toFixed(1)}</div>
-        <div class="vs-label">Site Avg</div>
+        <div class="vs-value">${peerAvgJPH.toFixed(1)}</div>
+        <div class="vs-label">Path Avg</div>
       </div>
       <div class="vs-divider"></div>
       <div class="vs-item">
