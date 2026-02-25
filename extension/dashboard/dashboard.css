@@ -305,6 +305,110 @@ body {
   flex-shrink: 0;
 }
 
+/* ===== Global Filter Bar ===== */
+.global-filters {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: var(--header-height);
+  z-index: 49;
+}
+
+.filter-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filter-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shift-toggle,
+.period-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-input);
+  padding: 3px;
+  border-radius: var(--radius);
+}
+
+.shift-btn,
+.period-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.shift-btn svg,
+.period-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.shift-btn:hover,
+.period-btn:hover {
+  color: var(--text-primary);
+}
+
+.shift-btn.active {
+  background: var(--accent);
+  color: var(--bg-dark);
+}
+
+.period-btn.active {
+  background: var(--accent);
+  color: var(--bg-dark);
+}
+
+.custom-date-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 12px;
+  color-scheme: dark;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.date-separator {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
 /* ===== Views ===== */
 .view {
   display: none;
@@ -1795,7 +1899,21 @@ body {
     align-items: stretch;
   }
 
-  .period-tabs {
+  .global-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar-left {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .period-toggle {
+    flex-wrap: wrap;
+  }
+
+  .custom-date-range {
     flex-wrap: wrap;
   }
 }
