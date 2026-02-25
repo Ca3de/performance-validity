@@ -13,7 +13,6 @@
     currentView: 'overview',
     // Global filters (affect all views)
     globalPeriod: 'today',
-    globalShift: 'all',       // 'all' | 'day' | 'night'
     customDateFrom: null,     // YYYY-MM-DD string for custom range
     customDateTo: null,       // YYYY-MM-DD string for custom range
     // Lookup state
@@ -112,7 +111,6 @@
     el.views = document.querySelectorAll('.view');
 
     // Global filters
-    el.shiftBtns = document.querySelectorAll('.shift-btn');
     el.periodBtns = document.querySelectorAll('.period-btn');
     el.customDateRange = document.getElementById('customDateRange');
     el.dateFrom = document.getElementById('dateFrom');
@@ -190,16 +188,6 @@
           handleLookup();
         }
       }
-    });
-
-    // Global shift filter
-    el.shiftBtns?.forEach(btn => {
-      btn.addEventListener('click', () => {
-        el.shiftBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state.globalShift = btn.dataset.shift;
-        renderCurrentView();
-      });
     });
 
     // Global period filter
@@ -309,27 +297,38 @@
   }
 
   /**
-   * Load initial data
+   * Load initial data.
+   * First reads directly from browser.storage.local (works even without FCLM tab).
+   * Then tries to discover the FCLM tab for live refresh of today's data.
    */
   async function loadInitialData() {
     try {
+      // Check for one-shot data passed from the popup
       const storage = await browser.storage.local.get('dashboardData');
       const passedData = storage.dashboardData;
-
       if (passedData) {
         state.warehouseId = passedData.warehouseId || 'UNKNOWN';
         el.warehouseId.textContent = state.warehouseId;
         await browser.storage.local.remove('dashboardData');
-
-        if (passedData.performanceData?.length > 0) {
-          state.allCachedData = passedData.performanceData;
-          renderOverview();
-          showToast(`Loaded ${state.allCachedData.length} records`, 'success');
-          return;
-        }
       }
 
-      await loadFromFCLM();
+      // Load all cached data directly from storage (no FCLM tab needed)
+      const recordCount = await loadFromStorage();
+
+      // Discover FCLM tab for live refresh
+      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
+      if (tabs.length > 0) {
+        state.fclmTabId = tabs[0].id;
+        // If we already have historical data from storage, just refresh today
+        if (recordCount > 0) {
+          console.log('[Dashboard] Storage had data, will use FCLM tab for live refresh only');
+        } else {
+          // No data in storage at all — try loading through FCLM content script
+          await loadFromFCLM();
+        }
+      } else if (recordCount === 0) {
+        showToast('Open FCLM portal to start collecting data', 'warning');
+      }
     } catch (error) {
       console.error('[Dashboard] Error loading data:', error);
       showToast('Error loading data', 'error');
@@ -337,21 +336,66 @@
   }
 
   /**
-   * Load data from FCLM tab
+   * Load all cached records directly from browser.storage.local.
+   * The dashboard extension page has full access to the same storage
+   * that the content script writes to — no FCLM tab needed for reads.
+   * Returns the number of records loaded.
+   */
+  async function loadFromStorage() {
+    try {
+      const all = await browser.storage.local.get(null);
+      const allRecords = [];
+      let warehouseId = state.warehouseId;
+
+      Object.entries(all).forEach(([key, data]) => {
+        if (!key.startsWith('cache_') || !data || !data.records) return;
+
+        // Extract warehouse ID from first cache entry if we don't have one
+        if (warehouseId === 'UNKNOWN' && data.warehouseId) {
+          warehouseId = data.warehouseId;
+        }
+
+        data.records.forEach(record => {
+          allRecords.push({
+            ...record,
+            date: data.date,
+            shift: data.shift || 'all'
+          });
+        });
+      });
+
+      if (allRecords.length > 0) {
+        state.allCachedData = allRecords;
+        state.warehouseId = warehouseId;
+        el.warehouseId.textContent = state.warehouseId;
+        renderOverview();
+        updateLastRefreshTime();
+        showToast(`Loaded ${allRecords.length} records from storage`, 'success');
+        console.log(`[Dashboard] Loaded ${allRecords.length} records directly from storage`);
+      }
+
+      return allRecords.length;
+    } catch (error) {
+      console.error('[Dashboard] Error reading from storage:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Load data from FCLM tab (fallback when storage is empty)
    */
   async function loadFromFCLM() {
     try {
-      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
-
-      if (tabs.length === 0) {
-        showToast('FCLM portal not open', 'warning');
-        return;
+      if (!state.fclmTabId) {
+        const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
+        if (tabs.length === 0) {
+          showToast('FCLM portal not open', 'warning');
+          return;
+        }
+        state.fclmTabId = tabs[0].id;
       }
 
-      const fclmTab = tabs[0];
-      state.fclmTabId = fclmTab.id;
-
-      const statusResponse = await browser.tabs.sendMessage(fclmTab.id, { action: 'getCacheStatus' });
+      const statusResponse = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getCacheStatus' });
 
       if (!statusResponse?.initialized) {
         showToast('Cache initializing...', 'info');
@@ -359,7 +403,7 @@
         return;
       }
 
-      const response = await browser.tabs.sendMessage(fclmTab.id, { action: 'getAllCachedData' });
+      const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getAllCachedData' });
 
       if (response?.success && response.totalRecords > 0) {
         state.warehouseId = response.warehouseId || state.warehouseId;
@@ -437,7 +481,8 @@
   }
 
   /**
-   * Refresh data from FCLM tab and re-render current view.
+   * Refresh data and re-render current view.
+   * Tries FCLM tab first (for newest today data), falls back to storage read.
    * Resets the countdown timer on completion.
    */
   async function refreshData() {
@@ -446,35 +491,38 @@
     if (el.refreshTimer) el.refreshTimer.classList.add('refreshing');
 
     try {
-      // Always re-discover the FCLM tab to handle tab closes/reopens
+      // Try FCLM tab first for freshest data
       const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
-      if (tabs.length === 0) {
-        console.log('[Dashboard] No FCLM tab found for refresh');
-        return;
-      }
-      state.fclmTabId = tabs[0].id;
-
-      const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getAllCachedData' });
-
-      if (response?.success && response.totalRecords > 0) {
-        const oldCount = state.allCachedData.length;
-        state.allCachedData = response.performanceData || [];
-        state.warehouseId = response.warehouseId || state.warehouseId;
-        el.warehouseId.textContent = state.warehouseId;
-
-        // Re-render current view
-        renderCurrentView();
-
-        updateLastRefreshTime();
-
-        if (oldCount > 0 && state.allCachedData.length !== oldCount) {
-          showToast(`Data refreshed (${response.totalRecords} records)`, 'success');
+      if (tabs.length > 0) {
+        state.fclmTabId = tabs[0].id;
+        try {
+          const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getAllCachedData' });
+          if (response?.success && response.totalRecords > 0) {
+            const oldCount = state.allCachedData.length;
+            state.allCachedData = response.performanceData || [];
+            state.warehouseId = response.warehouseId || state.warehouseId;
+            el.warehouseId.textContent = state.warehouseId;
+            renderCurrentView();
+            updateLastRefreshTime();
+            if (oldCount > 0 && state.allCachedData.length !== oldCount) {
+              showToast(`Data refreshed (${response.totalRecords} records)`, 'success');
+            }
+            console.log(`[Dashboard] Refreshed via FCLM: ${response.totalRecords} records`);
+            return; // Done — got live data
+          }
+        } catch (err) {
+          console.log('[Dashboard] FCLM tab messaging failed, falling back to storage:', err.message);
+          state.fclmTabId = null;
         }
-        console.log(`[Dashboard] Refreshed: ${response.totalRecords} records`);
       }
-    } catch (err) {
-      console.log('[Dashboard] Error refreshing data:', err.message);
-      state.fclmTabId = null;
+
+      // Fallback: re-read from storage (picks up any background writes)
+      const count = await loadFromStorage();
+      if (count > 0) {
+        console.log(`[Dashboard] Refreshed from storage: ${count} records`);
+      } else {
+        console.log('[Dashboard] No data available from FCLM tab or storage');
+      }
     } finally {
       state.refreshing = false;
       if (el.refreshTimer) el.refreshTimer.classList.remove('refreshing');
@@ -510,14 +558,6 @@
     if (state.currentView === 'overview') renderOverview();
     if (state.currentView === 'data') renderDataTable();
     // For lookup, the detail re-renders on next search
-  }
-
-  /**
-   * Filter data by shift. Records with shift='all' always pass.
-   */
-  function filterByShift(data, shift) {
-    if (shift === 'all') return data;
-    return data.filter(r => !r.shift || r.shift === 'all' || r.shift === shift);
   }
 
   /**
@@ -621,7 +661,7 @@
    * Render overview
    */
   function renderOverview() {
-    const data = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
+    const data = filterByPeriod(state.allCachedData, state.globalPeriod);
 
     // Aggregate by employee
     const employeeMap = new Map();
@@ -660,7 +700,7 @@
     // Path cards
     renderPathCards(data);
 
-    // Top performers by path (uses selected period data, with shift applied)
+    // Top performers by path (uses selected period data)
     renderPathLeaders(data);
 
     // Needs attention (bottom performers with hours > 0)
@@ -843,8 +883,8 @@
       return;
     }
 
-    // Filter by period and shift
-    matches = filterByShift(filterByPeriod(matches, state.globalPeriod), state.globalShift);
+    // Filter by period
+    matches = filterByPeriod(matches, state.globalPeriod);
 
     if (state.lookupPath !== 'all') {
       matches = matches.filter(r => (r.pathId || '').toLowerCase().includes(state.lookupPath));
@@ -1066,7 +1106,7 @@
     el.aaHours.textContent = totalHours.toFixed(1);
 
     // --- Build peer comparison data ---
-    const allData = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
+    const allData = filterByPeriod(state.allCachedData, state.globalPeriod);
 
     // Identify which paths this AA works
     const aaPaths = new Set(records.map(r => r.pathId));
@@ -1104,11 +1144,9 @@
     });
 
     // Versatility uses ALL cached data (last 30 days) regardless of period.
-    // An AA's versatility is about how many paths they've worked over time,
-    // not just what they did today. Shift filter still applies.
-    const shiftFilteredCache = filterByShift(state.allCachedData, state.globalShift);
+    // An AA's versatility is about how many paths they've worked over time.
     const versMap = new Map();
-    shiftFilteredCache.forEach(r => {
+    state.allCachedData.forEach(r => {
       if (!versMap.has(r.employeeId)) {
         versMap.set(r.employeeId, new Set());
       }
@@ -1126,9 +1164,8 @@
 
     // Consistency uses ALL cached data (last 30 days) regardless of period.
     // It measures how steady an AA's daily JPH is over time — needs multiple days.
-    // Shift filter still applies.
     const consistencyMap = new Map();
-    shiftFilteredCache.forEach(r => {
+    state.allCachedData.forEach(r => {
       if (!aaPaths.has(r.pathId)) return; // only same paths for fair comparison
       if (!consistencyMap.has(r.employeeId)) {
         consistencyMap.set(r.employeeId, {});
@@ -1258,7 +1295,7 @@
     const isToday = state.globalPeriod === 'today';
 
     // Determine if this is a single-day period where we can show hourly data
-    const periodData = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
+    const periodData = filterByPeriod(state.allCachedData, state.globalPeriod);
     const uniqueDates = new Set(periodData.map(r => String(r.date).substring(0, 10)));
     const isSingleDay = isToday || uniqueDates.size === 1;
     const singleDayDate = isToday ? null : (uniqueDates.size === 1 ? [...uniqueDates][0] : null);
@@ -1527,7 +1564,7 @@
    * Render data table
    */
   function renderDataTable() {
-    let data = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
+    let data = filterByPeriod(state.allCachedData, state.globalPeriod);
 
     // Filter by search
     if (state.dataSearch) {
@@ -1597,7 +1634,7 @@
    * Handle export
    */
   function handleExport() {
-    let data = filterByShift(filterByPeriod(state.allCachedData, state.globalPeriod), state.globalShift);
+    let data = filterByPeriod(state.allCachedData, state.globalPeriod);
 
     if (data.length === 0) {
       showToast('No data to export', 'warning');

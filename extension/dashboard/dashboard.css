@@ -331,7 +331,6 @@ body {
   gap: 12px;
 }
 
-.shift-toggle,
 .period-toggle {
   display: flex;
   gap: 2px;
@@ -340,7 +339,6 @@ body {
   border-radius: var(--radius);
 }
 
-.shift-btn,
 .period-btn {
   display: inline-flex;
   align-items: center;
@@ -357,20 +355,13 @@ body {
   white-space: nowrap;
 }
 
-.shift-btn svg,
 .period-btn svg {
   width: 14px;
   height: 14px;
 }
 
-.shift-btn:hover,
 .period-btn:hover {
   color: var(--text-primary);
-}
-
-.shift-btn.active {
-  background: var(--accent);
-  color: var(--bg-dark);
 }
 
 .period-btn.active {
