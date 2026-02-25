@@ -357,22 +357,12 @@ body {
   white-space: nowrap;
 }
 
-.shift-btn svg,
-.period-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
 .shift-btn:hover,
 .period-btn:hover {
   color: var(--text-primary);
 }
 
-.shift-btn.active {
-  background: var(--accent);
-  color: var(--bg-dark);
-}
-
+.shift-btn.active,
 .period-btn.active {
   background: var(--accent);
   color: var(--bg-dark);
