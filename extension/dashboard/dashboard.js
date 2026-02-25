@@ -353,18 +353,45 @@
    * Load all cached records directly from browser.storage.local.
    * The dashboard extension page has full access to the same storage
    * that the content script writes to — no FCLM tab needed for reads.
+   *
+   * Deduplication: if shift-specific entries (_day / _night) exist for
+   * a date, the corresponding _all entry is skipped to avoid counting
+   * the same employees twice.
+   *
    * Returns the number of records loaded.
    */
   async function loadFromStorage() {
     try {
       const all = await browser.storage.local.get(null);
-      const allRecords = [];
       let warehouseId = state.warehouseId;
 
+      // First pass: identify which dates have shift-specific entries
+      const dateShifts = {};  // date → Set of shifts found
+      Object.entries(all).forEach(([key, data]) => {
+        if (!key.startsWith('cache_') || !data || !data.records) return;
+        const date = data.date;
+        const shift = data.shift || 'all';
+        if (!dateShifts[date]) dateShifts[date] = new Set();
+        dateShifts[date].add(shift);
+      });
+
+      // Second pass: load records, skipping _all entries for dates that
+      // already have shift-specific data (avoids duplicates)
+      const allRecords = [];
       Object.entries(all).forEach(([key, data]) => {
         if (!key.startsWith('cache_') || !data || !data.records) return;
 
-        // Extract warehouse ID from first cache entry if we don't have one
+        const shift = data.shift || 'all';
+        const date = data.date;
+
+        // Skip the _all entry if shift-specific entries exist for this date
+        if (shift === 'all' && dateShifts[date]) {
+          const shifts = dateShifts[date];
+          if (shifts.has('day') || shifts.has('night')) {
+            return; // prefer shift-specific data
+          }
+        }
+
         if (warehouseId === 'UNKNOWN' && data.warehouseId) {
           warehouseId = data.warehouseId;
         }
@@ -373,7 +400,7 @@
           allRecords.push({
             ...record,
             date: data.date,
-            shift: data.shift || 'all'
+            shift: shift
           });
         });
       });
@@ -578,20 +605,48 @@
   }
 
   /**
+   * Determine the current shift based on the hour.
+   * Day: 06:00–17:59, Night: 18:00–05:59
+   */
+  function currentShiftName() {
+    const h = new Date().getHours();
+    return (h >= 6 && h < 18) ? 'day' : 'night';
+  }
+
+  /**
    * Filter data by shift.
-   * - 'all' filter: show everything (no filtering)
-   * - 'day'/'night' filter: show only records explicitly tagged with that shift.
-   *   Records tagged 'all' (bulk-fetched historical data where we don't know the
-   *   shift) are EXCLUDED when a specific shift is selected — otherwise they'd
-   *   inflate the numbers and make Day/Night/Both look identical.
    *
-   * Over time, as the extension runs each day and collects shift-specific data,
-   * the Day/Night views will become more complete.  Historical 'all' data is
-   * always visible under the "Both" filter.
+   * - 'all' filter: show everything.
+   * - 'day'/'night' filter:
+   *     1) Records explicitly tagged with the selected shift → included.
+   *     2) Records tagged 'all' for TODAY → included if the selected shift
+   *        matches the current shift, because FCLM portal data reflects the
+   *        shift that is currently active.
+   *     3) Records tagged 'all' for historical dates → excluded (we cannot
+   *        determine their shift).
+   *     4) Records tagged with the opposite shift → excluded.
    */
   function filterByShift(data, shift) {
     if (!shift || shift === 'all') return data;
-    return data.filter(r => (r.shift || 'all') === shift);
+
+    const todayStr = formatDateStr(new Date());
+    const nowShift = currentShiftName();
+
+    return data.filter(r => {
+      const recShift = r.shift || 'all';
+
+      // Exact match (properly tagged records)
+      if (recShift === shift) return true;
+
+      // Today's _all records: show under the current shift
+      if (recShift === 'all'
+          && shift === nowShift
+          && String(r.date).substring(0, 10) === todayStr) {
+        return true;
+      }
+
+      return false;
+    });
   }
 
   /**
