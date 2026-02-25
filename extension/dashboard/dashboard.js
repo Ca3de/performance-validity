@@ -614,21 +614,24 @@
   /**
    * Filter data by shift, with smart deduplication.
    *
-   * Storage often has BOTH a full-day entry (shift='all') AND
-   * shift-specific entries (shift='day'/'night') for the same date.
-   * These are DIFFERENT datasets — _all is the 24-hr aggregate while
-   * _day/_night are time-range-specific queries.  Showing both would
-   * double-count, so we must pick the right one per filter:
+   * Storage can have a full-day entry (shift='all') AND shift-specific
+   * entries (shift='day'/'night') for the same date.  These are
+   * different queries — _all is 24-hr, _day/_night are time-range
+   * specific.  We must avoid double-counting.
    *
    * "Both" filter:
-   *   - For dates with _all entry → use _all (most complete aggregate).
-   *   - For dates with only _day/_night → use what's available.
+   *   Per date: prefer _all (most complete).  Use shift-specific only
+   *   for dates that have no _all entry.
    *
-   * "Day"/"Night" filter:
-   *   - Use records tagged with the selected shift.
-   *   - For TODAY, if no shift-specific entry exists for the selected
-   *     shift but _all does, AND it matches the current active shift,
-   *     fall back to _all (the portal shows current-shift data).
+   * "Day" / "Night" filter:
+   *   Per date:
+   *   1) If shift-specific records exist for that shift → use them.
+   *   2) If only _all exists (historical, no shift breakdown) →
+   *      include _all so the date isn't invisible.  We can't split it,
+   *      but showing the aggregate is better than showing nothing.
+   *   3) If shift-specific records exist for the OTHER shift but not
+   *      this one → exclude _all (the data we'd show is the wrong
+   *      shift's data captured in _all alongside specific entries).
    */
   function filterByShift(data, shift) {
     const dsm = state.dateShiftMap || {};
@@ -647,26 +650,22 @@
     }
 
     // Day or Night filter
-    const todayStr = formatDateStr(new Date());
-    const nowShift = currentShiftName();
-
     return data.filter(r => {
       const recShift = r.shift || 'all';
       const date = String(r.date).substring(0, 10);
+      const dateShifts = dsm[date];
 
-      // Exact match — shift-specific record for the right shift
+      // Exact match — shift-specific record for the selected shift
       if (recShift === shift) return true;
 
-      // Fallback for today: use _all records if this is the active shift
-      // and no shift-specific entry was collected yet
-      if (recShift === 'all'
-          && date === todayStr
-          && shift === nowShift) {
-        const dateShifts = dsm[todayStr];
-        // Only fall back if there's no dedicated entry for this shift
-        if (!dateShifts || !dateShifts.has(shift)) {
-          return true;
-        }
+      // _all records: include only if this date has NO shift-specific
+      // entries at all (pure historical data where we can't split).
+      // If any shift-specific entry exists for the date, we have
+      // better data and _all would just double-count.
+      if (recShift === 'all') {
+        const hasAnyShiftSpecific = dateShifts
+          && (dateShifts.has('day') || dateShifts.has('night'));
+        return !hasAnyShiftSpecific;
       }
 
       return false;

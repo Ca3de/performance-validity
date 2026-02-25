@@ -1720,9 +1720,18 @@
 
     let dateRange;
 
-    if (isToday) {
-      // Current day: use Intraday span with shift-specific hours for real-time data
-      dateRange = getShiftDateRange();
+    if (isToday && shift !== 'all') {
+      // Today with a specific shift: use that shift's time range
+      dateRange = getDateRangeForShift(shift, dateStr);
+    } else if (isToday) {
+      // Today with shift='all': query the full 24-hour range
+      dateRange = {
+        startDate: new Date(date),
+        endDate: new Date(date),
+        startHour: 0,
+        endHour: 23,
+        spanType: 'Intraday'
+      };
     } else {
       // Historical dates: use Day span type (FCLM only returns data for Day span on past dates)
       const startDate = new Date(date);
