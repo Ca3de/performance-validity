@@ -1781,8 +1781,40 @@
   }
 
   /**
+   * Get the Intraday date range for a specific shift on a given date.
+   * Day:   06:00 – 18:00 on the same date.
+   * Night: 18:00 on the date – 06:00 on the next date.
+   */
+  function getDateRangeForShift(shift, dateStr) {
+    const parts = dateStr.split('-');
+    const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+
+    if (shift === 'day') {
+      return {
+        startDate: new Date(date),
+        endDate: new Date(date),
+        startHour: 6,
+        endHour: 18,
+        spanType: 'Intraday'
+      };
+    }
+    // night
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    return {
+      startDate: new Date(date),
+      endDate: nextDay,
+      startHour: 18,
+      endHour: 6,
+      spanType: 'Intraday'
+    };
+  }
+
+  /**
    * Fetch and cache current day/shift data (real-time)
-   * Uses Intraday span for fresh data
+   * Uses Intraday span for fresh data.
+   * Also fetches the completed opposite shift so that the dashboard
+   * can show Day and Night data independently.
    */
   async function fetchAndCacheCurrentDay() {
     const warehouseId = CONFIG.warehouseId || getWarehouseId();
@@ -1791,7 +1823,7 @@
 
     log(`[Cache] Refreshing current day data (${today}, ${currentShift} shift)...`);
 
-    // For current day, always fetch fresh data with intraday span
+    // --- 1. Fetch CURRENT shift data (real-time) ---
     const allRecords = [];
     const dateRange = getShiftDateRange();
 
@@ -1826,29 +1858,83 @@
       }
     }
 
-    // Store current day data with current shift
+    // Store current shift data
     if (window.FCLMDataCache && allRecords.length > 0) {
       await window.FCLMDataCache.storeDailyData(warehouseId, today, currentShift, allRecords);
-      log(`[Cache] Cached ${allRecords.length} current day records`);
+      log(`[Cache] Cached ${allRecords.length} current ${currentShift}-shift records`);
 
       // Store intraday snapshot for hourly trend tracking
       await window.FCLMDataCache.storeIntradaySnapshot(warehouseId, allRecords);
-      // Periodically clean old intraday data
       window.FCLMDataCache.cleanIntradaySnapshots(warehouseId).catch(() => {});
+    }
 
-      // Notify dashboard tab that fresh data is available
-      try {
-        browser.runtime.sendMessage({
-          action: 'dataUpdated',
-          warehouseId,
-          date: today,
-          shift: currentShift,
-          recordCount: allRecords.length,
-          updatedAt: new Date().toISOString()
-        });
-      } catch (e) {
-        // Dashboard may not be open - ignore
+    // --- 2. Fetch COMPLETED opposite shift (if applicable) ---
+    // During night shift, day shift (6AM-6PM) is already over → fetch it.
+    // During day shift, last night's shift is over → fetch it too.
+    const otherShift = currentShift === 'night' ? 'day' : 'night';
+    const otherDateRange = getDateRangeForShift(otherShift, today);
+
+    // For night shift fetching "day": day shift on today is complete.
+    // For day shift fetching "night": this would be last night (today 00:00-06:00).
+    //   But that's really YESTERDAY's night shift (started yesterday 18:00).
+    //   We store it under today's date anyway since the hours 00:00-06:00 are today.
+    //   Skip if day shift just started and there's little data to get.
+    const hour = new Date().getHours();
+    const shouldFetchOther = currentShift === 'night' || (currentShift === 'day' && hour >= 7);
+
+    if (shouldFetchOther) {
+      const otherRecords = [];
+
+      for (const path of ENABLED_PATHS) {
+        try {
+          const rollupData = await fetchFunctionRollup(path.processId, otherDateRange);
+          if (rollupData.success && rollupData.employees) {
+            rollupData.employees.forEach(emp => {
+              const subFunctionName = emp.subFunction && emp.subFunction !== 'Unknown' ? emp.subFunction : path.name;
+              otherRecords.push({
+                employeeId: emp.badgeId,
+                employeeName: emp.name,
+                pathId: path.id,
+                pathName: subFunctionName,
+                pathColor: path.color,
+                category: path.category,
+                parentPath: path.name,
+                hours: emp.totalHours,
+                jobs: emp.jobs,
+                jph: emp.jph,
+                units: emp.units,
+                uph: emp.uph,
+                date: today,
+                shift: otherShift,
+                isCurrentDay: true
+              });
+            });
+          }
+        } catch (err) {
+          log(`[Cache] Error fetching ${path.name} for ${otherShift} shift:`, err);
+        }
       }
+
+      if (window.FCLMDataCache && otherRecords.length > 0) {
+        await window.FCLMDataCache.storeDailyData(warehouseId, today, otherShift, otherRecords);
+        log(`[Cache] Cached ${otherRecords.length} ${otherShift}-shift records for ${today}`);
+      } else {
+        log(`[Cache] No ${otherShift}-shift data found for ${today}`);
+      }
+    }
+
+    // Notify dashboard that fresh data is available
+    try {
+      browser.runtime.sendMessage({
+        action: 'dataUpdated',
+        warehouseId,
+        date: today,
+        shift: currentShift,
+        recordCount: allRecords.length,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (e) {
+      // Dashboard may not be open - ignore
     }
 
     return allRecords;
