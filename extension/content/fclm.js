@@ -20,6 +20,13 @@
     dateRangeDays: 30
   };
 
+  // Unique instance ID for this content script (tab ownership)
+  const INSTANCE_ID = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  const OWNER_STORAGE_KEY = '_fclm_owner';
+  const HEARTBEAT_INTERVAL_MS = 10_000;  // Send heartbeat every 10s
+  const HEARTBEAT_STALE_MS   = 30_000;   // Consider owner dead after 30s
+  let heartbeatTimer = null;
+
   // Process IDs for FCLM function rollup reports
   // These are the PARENT process IDs that return all sub-functions
   const PROCESS_IDS = {
@@ -113,7 +120,11 @@
   }
 
   /**
-   * Get shift date range (typically 18:00 - 06:00 for night shift)
+   * Get shift date range for the CURRENT shift.
+   * Day shift:   06:00 – 18:00 same calendar day
+   * Night shift:
+   *   - After 18:00: started today,   ends tomorrow  06:00
+   *   - Before 06:00: started yesterday 18:00, ends today 06:00
    */
   function getShiftDateRange() {
     const now = new Date();
@@ -122,29 +133,28 @@
     let startDate, endDate, startHour, endHour;
 
     if (hour >= 18) {
-      // After 6 PM - shift started today, ends tomorrow
+      // Night shift — started today, ends tomorrow
       startDate = new Date(now);
       endDate = new Date(now);
       endDate.setDate(endDate.getDate() + 1);
       startHour = 18;
       endHour = 6;
     } else if (hour < 6) {
-      // Before 6 AM - shift started yesterday
+      // Night shift — started yesterday, ends today
       startDate = new Date(now);
       startDate.setDate(startDate.getDate() - 1);
       endDate = new Date(now);
       startHour = 18;
       endHour = 6;
     } else {
-      // Day shift (6 AM - 6 PM) - use previous night
+      // Day shift — 06:00 to 18:00 same day
       startDate = new Date(now);
-      startDate.setDate(startDate.getDate() - 1);
       endDate = new Date(now);
-      startHour = 18;
-      endHour = 6;
+      startHour = 6;
+      endHour = 18;
     }
 
-    return { startDate, endDate, startHour, endHour, spanType: 'Intraday' };  // Intraday for daily granularity
+    return { startDate, endDate, startHour, endHour, spanType: 'Intraday' };
   }
 
   /**
@@ -1884,6 +1894,88 @@
     return results;
   }
 
+  // ── Tab ownership helpers ──────────────────────────────────────────
+  /**
+   * Try to claim ownership.  Returns true if this instance now owns
+   * the fetching responsibility, false if another live tab already owns it.
+   */
+  async function claimOwnership() {
+    try {
+      const result = await browser.storage.local.get(OWNER_STORAGE_KEY);
+      const current = result[OWNER_STORAGE_KEY];
+
+      if (current && current.instanceId !== INSTANCE_ID) {
+        // Another instance claims ownership — check if it's still alive
+        const age = Date.now() - (current.heartbeat || 0);
+        if (age < HEARTBEAT_STALE_MS) {
+          log(`[Owner] Another tab is active (instance ${current.instanceId.substring(0, 8)}…, last heartbeat ${Math.round(age / 1000)}s ago)`);
+          return false; // still alive — defer
+        }
+        log(`[Owner] Previous owner stale (${Math.round(age / 1000)}s), taking over`);
+      }
+
+      // Claim it
+      await browser.storage.local.set({
+        [OWNER_STORAGE_KEY]: {
+          instanceId: INSTANCE_ID,
+          heartbeat: Date.now(),
+          claimedAt: new Date().toISOString()
+        }
+      });
+      startHeartbeat();
+      log(`[Owner] This tab claimed ownership (${INSTANCE_ID.substring(0, 8)}…)`);
+      return true;
+    } catch (e) {
+      log('[Owner] Error claiming ownership:', e);
+      return true; // On error, proceed anyway
+    }
+  }
+
+  /** Send periodic heartbeat so other tabs know we're alive. */
+  function startHeartbeat() {
+    stopHeartbeat();
+    heartbeatTimer = setInterval(async () => {
+      try {
+        const result = await browser.storage.local.get(OWNER_STORAGE_KEY);
+        const current = result[OWNER_STORAGE_KEY];
+        // Only update if we still own it
+        if (current && current.instanceId === INSTANCE_ID) {
+          current.heartbeat = Date.now();
+          await browser.storage.local.set({ [OWNER_STORAGE_KEY]: current });
+        }
+      } catch (e) { /* ignore */ }
+    }, HEARTBEAT_INTERVAL_MS);
+  }
+
+  /** Stop heartbeat (when done fetching or tab unloads). */
+  function stopHeartbeat() {
+    if (heartbeatTimer) { clearInterval(heartbeatTimer); heartbeatTimer = null; }
+  }
+
+  /** Release ownership so another tab can take over. */
+  async function releaseOwnership() {
+    stopHeartbeat();
+    try {
+      const result = await browser.storage.local.get(OWNER_STORAGE_KEY);
+      const current = result[OWNER_STORAGE_KEY];
+      if (current && current.instanceId === INSTANCE_ID) {
+        await browser.storage.local.remove(OWNER_STORAGE_KEY);
+        log('[Owner] Released ownership');
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  // Release ownership when tab closes / navigates away
+  window.addEventListener('beforeunload', () => {
+    stopHeartbeat();
+    // Use sendBeacon-style fire-and-forget (storage.local.remove is async
+    // but we can't await in beforeunload — the heartbeat staleness check
+    // will cover this if the remove doesn't complete)
+    try {
+      browser.storage.local.remove(OWNER_STORAGE_KEY);
+    } catch (e) { /* ignore */ }
+  });
+
   /**
    * Initialize cache and pre-fetch historical daily data
    */
@@ -1901,6 +1993,19 @@
 
     if (fetchInProgress) {
       log('[Cache] Fetch already in progress, skipping');
+      return;
+    }
+
+    // ── Tab ownership check ──
+    const isOwner = await claimOwnership();
+    if (!isOwner) {
+      updateCacheStatus('ready', 'Standby — another tab is active');
+      log('[Cache] Deferring to active owner tab. Will retry in 30s.');
+      // Retry after the stale threshold — if the owner finished or died we take over
+      setTimeout(() => {
+        cacheInitialized = false; // allow re-entry
+        initializeCache().catch(err => log('[Cache] Retry error:', err));
+      }, HEARTBEAT_STALE_MS);
       return;
     }
 
@@ -1929,7 +2034,8 @@
           log('[Cache] ============================================');
           updateCacheStatus('ready', 'Live mode (no cache)');
           fetchInProgress = false;
-          cacheInitialized = false; // Allow retry on next page load
+          cacheInitialized = false;
+          releaseOwnership();
           return;
         }
       }
@@ -2006,8 +2112,8 @@
         completedAt: new Date().toISOString()
       });
 
-      updateCacheStatus('ready', `${stats.totalRecords} records (${stats.totalDays} days)`);
-      log('[Cache] Initialization complete!');
+      updateCacheStatus('ready', `Active · ${stats.totalRecords} records (${stats.totalDays} days)`);
+      log('[Cache] Initialization complete! This tab is the active data source.');
 
     } catch (error) {
       log('[Cache] Error initializing cache:', error);
@@ -2015,6 +2121,9 @@
       updateCacheStatus('error', 'Cache error');
     } finally {
       fetchInProgress = false;
+      // Release ownership so other tabs can take over if needed,
+      // but keep heartbeat alive for the auto-refresh interval
+      // (this tab stays the "active" tab for periodic current-day fetches)
     }
   }
 
