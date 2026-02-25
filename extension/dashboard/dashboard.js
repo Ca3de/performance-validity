@@ -10,6 +10,7 @@
   const state = {
     warehouseId: 'UNKNOWN',
     allCachedData: [],
+    dateShiftMap: {},          // { date → Set('all','day','night') } — built by loadFromStorage
     currentView: 'overview',
     // Global filters (affect all views)
     globalPeriod: 'today',
@@ -354,43 +355,31 @@
    * The dashboard extension page has full access to the same storage
    * that the content script writes to — no FCLM tab needed for reads.
    *
-   * Deduplication: if shift-specific entries (_day / _night) exist for
-   * a date, the corresponding _all entry is skipped to avoid counting
-   * the same employees twice.
+   * Loads ALL entries (including _all AND shift-specific for the same date).
+   * Deduplication is handled at filter-time in filterByShift() so each
+   * view (Both/Day/Night) can choose the right slice.
+   *
+   * Also builds state.dateShiftMap — { date → Set('all','day','night') }
+   * so filterByShift knows which variants are available per date.
    *
    * Returns the number of records loaded.
    */
   async function loadFromStorage() {
     try {
       const all = await browser.storage.local.get(null);
+      const allRecords = [];
       let warehouseId = state.warehouseId;
+      const dateShifts = {};  // date → Set of shift tags found
 
-      // First pass: identify which dates have shift-specific entries
-      const dateShifts = {};  // date → Set of shifts found
       Object.entries(all).forEach(([key, data]) => {
         if (!key.startsWith('cache_') || !data || !data.records) return;
-        const date = data.date;
+
         const shift = data.shift || 'all';
+        const date = data.date;
+
+        // Track which shifts exist for each date
         if (!dateShifts[date]) dateShifts[date] = new Set();
         dateShifts[date].add(shift);
-      });
-
-      // Second pass: load records, skipping _all entries for dates that
-      // already have shift-specific data (avoids duplicates)
-      const allRecords = [];
-      Object.entries(all).forEach(([key, data]) => {
-        if (!key.startsWith('cache_') || !data || !data.records) return;
-
-        const shift = data.shift || 'all';
-        const date = data.date;
-
-        // Skip the _all entry if shift-specific entries exist for this date
-        if (shift === 'all' && dateShifts[date]) {
-          const shifts = dateShifts[date];
-          if (shifts.has('day') || shifts.has('night')) {
-            return; // prefer shift-specific data
-          }
-        }
 
         if (warehouseId === 'UNKNOWN' && data.warehouseId) {
           warehouseId = data.warehouseId;
@@ -407,12 +396,12 @@
 
       if (allRecords.length > 0) {
         state.allCachedData = allRecords;
+        state.dateShiftMap = dateShifts;
         state.warehouseId = warehouseId;
         el.warehouseId.textContent = state.warehouseId;
         renderOverview();
         updateLastRefreshTime();
-        showToast(`Loaded ${allRecords.length} records from storage`, 'success');
-        console.log(`[Dashboard] Loaded ${allRecords.length} records directly from storage`);
+        console.log(`[Dashboard] Loaded ${allRecords.length} records from storage`);
       }
 
       return allRecords.length;
@@ -449,6 +438,15 @@
       if (response?.success && response.totalRecords > 0) {
         state.warehouseId = response.warehouseId || state.warehouseId;
         state.allCachedData = response.performanceData || [];
+        // Build dateShiftMap from the records
+        const dsm = {};
+        state.allCachedData.forEach(r => {
+          const date = String(r.date).substring(0, 10);
+          const shift = r.shift || 'all';
+          if (!dsm[date]) dsm[date] = new Set();
+          dsm[date].add(shift);
+        });
+        state.dateShiftMap = dsm;
         el.warehouseId.textContent = state.warehouseId;
         renderOverview();
         updateLastRefreshTime();
@@ -614,35 +612,61 @@
   }
 
   /**
-   * Filter data by shift.
+   * Filter data by shift, with smart deduplication.
    *
-   * - 'all' filter: show everything.
-   * - 'day'/'night' filter:
-   *     1) Records explicitly tagged with the selected shift → included.
-   *     2) Records tagged 'all' for TODAY → included if the selected shift
-   *        matches the current shift, because FCLM portal data reflects the
-   *        shift that is currently active.
-   *     3) Records tagged 'all' for historical dates → excluded (we cannot
-   *        determine their shift).
-   *     4) Records tagged with the opposite shift → excluded.
+   * Storage often has BOTH a full-day entry (shift='all') AND
+   * shift-specific entries (shift='day'/'night') for the same date.
+   * These are DIFFERENT datasets — _all is the 24-hr aggregate while
+   * _day/_night are time-range-specific queries.  Showing both would
+   * double-count, so we must pick the right one per filter:
+   *
+   * "Both" filter:
+   *   - For dates with _all entry → use _all (most complete aggregate).
+   *   - For dates with only _day/_night → use what's available.
+   *
+   * "Day"/"Night" filter:
+   *   - Use records tagged with the selected shift.
+   *   - For TODAY, if no shift-specific entry exists for the selected
+   *     shift but _all does, AND it matches the current active shift,
+   *     fall back to _all (the portal shows current-shift data).
    */
   function filterByShift(data, shift) {
-    if (!shift || shift === 'all') return data;
+    const dsm = state.dateShiftMap || {};
 
+    if (!shift || shift === 'all') {
+      // "Both" — prefer _all over shift-specific to avoid double-counting
+      return data.filter(r => {
+        const recShift = r.shift || 'all';
+        const date = String(r.date).substring(0, 10);
+        const dateShifts = dsm[date];
+
+        if (recShift === 'all') return true;  // always keep full-day entries
+        // Keep shift-specific only if no _all entry exists for this date
+        return !dateShifts || !dateShifts.has('all');
+      });
+    }
+
+    // Day or Night filter
     const todayStr = formatDateStr(new Date());
     const nowShift = currentShiftName();
 
     return data.filter(r => {
       const recShift = r.shift || 'all';
+      const date = String(r.date).substring(0, 10);
 
-      // Exact match (properly tagged records)
+      // Exact match — shift-specific record for the right shift
       if (recShift === shift) return true;
 
-      // Today's _all records: show under the current shift
+      // Fallback for today: use _all records if this is the active shift
+      // and no shift-specific entry was collected yet
       if (recShift === 'all'
-          && shift === nowShift
-          && String(r.date).substring(0, 10) === todayStr) {
-        return true;
+          && date === todayStr
+          && shift === nowShift) {
+        const dateShifts = dsm[todayStr];
+        // Only fall back if there's no dedicated entry for this shift
+        if (!dateShifts || !dateShifts.has(shift)) {
+          return true;
+        }
       }
 
       return false;
