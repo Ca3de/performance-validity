@@ -321,7 +321,9 @@
       if (passedData) {
         state.warehouseId = passedData.warehouseId || 'UNKNOWN';
         el.warehouseId.textContent = state.warehouseId;
+        state._suppressStorageListener = true;
         await browser.storage.local.remove('dashboardData');
+        state._suppressStorageListener = false;
       }
 
       // Load all cached data directly from storage (no FCLM tab needed)
@@ -466,45 +468,51 @@
       });
     }
 
-    // Listen for push notifications from content script for immediate refresh
-    try {
-      browser.runtime.onMessage.addListener((message) => {
-        if (message.action === 'dataUpdated') {
-          console.log(`[Dashboard] Push notification: ${message.recordCount} records at ${message.updatedAt}`);
-          refreshData();
-        }
-      });
-    } catch (e) {
-      console.log('[Dashboard] Could not register message listener:', e);
-    }
-
     // Listen for storage changes from the content script.
-    // This eliminates race conditions: instead of polling, we react
-    // to writes as they complete. The dashboard only reads AFTER the
-    // content script has finished writing.
+    // This is the SOLE mechanism for reacting to new data written by the
+    // content script.  It eliminates race conditions (we read only AFTER
+    // the write completes) and avoids the feedback-loop that occurred when
+    // push-notifications triggered refreshData() which re-queried FCLM
+    // which re-wrote storage which re-fired onChanged, etc.
     try {
       browser.storage.onChanged.addListener((changes, areaName) => {
         if (areaName !== 'local') return;
 
+        // Ignore changes that we triggered ourselves (e.g. import, dashboardData removal)
+        if (state._suppressStorageListener) return;
+
         // Check if any cache_ keys changed (new performance data written)
         const cacheKeysChanged = Object.keys(changes).some(k => k.startsWith('cache_'));
-        if (cacheKeysChanged) {
-          console.log('[Dashboard] Storage changed — reloading data');
-          // Debounce: the content script may write multiple keys in quick succession
-          if (state._storageDebounce) clearTimeout(state._storageDebounce);
-          state._storageDebounce = setTimeout(async () => {
-            const count = await loadFromStorage();
-            if (count > 0) {
-              renderCurrentView();
-              // Reset countdown since we just got fresh data
-              state.secondsUntilRefresh = REFRESH_INTERVAL_SECS;
-              updateCountdownDisplay();
-            }
-          }, 1000); // Wait 1s for batch writes to settle
-        }
+        if (!cacheKeysChanged) return;
+
+        console.log('[Dashboard] Storage changed — scheduling reload');
+        // Debounce: the content script may write multiple keys in quick succession
+        if (state._storageDebounce) clearTimeout(state._storageDebounce);
+        state._storageDebounce = setTimeout(async () => {
+          const count = await loadFromStorage();
+          if (count > 0) {
+            renderCurrentView();
+            // Reset countdown since we just got fresh data
+            state.secondsUntilRefresh = REFRESH_INTERVAL_SECS;
+            updateCountdownDisplay();
+          }
+        }, 2000); // Wait 2s for all batch writes to settle
       });
     } catch (e) {
       console.log('[Dashboard] Could not register storage.onChanged listener:', e);
+    }
+
+    // Listen for push notifications from content script.
+    // We just log it — the actual reload happens via storage.onChanged
+    // once the content script finishes writing to storage.
+    try {
+      browser.runtime.onMessage.addListener((message) => {
+        if (message.action === 'dataUpdated') {
+          console.log(`[Dashboard] Push notification: ${message.recordCount} records at ${message.updatedAt} (storage.onChanged will handle reload)`);
+        }
+      });
+    } catch (e) {
+      console.log('[Dashboard] Could not register message listener:', e);
     }
 
     console.log(`[Dashboard] Auto-refresh started (every ${REFRESH_INTERVAL_SECS}s with countdown)`);
@@ -523,51 +531,28 @@
 
   /**
    * Refresh data and re-render current view.
-   * Tries FCLM tab first (for newest today data), falls back to storage read.
-   * Resets the countdown timer on completion.
+   * Reads directly from browser.storage.local (the source of truth).
+   * The content script writes to storage, and storage.onChanged handles
+   * real-time updates.  This timer-based refresh is a safety net to catch
+   * anything the listener might have missed.
    */
   async function refreshData() {
-    if (state.refreshing) return; // Prevent concurrent refreshes
+    if (state.refreshing) return;
     state.refreshing = true;
     if (el.refreshTimer) el.refreshTimer.classList.add('refreshing');
 
     try {
-      // Try FCLM tab first for freshest data
-      const tabs = await browser.tabs.query({ url: '*://fclm-portal.amazon.com/*' });
-      if (tabs.length > 0) {
-        state.fclmTabId = tabs[0].id;
-        try {
-          const response = await browser.tabs.sendMessage(state.fclmTabId, { action: 'getAllCachedData' });
-          if (response?.success && response.totalRecords > 0) {
-            const oldCount = state.allCachedData.length;
-            state.allCachedData = response.performanceData || [];
-            state.warehouseId = response.warehouseId || state.warehouseId;
-            el.warehouseId.textContent = state.warehouseId;
-            renderCurrentView();
-            updateLastRefreshTime();
-            if (oldCount > 0 && state.allCachedData.length !== oldCount) {
-              showToast(`Data refreshed (${response.totalRecords} records)`, 'success');
-            }
-            console.log(`[Dashboard] Refreshed via FCLM: ${response.totalRecords} records`);
-            return; // Done — got live data
-          }
-        } catch (err) {
-          console.log('[Dashboard] FCLM tab messaging failed, falling back to storage:', err.message);
-          state.fclmTabId = null;
-        }
-      }
-
-      // Fallback: re-read from storage (picks up any background writes)
       const count = await loadFromStorage();
       if (count > 0) {
-        console.log(`[Dashboard] Refreshed from storage: ${count} records`);
+        renderCurrentView();
+        updateLastRefreshTime();
+        console.log(`[Dashboard] Timer refresh from storage: ${count} records`);
       } else {
-        console.log('[Dashboard] No data available from FCLM tab or storage');
+        console.log('[Dashboard] No data available in storage');
       }
     } finally {
       state.refreshing = false;
       if (el.refreshTimer) el.refreshTimer.classList.remove('refreshing');
-      // Reset countdown
       state.secondsUntilRefresh = REFRESH_INTERVAL_SECS;
       updateCountdownDisplay();
     }
@@ -595,19 +580,18 @@
   /**
    * Filter data by shift.
    * - 'all' filter: show everything (no filtering)
-   * - 'day'/'night' filter: show records that match OR records with shift='all'
-   *   (shift='all' means we don't know the shift — include them rather than lose data)
+   * - 'day'/'night' filter: show only records explicitly tagged with that shift.
+   *   Records tagged 'all' (bulk-fetched historical data where we don't know the
+   *   shift) are EXCLUDED when a specific shift is selected — otherwise they'd
+   *   inflate the numbers and make Day/Night/Both look identical.
    *
-   * Over time, as the extension runs each day, more records will have
-   * proper 'day'/'night' tags from live collection. Bulk-fetched historical
-   * data stays as 'all' and always passes through.
+   * Over time, as the extension runs each day and collects shift-specific data,
+   * the Day/Night views will become more complete.  Historical 'all' data is
+   * always visible under the "Both" filter.
    */
   function filterByShift(data, shift) {
     if (!shift || shift === 'all') return data;
-    return data.filter(r => {
-      const recShift = r.shift || 'all';
-      return recShift === 'all' || recShift === shift;
-    });
+    return data.filter(r => (r.shift || 'all') === shift);
   }
 
   /**
@@ -1910,7 +1894,9 @@
     });
 
     if (Object.keys(toStore).length > 0) {
+      state._suppressStorageListener = true;
       await browser.storage.local.set(toStore);
+      state._suppressStorageListener = false;
     }
 
     return { imported, skipped };
