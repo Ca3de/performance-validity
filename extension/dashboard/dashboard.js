@@ -13,6 +13,7 @@
     currentView: 'overview',
     // Global filters (affect all views)
     globalPeriod: 'today',
+    globalShift: 'all',       // 'all' | 'day' | 'night'
     customDateFrom: null,     // YYYY-MM-DD string for custom range
     customDateTo: null,       // YYYY-MM-DD string for custom range
     // Lookup state
@@ -111,6 +112,7 @@
     el.views = document.querySelectorAll('.view');
 
     // Global filters
+    el.shiftBtns = document.querySelectorAll('.shift-btn');
     el.periodBtns = document.querySelectorAll('.period-btn');
     el.customDateRange = document.getElementById('customDateRange');
     el.dateFrom = document.getElementById('dateFrom');
@@ -188,6 +190,16 @@
           handleLookup();
         }
       }
+    });
+
+    // Global shift filter
+    el.shiftBtns?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        el.shiftBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.globalShift = btn.dataset.shift;
+        renderCurrentView();
+      });
     });
 
     // Global period filter
@@ -466,6 +478,35 @@
       console.log('[Dashboard] Could not register message listener:', e);
     }
 
+    // Listen for storage changes from the content script.
+    // This eliminates race conditions: instead of polling, we react
+    // to writes as they complete. The dashboard only reads AFTER the
+    // content script has finished writing.
+    try {
+      browser.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName !== 'local') return;
+
+        // Check if any cache_ keys changed (new performance data written)
+        const cacheKeysChanged = Object.keys(changes).some(k => k.startsWith('cache_'));
+        if (cacheKeysChanged) {
+          console.log('[Dashboard] Storage changed — reloading data');
+          // Debounce: the content script may write multiple keys in quick succession
+          if (state._storageDebounce) clearTimeout(state._storageDebounce);
+          state._storageDebounce = setTimeout(async () => {
+            const count = await loadFromStorage();
+            if (count > 0) {
+              renderCurrentView();
+              // Reset countdown since we just got fresh data
+              state.secondsUntilRefresh = REFRESH_INTERVAL_SECS;
+              updateCountdownDisplay();
+            }
+          }, 1000); // Wait 1s for batch writes to settle
+        }
+      });
+    } catch (e) {
+      console.log('[Dashboard] Could not register storage.onChanged listener:', e);
+    }
+
     console.log(`[Dashboard] Auto-refresh started (every ${REFRESH_INTERVAL_SECS}s with countdown)`);
   }
 
@@ -549,6 +590,31 @@
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Filter data by shift.
+   * - 'all' filter: show everything (no filtering)
+   * - 'day'/'night' filter: show records that match OR records with shift='all'
+   *   (shift='all' means we don't know the shift — include them rather than lose data)
+   *
+   * Over time, as the extension runs each day, more records will have
+   * proper 'day'/'night' tags from live collection. Bulk-fetched historical
+   * data stays as 'all' and always passes through.
+   */
+  function filterByShift(data, shift) {
+    if (!shift || shift === 'all') return data;
+    return data.filter(r => {
+      const recShift = r.shift || 'all';
+      return recShift === 'all' || recShift === shift;
+    });
+  }
+
+  /**
+   * Apply both period and shift filters (convenience)
+   */
+  function filterData(data) {
+    return filterByShift(filterByPeriod(data, state.globalPeriod), state.globalShift);
   }
 
   /**
@@ -661,7 +727,7 @@
    * Render overview
    */
   function renderOverview() {
-    const data = filterByPeriod(state.allCachedData, state.globalPeriod);
+    const data = filterData(state.allCachedData);
 
     // Aggregate by employee
     const employeeMap = new Map();
@@ -883,8 +949,8 @@
       return;
     }
 
-    // Filter by period
-    matches = filterByPeriod(matches, state.globalPeriod);
+    // Filter by period and shift
+    matches = filterData(matches);
 
     if (state.lookupPath !== 'all') {
       matches = matches.filter(r => (r.pathId || '').toLowerCase().includes(state.lookupPath));
@@ -1106,7 +1172,7 @@
     el.aaHours.textContent = totalHours.toFixed(1);
 
     // --- Build peer comparison data ---
-    const allData = filterByPeriod(state.allCachedData, state.globalPeriod);
+    const allData = filterData(state.allCachedData);
 
     // Identify which paths this AA works
     const aaPaths = new Set(records.map(r => r.pathId));
@@ -1295,7 +1361,7 @@
     const isToday = state.globalPeriod === 'today';
 
     // Determine if this is a single-day period where we can show hourly data
-    const periodData = filterByPeriod(state.allCachedData, state.globalPeriod);
+    const periodData = filterData(state.allCachedData);
     const uniqueDates = new Set(periodData.map(r => String(r.date).substring(0, 10)));
     const isSingleDay = isToday || uniqueDates.size === 1;
     const singleDayDate = isToday ? null : (uniqueDates.size === 1 ? [...uniqueDates][0] : null);
@@ -1564,7 +1630,7 @@
    * Render data table
    */
   function renderDataTable() {
-    let data = filterByPeriod(state.allCachedData, state.globalPeriod);
+    let data = filterData(state.allCachedData);
 
     // Filter by search
     if (state.dataSearch) {
@@ -1634,7 +1700,7 @@
    * Handle export
    */
   function handleExport() {
-    let data = filterByPeriod(state.allCachedData, state.globalPeriod);
+    let data = filterData(state.allCachedData);
 
     if (data.length === 0) {
       showToast('No data to export', 'warning');

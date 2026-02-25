@@ -76,6 +76,11 @@
       <!-- Global Filter Bar -->
       <div class="global-filters" id="globalFilters">
         <div class="filter-bar-left">
+          <div class="shift-toggle" id="shiftToggle">
+            <button class="shift-btn active" data-shift="all">Both</button>
+            <button class="shift-btn" data-shift="day">Day</button>
+            <button class="shift-btn" data-shift="night">Night</button>
+          </div>
           <div class="period-toggle" id="periodToggle">
             <button class="period-btn active" data-period="today">Today</button>
             <button class="period-btn" data-period="week">Week</button>
@@ -353,7 +358,7 @@
                 </div>
                 <div class="backup-info">
                   <h3 class="backup-title">Backup Data</h3>
-                  <p class="backup-desc">Download all cached performance data, hourly snapshots, and settings as a JSON file. Use this before uninstalling or switching browsers.</p>
+                  <p class="backup-desc">Download all cached data as a JSON file. Uninstalling or reinstalling Firefox erases all stored data — back up regularly to avoid losing your history.</p>
                 </div>
                 <button class="btn btn-primary" id="backupBtn">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
@@ -367,7 +372,7 @@
                 </div>
                 <div class="backup-info">
                   <h3 class="backup-title">Restore Data</h3>
-                  <p class="backup-desc">Import a previously exported backup file. Newer data is kept when conflicts occur. Hourly snapshots are merged.</p>
+                  <p class="backup-desc">Import a previously exported backup file after reinstalling the browser. Newer data is kept when conflicts occur.</p>
                 </div>
                 <label class="btn btn-secondary backup-import-btn" id="restoreLabel">
                   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
